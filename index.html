@@ -155,15 +155,11 @@ a.tl:hover::after { color: var(--accent); }
 
 footer { color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 6px; }
 footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
-.sig { position: fixed; right: 20px; bottom: 16px; z-index: 40; pointer-events: none; text-align: right; opacity: .62;
-  display: grid; justify-items: end; gap: 1px; mix-blend-mode: screen; }
-.sig-k { font-size: 9.5px; letter-spacing: .38em; text-transform: uppercase; color: var(--muted); padding-right: 2px; }
-.sig-n { font-family: "Didot", "Bodoni 72", "Bodoni MT", "Playfair Display", "Times New Roman", Georgia, serif; font-style: italic; font-weight: 400;
-  font-size: 26px; line-height: 1; letter-spacing: .02em;
-  background: linear-gradient(100deg, #f3d48a 0%, #e3b65c 45%, #b8862f 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
-  text-shadow: 0 0 18px rgba(227, 182, 92, .18); }
-.sig-l { width: 64px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent)); margin-top: 3px; }
-@media (max-width: 600px) { .sig { right: 12px; bottom: 10px; } .sig-n { font-size: 19px; } .sig-k { font-size: 8px; } }
+.sig { position: fixed; right: 18px; bottom: 14px; z-index: 40; pointer-events: none; text-align: right; opacity: .55;
+  display: grid; justify-items: end; gap: 2px; }
+.sig-k { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.sig-n { font-size: 15px; font-weight: 600; letter-spacing: .04em; color: var(--ink); line-height: 1.1; }
+@media (max-width: 600px) { .sig { right: 12px; bottom: 10px; } .sig-n { font-size: 13px; } .sig-k { font-size: 9px; } }
 @media print { .sig { position: static; opacity: 1; margin: 20px 0 0 auto; } }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
@@ -281,7 +277,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
 </div>
 
-<div class="sig" aria-hidden="true"><span class="sig-k">curated by</span><span class="sig-n">Trung Lo</span><span class="sig-l"></span></div>
+<div class="sig" aria-hidden="true"><span class="sig-k">curated by</span><span class="sig-n">Trung Lo</span></div>
 
 <script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/dist/echarts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
