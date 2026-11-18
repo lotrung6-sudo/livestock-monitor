@@ -76,6 +76,9 @@ header.top { display: flex; flex-wrap: wrap; align-items: center; justify-conten
 .map-fallback .alert { margin: 0; }
 .alert { display: grid; grid-template-columns: 4px 1fr; gap: 10px; background: var(--sunk); border-radius: 8px; padding: 9px 10px 9px 0; }
 .alert .bar { border-radius: 0 3px 3px 0; }
+.alert.clk { cursor: pointer; transition: background .15s; }
+.alert.clk:hover { background: var(--line); }
+.alert.clk:hover .t a { color: var(--accent); }
 .alert .t { font-weight: 600; }
 .alert .m { color: var(--muted); font-size: 12px; }
 .alert p { margin: 2px 0 0; font-size: 13px; }
@@ -462,6 +465,10 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     el.innerHTML = '<div class="bar"></div><div><div class="t"></div><div class="m"></div><p></p></div>';
     el.querySelector(".bar").style.background = TYPES[e.t].c;
     el.querySelector(".t").appendChild(linkTo(e.src, e.n, "tl"));
+    if (SRC[e.src]) {
+      el.classList.add("clk"); el.title = "Mở nguồn: " + SRC[e.src].n;
+      el.addEventListener("click", function (ev) { if (ev.target.closest("a")) return; window.open(SRC[e.src].u, "_blank", "noopener"); });
+    }
     el.querySelector(".m").textContent = TYPES[e.t].n + " · " + e.d;
     el.querySelector("p").textContent = e.x;
     return el;
