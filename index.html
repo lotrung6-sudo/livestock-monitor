@@ -266,7 +266,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     <div class="panel-head">
       <div>
         <h2>Chính sách & khoa học</h2>
-        <div class="sub">Luật, quy định, công nghệ, kháng sinh và di truyền động vật. Mỗi tin dựa trên một nguồn đã kiểm tra link.</div>
+        <div class="sub">Luật, quy định, công nghệ, kháng sinh, di truyền động vật và bảo vệ môi trường. Mỗi tin dựa trên một nguồn đã kiểm tra link.</div>
       </div>
       <div class="seg" role="group" aria-label="Lọc theo lĩnh vực" id="pol-filter">
         <button type="button" data-f="all" aria-pressed="true">Tất cả</button>
@@ -274,6 +274,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
         <button type="button" data-f="tech" aria-pressed="false">Công nghệ</button>
         <button type="button" data-f="amr" aria-pressed="false">Kháng sinh – AMR</button>
         <button type="button" data-f="gen" aria-pressed="false">Di truyền</button>
+        <button type="button" data-f="env" aria-pressed="false">Môi trường</button>
       </div>
     </div>
     <div class="news" id="policy"></div>
@@ -311,6 +312,10 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
   /* ---------- NGUỒN ---------- */
   var SRC = {
+    psUCOL: { n: "The Poultry Site – EU ban hành quy tắc phát thải chung cho trại lợn, gia cầm", u: "https://www.thepoultrysite.com/news/2026/10/eu-adopts-common-emission-rules-for-poultry-pig-farms" },
+    epaAir: { n: "EPA Mỹ – Chấm dứt Thỏa thuận tuân thủ khí thải 2005", u: "https://www.epa.gov/node/301598" },
+    drRNG: { n: "Drovers – Nhà máy khí sinh học từ phân bò ở Nebraska", u: "https://www.drovers.com/news/manure-fuel-how-adams-land-cattle-transforming-waste-wealth" },
+    dnNitro: { n: "DutchNews – Kiện đòi đóng cửa trại vượt giới hạn nitơ", u: "https://www.dutchnews.nl/2026/09/courts-asked-to-shut-130-farms-for-breaching-nitrogen-limits/" },
     fjBovaer: { n: "Irish Farmers Journal – Trung Quốc duyệt Bovaer cho bò sữa", u: "https://www.farmersjournal.ie/news/news/methane-reducing-feed-additive-approved-for-use-in-cows-in-china-941062" },
     vegEU27: { n: "vegconomist – Chương trình làm việc 2027 của EU và luật phúc lợi vật nuôi", u: "https://vegconomist.com/politics-law/end-the-cage-age-proposals-left-out-european-commissions-2027-work-programme/" },
     nlVax: { n: "NL Times – Hà Lan nhốt gia cầm, chuẩn bị bắt buộc tiêm phòng", u: "https://nltimes.nl/2026/10/28/poultry-farmers-ordered-keep-chickens-indoors-three-bird-flu-outbreaks" },
@@ -509,7 +514,11 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   /* Bản tin nhanh – Chính sách & công nghệ: mỗi mục là MỘT tin riêng, một nguồn.
      d = ngày, c = lĩnh vực (policy|tech|amr|gen), x = nội dung ngắn (cả câu là link), src = khóa trong SRC */
   var BRIEF_POL = [
-    { d: "16/11/2026", c: "tech", x: "Trung Quốc cấp phép phụ gia giảm khí mê-tan Bovaer cho bò sữa", src: "fjBovaer" },
+    { d: "30/10/2026", c: "env", x: "EPA Mỹ chấm dứt thỏa thuận 2005 về ước tính khí thải trại chăn nuôi", src: "epaAir" },
+    { d: "09/10/2026", c: "env", x: "EU ban hành quy tắc chung giảm amoniac, nitơ, phốt pho ở trại lợn, gia cầm (áp dụng 2030–2032)", src: "psUCOL" },
+    { d: "18/09/2026", c: "env", x: "Hà Lan: kiện đòi rút giấy phép 130 trại vượt giới hạn nitơ; mục tiêu giảm 42–46% amoniac vào 2035", src: "dnNitro" },
+    { d: "28/08/2026", c: "env", x: "Mỹ khởi công nhà máy khí sinh học từ phân bò 300 triệu USD ở Nebraska", src: "drRNG" },
+    { d: "16/11/2026", c: "env", x: "Trung Quốc cấp phép phụ gia giảm khí mê-tan Bovaer cho bò sữa", src: "fjBovaer" },
     { d: "05/11/2026", c: "policy", x: "EU: chương trình làm việc 2027 chưa nhắc luật phúc lợi gà, lợn đã cam kết", src: "vegEU27" },
     { d: "28/10/2026", c: "policy", x: "Hà Lan chuẩn bị bắt buộc tiêm vắc-xin cúm gia cầm cho gà đẻ", src: "nlVax" },
     { d: "07/10/2026", c: "policy", x: "Trung Quốc đưa AI, chăn nuôi thông minh vào kế hoạch phát triển ngành đến 2030", src: "anChinaPlan" },
@@ -725,10 +734,15 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     policy: { n: "Chính sách – luật", c: "#6cb6ff" },
     tech: { n: "Công nghệ", c: "#5cc48a" },
     amr: { n: "Kháng sinh – AMR", c: "#e3b65c" },
-    gen: { n: "Di truyền", c: "#d18fe8" }
+    gen: { n: "Di truyền", c: "#d18fe8" },
+    env: { n: "Môi trường", c: "#4fc3c8" }
   };
   var POL = [
-    { c: "tech", d: "16/11/2026", org: "Trung Quốc · Bộ Nông nghiệp và Nông thôn", h: "Trung Quốc cấp phép phụ gia giảm khí mê-tan Bovaer cho bò sữa", p: "Bộ Nông nghiệp và Nông thôn Trung Quốc cho phép dùng Bovaer (hoạt chất 3-NOP, đã được phép ở EU) cho bò đang vắt sữa. Theo nghiên cứu của nhà sản xuất DSM-Firmenich, phụ gia giảm trung bình khoảng 30% khí mê-tan từ dạ cỏ; đây là số liệu của doanh nghiệp.", src: "fjBovaer" },
+    { c: "env", d: "30/10/2026", org: "Mỹ · EPA", h: "EPA Mỹ bỏ việc xây dựng phương pháp ước tính khí thải cho trại chăn nuôi theo thỏa thuận 2005", p: "EPA kết luận số liệu đo khí thải trại chăn nuôi thu thập năm 2005–2007 đã quá cũ và quá ít để làm phương pháp tin cậy, nên sẽ không hoàn tất các phương pháp ước tính theo Thỏa thuận tuân thủ khí thải năm 2005. Cơ quan này sẽ thông báo cho khoảng 2.600 cơ sở liên quan rồi chấm dứt thỏa thuận, đồng thời tiếp tục làm việc với USDA và các trường đại học về cách giảm khí thải trang trại.", src: "epaAir" },
+    { c: "env", d: "09/10/2026", org: "EU · Ủy ban châu Âu", h: "EU ban hành quy tắc vận hành chung để giảm phát thải từ trại lợn và gia cầm (UCOL)", p: "Quy tắc UCOL thuộc Chỉ thị Phát thải công nghiệp và chăn nuôi đặt chuẩn tối thiểu chung để giảm amoniac, nitơ và phốt pho, thay cho các cách làm riêng của từng nước. Trại được tự chọn biện pháp về xử lý phân, dinh dưỡng và chuồng nuôi, ưu tiên giải pháp thức ăn. Đã thông qua; áp dụng cho các trại từ 2030 đến 2032 tùy quy mô.", src: "psUCOL" },
+    { c: "env", d: "18/09/2026", org: "Hà Lan", h: "Hà Lan: nhóm môi trường kiện đòi rút giấy phép 130 trại vượt giới hạn nitơ", p: "Nhóm môi trường MOB yêu cầu tòa án ở 10 tỉnh rút giấy phép của các trại vượt giới hạn lắng đọng nitơ gần khu Natura 2000; khoảng 130 hộ có thể mất trang trại. Gói biện pháp của Bộ trưởng Nông nghiệp công bố tháng 6 yêu cầu giảm 42–46% amoniac vào 2035 so với 2019, kèm mua lại trại tự nguyện; gói này còn phải trình Quốc hội.", src: "dnNitro" },
+    { c: "env", d: "28/08/2026", org: "Mỹ · Nebraska", h: "Khởi công nhà máy biến phân bò thành khí sinh học lớn ở Nebraska", p: "Neogenyx Fuels và trại bò thịt Adams Land & Cattle khởi công ngày 26/8 nhà máy khí tự nhiên tái tạo gần 300 triệu USD với 8 bể ủ yếm khí, tạo hơn 4.400 feet khối khí sinh học mỗi phút. Dự án dự kiến tránh gần 64.000 tấn khí nhà kính mỗi năm; bài viết chưa nêu ngày vận hành.", src: "drRNG" },
+    { c: "env", d: "16/11/2026", org: "Trung Quốc · Bộ Nông nghiệp và Nông thôn", h: "Trung Quốc cấp phép phụ gia giảm khí mê-tan Bovaer cho bò sữa", p: "Bộ Nông nghiệp và Nông thôn Trung Quốc cho phép dùng Bovaer (hoạt chất 3-NOP, đã được phép ở EU) cho bò đang vắt sữa. Theo nghiên cứu của nhà sản xuất DSM-Firmenich, phụ gia giảm trung bình khoảng 30% khí mê-tan từ dạ cỏ; đây là số liệu của doanh nghiệp.", src: "fjBovaer" },
     { c: "policy", d: "05/11/2026", org: "EU · Ủy ban châu Âu", h: "Chương trình làm việc 2027 của EU chưa nhắc tới luật phúc lợi gà và lợn đã cam kết", p: "Chiến lược Chăn nuôi (7/7/2026) hứa đề xuất sửa luật phúc lợi cho gà đẻ, gà thịt trước cuối 2026 và cho lợn (chuyển từ cũi sang chuồng quây) vào quý II/2027. Chương trình làm việc 2027 công bố ngày 4/11 không có các đề xuất này; một viện vận động về luật động vật cho rằng đề xuất về gia cầm vẫn có thể ra trong tháng 12.", src: "vegEU27" },
     { c: "policy", d: "28/10/2026", org: "Hà Lan", h: "Hà Lan chuẩn bị bắt buộc tiêm vắc-xin cúm gia cầm cho gà đẻ", p: "Sau 3 ổ dịch trong 3 ngày, Hà Lan buộc nhốt gia cầm trên toàn quốc. Quốc vụ khanh Silvio Erkens muốn trình kế hoạch bắt buộc tiêm phòng cúm gia cầm cho gà đẻ ngay trong năm nay và đang bàn cách làm với ngành gia cầm.", src: "nlVax" },
     { c: "policy", d: "07/10/2026", org: "Trung Quốc · Bộ Nông nghiệp và Nông thôn", h: "Trung Quốc đưa AI và chăn nuôi thông minh vào kế hoạch phát triển ngành đến 2030", p: "Kế hoạch phát triển ngành chăn nuôi và thú y quốc gia đặt 15 chỉ tiêu định lượng nhưng không đặt mục tiêu tăng tổng sản lượng thịt. Một trong năm nhiệm vụ chính là đẩy nhanh ứng dụng trí tuệ nhân tạo và chăn nuôi thông minh; kế hoạch cũng hướng tới giảm lượng kháng sinh thú y trên mỗi đơn vị sản phẩm.", src: "anChinaPlan" },
