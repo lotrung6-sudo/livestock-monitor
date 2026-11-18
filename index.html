@@ -120,7 +120,7 @@ a.tl:hover::after { color: var(--accent); }
 .brief + .brief-label, .pager + .brief-label { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
 .brief.paged li::before { background: var(--dot, var(--accent)); border-radius: 50%; }
 .paged .bd { color: var(--muted); font-size: 12px; margin-right: 6px; font-variant-numeric: tabular-nums; }
-#brief { min-height: 230px; } #brief-pol { min-height: 145px; } .paged { align-content: start; }
+#brief-pol { min-height: 290px; } #brief { min-height: 140px; } .paged { align-content: start; }
 .pager { display: flex; gap: 6px; align-items: center; margin-top: 10px; }
 .pager button { background: transparent; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; min-width: 30px; height: 28px; padding: 0 8px; font: inherit; font-size: 13px; cursor: pointer; }
 .pager button:hover:not([disabled]) { color: var(--ink); border-color: var(--muted); }
@@ -189,12 +189,12 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
           <h2>Bản tin nhanh</h2>
           <span class="tag">Tổng hợp</span>
         </div>
-        <div class="brief-label">Dịch bệnh</div>
-        <ul class="brief paged" id="brief"></ul>
-        <div class="pager" id="brief-pager"></div>
         <div class="brief-label">Chính sách &amp; công nghệ</div>
         <ul class="brief paged" id="brief-pol"></ul>
         <div class="pager" id="brief-pol-pager"></div>
+        <div class="brief-label">Dịch bệnh</div>
+        <ul class="brief paged" id="brief"></ul>
+        <div class="pager" id="brief-pager"></div>
       </div>
       <div>
         <div class="panel-head">
@@ -473,7 +473,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     }
     draw();
   }
-  pagedList("brief", "brief-pager", BRIEF, 8, function (b) { return TYPES[b.t] && TYPES[b.t].c; });
+  pagedList("brief", "brief-pager", BRIEF, 5, function (b) { return TYPES[b.t] && TYPES[b.t].c; });
 
   /* Bản tin nhanh – Chính sách & công nghệ: mỗi mục là MỘT tin riêng, một nguồn.
      d = ngày, c = lĩnh vực (policy|tech|amr|gen), x = nội dung ngắn (cả câu là link), src = khóa trong SRC */
@@ -699,7 +699,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     });
   });
   drawPol();
-  pagedList("brief-pol", "brief-pol-pager", BRIEF_POL, 5, function (b) { return PCAT[b.c] && PCAT[b.c].c; });
+  pagedList("brief-pol", "brief-pol-pager", BRIEF_POL, 10, function (b) { return PCAT[b.c] && PCAT[b.c].c; });
 
 
   /* ---------- GIỜ VIỆT NAM & THỜI TIẾT HÀ NỘI ---------- */
