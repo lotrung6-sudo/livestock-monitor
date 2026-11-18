@@ -216,7 +216,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     <div class="panel-head">
       <div>
         <h2>Truyền hình nông nghiệp</h2>
-        <div class="sub">Kênh chính thức của các đài. Phụ đề tiếng Việt dùng tính năng dịch tự động của YouTube.</div>
+        <div class="sub">Tự phát kênh đang trực tiếp; nếu không có thì phát tin mới nhất. Phụ đề tiếng Việt dùng tính năng dịch tự động của YouTube.</div>
       </div>
     </div>
     <div class="seg tv-ch" role="group" aria-label="Chọn kênh" id="tv-ch"></div>
@@ -707,23 +707,28 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
 
   /* ---------- TRUYỀN HÌNH ---------- */
-  /* yt = ID kênh YouTube chính thức (phát luồng trực tiếp ngay trên trang); web = trang xem trực tiếp của đài */
+  /* Kênh YouTube chính thức (yt = ID kênh). Khi mở trang: tự tìm kênh đang phát trực tiếp (tắt tiếng, theo quy định trình duyệt);
+     nếu không kênh nào đang trực tiếp thì phát các video tin tức mới nhất. */
   var TV = [
-    { k: "canalrural", n: "Canal Rural", co: "Brazil", lang: "Tiếng Bồ Đào Nha", d: "Kênh nông nghiệp lớn của Brazil, mạnh về chăn nuôi bò thịt; có chương trình trực tiếp Giro do Boi, Jornal da Pecuária.", yt: "UCPumJ2ayrr-JDsA9JDCUDDQ", web: "https://www.canalrural.com.br/canal-rural-ao-vivo/" },
-    { k: "ddkisan", n: "DD Kisan", co: "Ấn Độ", lang: "Tiếng Hindi, tiếng Anh", d: "Kênh nông nghiệp 24/7 của đài nhà nước Doordarshan, có nội dung cho người nuôi gia súc, gia cầm.", yt: "UCnDfmcUyhgJp6xC1LmBLfUg", web: "https://www.youtube.com/@DDKisan/live" },
-    { k: "cctv17", n: "CCTV-17", co: "Trung Quốc", lang: "Tiếng Trung", d: "Kênh Nông nghiệp – Nông thôn của Đài Truyền hình Trung ương Trung Quốc. Chỉ xem được trên trang của CCTV.", web: "https://tv.cctv.com/live/cctv17/" },
-    { k: "rfdtv", n: "RFD-TV", co: "Mỹ", lang: "Tiếng Anh", d: "Kênh nông thôn – nông nghiệp của Mỹ, có bản tin thị trường chăn nuôi. Phát trực tiếp qua trang và ứng dụng RFD+, phần lớn cần đăng ký.", web: "https://www.rfdtv.com/live" }
+    { n: "Brownfield", co: "Mỹ", lang: "Tiếng Anh", d: "Mạng tin nông nghiệp lâu đời của Mỹ: tin trang trại, thị trường gia súc, thời tiết, phỏng vấn chuyên gia.", yt: "UCBR7KnDynZ0hw7xF23dE94A" },
+    { n: "Farm Journal", co: "Mỹ", lang: "Tiếng Anh", d: "Tin nông nghiệp, góc nhìn của nhà sản xuất, chăn nuôi và công nghệ trang trại (AgDay, U.S. Farm Report).", yt: "UCqTizkFSbhBojVtIkjMEoZQ" },
+    { n: "Farmers Weekly", co: "Anh", lang: "Tiếng Anh", d: "Kênh video của tạp chí Farmers Weekly: chăn nuôi bò sữa, bò thịt, cừu, lợn, gia cầm, máy móc.", yt: "UC_Tg-jtxlqdKbuKPKG-kxYg" },
+    { n: "Pig Progress", co: "Hà Lan", lang: "Tiếng Anh", d: "Tạp chí quốc tế chuyên ngành chăn nuôi lợn: công nghệ, sức khỏe đàn, dịch tả lợn châu Phi.", yt: "UCF9dWYsZuLgN1hgxwjuestw" },
+    { n: "Canal Rural", co: "Brazil", lang: "Tiếng Bồ Đào Nha", d: "Kênh nông nghiệp lớn của Brazil, mạnh về chăn nuôi bò thịt; có chương trình trực tiếp Giro do Boi.", yt: "UCPumJ2ayrr-JDsA9JDCUDDQ" },
+    { n: "DD Kisan", co: "Ấn Độ", lang: "Tiếng Hindi", d: "Kênh nông nghiệp 24/7 của đài nhà nước Doordarshan, có nội dung cho người nuôi gia súc, gia cầm.", yt: "UCnDfmcUyhgJp6xC1LmBLfUg" },
+    { n: "Kisan Tak", co: "Ấn Độ", lang: "Tiếng Hindi", d: "Kênh tin nông nghiệp Ấn Độ: vấn đề của nông dân và các công nghệ mới qua câu chuyện thực tế.", yt: "UC2uZxKp0rxh2Zzwjsw4KgRg" }
   ];
-  var tvCur = 0;
-  /* Trình phát YouTube (IFrame API): thử luồng trực tiếp; nếu kênh không phát trực tiếp thì chuyển sang video mới nhất */
-  var tvPlayer = null, tvMode = "live", tvTimer = null;
-  function tvStatus(msg, btn) {
+  var tvCur = 0, tvPlayer = null, tvMode = "live", tvTimer = null, tvSeq = 0, tvAuto = true, tvSound = false;
+  function tvStatus(msg, btns) {
     var st = document.getElementById("tv-status"); if (!st) return;
-    st.innerHTML = ""; st.appendChild(document.createTextNode(msg));
-    if (btn) {
-      var bt = document.createElement("button"); bt.type = "button"; bt.textContent = btn.t;
-      bt.addEventListener("click", btn.f); st.appendChild(document.createTextNode(" ")); st.appendChild(bt);
-    }
+    st.innerHTML = ""; var sp = document.createElement("span"); sp.textContent = msg; st.appendChild(sp);
+    (btns || []).forEach(function (bt0) {
+      var bt = document.createElement("button"); bt.type = "button"; bt.textContent = bt0.t;
+      bt.addEventListener("click", bt0.f); st.appendChild(bt);
+    });
+  }
+  function soundBtn() {
+    return { t: "🔊 Bật tiếng", f: function () { tvSound = true; if (tvPlayer && tvPlayer.unMute) { tvPlayer.unMute(); tvPlayer.setVolume && tvPlayer.setVolume(80); } this.remove(); } };
   }
   function loadYT(cb) {
     if (window.YT && window.YT.Player) { cb(); return; }
@@ -734,80 +739,74 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     sc.onerror = function () { tvStatus("Không tải được trình phát YouTube (mạng hoặc trình duyệt đang chặn YouTube). Bấm “Mở trên YouTube” để xem."); };
     document.head.appendChild(sc);
   }
-  function playYT(c, mode) {
-    tvMode = mode; clearTimeout(tvTimer);
+  function markCh() {
+    document.querySelectorAll("#tv-ch button").forEach(function (b, i) { b.setAttribute("aria-pressed", i === tvCur); });
+    var c = TV[tvCur], inf = document.getElementById("tv-info"); inf.innerHTML = "";
+    var row = document.createElement("div"); row.className = "row";
+    row.appendChild(document.createTextNode(c.co + " · " + c.lang + " · " + c.d));
+    inf.appendChild(row);
+    var row2 = document.createElement("div"); row2.className = "row";
+    var a = document.createElement("a"); a.target = "_blank"; a.rel = "noopener";
+    a.href = "https://www.youtube.com/channel/" + c.yt + "/live"; a.textContent = "Mở trên YouTube ↗";
+    row2.appendChild(a); inf.appendChild(row2);
+    var tip = document.createElement("div"); tip.className = "tip";
+    tip.textContent = "Phụ đề tiếng Việt: trong khung video bấm ⚙ → Phụ đề → Dịch tự động → Tiếng Việt (chỉ có khi đài bật phụ đề). Video tự phát ở chế độ tắt tiếng theo quy định của trình duyệt — bấm “Bật tiếng” để nghe.";
+    inf.appendChild(tip);
+  }
+  /* mode: "live" hoặc "vod"; onFail: gọi khi luồng trực tiếp không phát được */
+  function playYT(i, mode, onFail) {
+    var seq = ++tvSeq; tvCur = i; tvMode = mode; clearTimeout(tvTimer); markCh();
+    var c = TV[i];
     var sc = document.getElementById("tv-screen"); sc.innerHTML = '<div id="tv-yt"></div>';
-    tvStatus(mode === "live" ? "Đang mở luồng trực tiếp của " + c.n + "…" : "Đang mở các video mới nhất của " + c.n + "…");
     loadYT(function () {
-      if (tvPlayer && tvPlayer.destroy) { try { tvPlayer.destroy(); } catch (e) {} }
-      var pv = { autoplay: 1, cc_load_policy: 1, cc_lang_pref: "vi", hl: "vi", rel: 0, playsinline: 1 };
+      if (seq !== tvSeq) return;
+      if (tvPlayer && tvPlayer.destroy) { try { tvPlayer.destroy(); } catch (e) {} tvPlayer = null; }
+      var failed = false;
+      function fail(code) {
+        if (failed || seq !== tvSeq) return; failed = true; clearTimeout(tvTimer);
+        if (onFail) { onFail(code); return; }
+        if (code === 101 || code === 150 || code === 153) tvStatus("Đài không cho phát video của họ trên trang khác. Bấm “Mở trên YouTube” để xem.");
+        else tvStatus("Không phát được video" + (code ? " (mã lỗi " + code + ")" : "") + ". Bấm “Mở trên YouTube” để xem.");
+      }
+      var pv = { autoplay: 1, mute: 1, cc_load_policy: 1, cc_lang_pref: "vi", hl: "vi", rel: 0, playsinline: 1 };
       var opts = { width: "100%", height: "100%", playerVars: pv, events: {
+        onReady: function (ev) { try { if (tvSound) ev.target.unMute(); else ev.target.mute(); ev.target.playVideo(); } catch (e) {} },
         onStateChange: function (ev) {
-          if (ev.data === 1) {
-            clearTimeout(tvTimer);
-            tvStatus(tvMode === "live" ? "● Đang phát trực tiếp." : "Đang phát video mới nhất của kênh.",
-              tvMode === "live" ? { t: "Xem video mới nhất", f: function () { playYT(c, "vod"); } } : { t: "Thử lại trực tiếp", f: function () { playYT(c, "live"); } });
-          }
-        },
-        onError: function (ev) {
+          if (seq !== tvSeq || ev.data !== 1) return;
           clearTimeout(tvTimer);
-          var code = ev.data;
-          if (tvMode === "live" && code !== 101 && code !== 150 && code !== 153) {
-            tvStatus("Kênh đang không phát trực tiếp, chuyển sang video mới nhất…"); playYT(c, "vod");
-          } else if (code === 101 || code === 150 || code === 153) {
-            if (tvMode === "live") { playYT(c, "vod"); return; }
-            tvStatus("Đài không cho phát video của họ trên trang khác. Bấm “Mở trên YouTube” để xem.");
-          } else {
-            tvStatus("Không phát được video (mã lỗi " + code + "). Bấm “Mở trên YouTube” để xem.");
-          }
-        }
+          var btns = []; if (tvPlayer && tvPlayer.isMuted && tvPlayer.isMuted()) btns.push(soundBtn());
+          if (tvMode === "live") { btns.push({ t: "Xem tin mới nhất", f: function () { tvAuto = false; playYT(tvCur, "vod"); } });
+            tvStatus("● Đang phát trực tiếp: " + c.n, btns); }
+          else { btns.push({ t: "Thử xem trực tiếp", f: function () { tvAuto = false; playLive(tvCur); } });
+            tvStatus("Đang phát tin mới nhất của " + c.n + (tvAuto ? " (hiện không có kênh nào đang phát trực tiếp)" : ""), btns); }
+        },
+        onError: function (ev) { fail(ev.data); }
       } };
       if (mode === "live") { opts.videoId = "live_stream"; pv.channel = c.yt; }
       else { pv.listType = "playlist"; pv.list = "UU" + c.yt.slice(2); }
       tvPlayer = new YT.Player("tv-yt", opts);
-      tvTimer = setTimeout(function () {
-        if (tvMode === "live") tvStatus("Nếu khung hình chưa phát, có thể kênh đang không phát trực tiếp lúc này.", { t: "Xem video mới nhất", f: function () { playYT(c, "vod"); } });
-      }, 12000);
+      tvTimer = setTimeout(function () { fail(0); }, mode === "live" ? 7000 : 15000);
     });
   }
-  function drawTV(play) {
-    var c = TV[tvCur];
-    clearTimeout(tvTimer);
-    if (tvPlayer && tvPlayer.destroy) { try { tvPlayer.destroy(); } catch (e) {} tvPlayer = null; }
-    document.querySelectorAll("#tv-ch button").forEach(function (b, i) { b.setAttribute("aria-pressed", i === tvCur); });
-    var sc = document.getElementById("tv-screen"); sc.innerHTML = "";
-    if (c.yt && play) {
-      playYT(c, "live");
-    } else {
-      var cv = document.createElement(c.yt ? "button" : "a"); cv.className = "tv-cover";
-      if (c.yt) { cv.type = "button"; cv.addEventListener("click", function () { drawTV(true); }); }
-      else { cv.href = c.web; cv.target = "_blank"; cv.rel = "noopener"; }
-      cv.innerHTML = '<span class="play" aria-hidden="true">' + (c.yt ? "▶" : "↗") + '</span><span class="nm"></span><span class="ds"></span>';
-      cv.querySelector(".nm").textContent = c.yt ? "Xem " + c.n : "Mở trang xem trực tiếp " + c.n;
-      cv.querySelector(".ds").textContent = c.d;
-      sc.appendChild(cv);
-      tvStatus(c.yt ? "Bấm ▶ để phát. Nếu kênh không phát trực tiếp lúc này, trang tự chuyển sang video mới nhất." : "");
-    }
-    var inf = document.getElementById("tv-info"); inf.innerHTML = "";
-    var row = document.createElement("div"); row.className = "row";
-    row.appendChild(document.createTextNode(c.co + " · " + c.lang));
-    var a = document.createElement("a"); a.target = "_blank"; a.rel = "noopener";
-    a.href = c.yt ? "https://www.youtube.com/channel/" + c.yt + "/live" : c.web;
-    a.textContent = c.yt ? "Mở trên YouTube ↗" : "Mở trang của đài ↗";
-    row.appendChild(a); inf.appendChild(row);
-    var tip = document.createElement("div"); tip.className = "tip";
-    tip.textContent = c.yt
-      ? "Phụ đề tiếng Việt: trong khung video bấm ⚙ → Phụ đề → Dịch tự động → Tiếng Việt (chỉ có khi đài bật phụ đề)."
-      : "Kênh này không cho phát trên trang khác nên mở ở tab mới. Muốn có phụ đề tiếng Việt, có thể dùng tiện ích dịch của trình duyệt (ví dụ Immersive Translate).";
-    inf.appendChild(tip);
+  /* Thử trực tiếp một kênh; không được thì phát tin mới nhất của chính kênh đó */
+  function playLive(i) {
+    tvStatus("Đang mở luồng trực tiếp của " + TV[i].n + "…");
+    playYT(i, "live", function () { tvStatus("Kênh " + TV[i].n + " đang không phát trực tiếp, chuyển sang tin mới nhất…"); playYT(i, "vod"); });
+  }
+  /* Khi mở trang: dò lần lượt các kênh để tìm kênh đang phát trực tiếp */
+  function autoScan(i) {
+    if (i >= TV.length) { tvStatus("Chưa có kênh nào đang phát trực tiếp, đang mở tin mới nhất…"); playYT(0, "vod"); return; }
+    tvStatus("Đang tìm kênh đang phát trực tiếp… (" + TV[i].n + ")");
+    playYT(i, "live", function () { if (tvAuto) autoScan(i + 1); });
   }
   var tvCh = document.getElementById("tv-ch");
   TV.forEach(function (c, i) {
     var b = document.createElement("button"); b.type = "button"; b.textContent = c.n;
-    b.addEventListener("click", function () { tvCur = i; drawTV(false); });
+    b.addEventListener("click", function () { tvAuto = false; playLive(i); });
     tvCh.appendChild(b);
   });
-  drawTV(false);
+  markCh();
+  autoScan(0);
 
   /* ---------- TRỢ LÝ AI ---------- */
   var askForm = document.getElementById("ask-form"), askQ = document.getElementById("ask-q"),
