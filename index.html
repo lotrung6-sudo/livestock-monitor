@@ -570,10 +570,33 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
                  '<br><span style="color:' + C.muted + '">Nguồn: ' + esc(SRC[e.src].n) + "</span>";
         }
       },
-      geo: { map: "world", roam: true, silent: true, center: R.c, zoom: R.z, scaleLimit: { min: 1, max: 20 },
-             itemStyle: { areaColor: C.land, borderColor: v("--border-land"), borderWidth: 0.6 }, label: { show: false } },
+      geo: geoOpt(R, global),
       series: series
     }, true);
+    /* Lần đầu chưa biết tỉ lệ thật của bản đồ: đo lại rồi vẽ lại cho khít */
+    if (global && !worldAspectKnown) { var a = measureAspect(); if (a) { worldAspect = a; worldAspectKnown = true; mapChart.setOption({ geo: geoOpt(R, true) }); } }
+  }
+  /* Tỉ lệ ngang/dọc của bản đồ thế giới (ECharts dùng aspectScale 0.75) */
+  var worldAspect = 1.94, worldAspectKnown = false;
+  function measureAspect() {
+    try {
+      var r = mapChart.getModel().getComponent("geo").coordinateSystem.getBoundingRect();
+      if (r && r.width > 0 && r.height > 0) return r.width / r.height * 0.75;
+    } catch (e) {}
+    return 0;
+  }
+  function geoOpt(R, global) {
+    var g = { map: "world", roam: true, silent: true, scaleLimit: { min: 1, max: 20 },
+              itemStyle: { areaColor: C.land, borderColor: v("--border-land"), borderWidth: 0.6 }, label: { show: false } };
+    if (global) {
+      /* Toàn cầu: phủ kín chiều cao khung (sát tới chú thích bên dưới), phóng nhẹ 8% để bớt khoảng trống hai bên;
+         khung hẹp (điện thoại) thì vừa chiều ngang */
+      var w = mapEl.clientWidth || 800, h = mapEl.clientHeight || 400, base = h * worldAspect;
+      var wide = w > base;
+      g.layoutCenter = ["50%", wide ? "52%" : "50%"];
+      g.layoutSize = Math.ceil(wide ? Math.min(w, base * 1.08) : w);
+    } else { g.center = R.c; g.zoom = R.z; }
+    return g;
   }
   function drawFallback(shown) {
     mapEl.innerHTML = "";
@@ -834,7 +857,10 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   markCh();
   autoScan(0);
 
-  window.addEventListener("resize", function () { if (mapChart) mapChart.resize(); });
+  var mapRT = null;
+  function onMapResize() { clearTimeout(mapRT); mapRT = setTimeout(function () { if (mapChart) { mapChart.resize(); if (region === "global") drawMap(); } }, 120); }
+  window.addEventListener("resize", onMapResize);
+  if (window.ResizeObserver && mapChart) { try { new ResizeObserver(onMapResize).observe(mapEl); } catch (e) {} }
 })();
 </script>
 </body>
