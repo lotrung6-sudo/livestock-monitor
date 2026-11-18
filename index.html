@@ -79,10 +79,12 @@ header.top { display: flex; flex-wrap: wrap; align-items: center; justify-conten
 .alert .t { font-weight: 600; }
 .alert .m { color: var(--muted); font-size: 12px; }
 .alert p { margin: 2px 0 0; font-size: 13px; }
-.srcl { color: var(--muted); font-size: 12px; }
-.srcl a { color: var(--muted); text-decoration-color: var(--line); }
-.srcl a:hover { color: var(--accent); }
-.alert .srcl { display: block; margin-top: 4px; }
+a.il { color: inherit; text-decoration: underline; text-decoration-color: var(--border-land); text-underline-offset: 3px; }
+a.il:hover { color: var(--accent); text-decoration-color: var(--accent); }
+a.tl { color: inherit; text-decoration: none; }
+a.tl::after { content: " ↗"; color: var(--muted); font-size: .85em; font-weight: 400; }
+a.tl:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+a.tl:hover::after { color: var(--accent); }
 
 .brief { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .brief-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin: 0 0 8px; }
@@ -347,42 +349,45 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   });
 
   /* ---------- BẢN TIN ---------- */
-  function shortSrc(k) { return SRC[k].n.split(" – ")[0]; }
-  function srcLinks(keys) {
-    var sp = document.createElement("span"); sp.className = "srcl";
-    sp.appendChild(document.createTextNode(" Nguồn: "));
-    var first = true;
-    keys.forEach(function (k) {
-      if (!SRC[k]) return;
-      if (!first) sp.appendChild(document.createTextNode(" · "));
-      first = false;
-      var a = document.createElement("a"); a.href = SRC[k].u; a.target = "_blank"; a.rel = "noopener";
-      a.textContent = shortSrc(k); a.title = SRC[k].n; sp.appendChild(a);
-    });
-    return sp;
+  function linkTo(k, text, cls) {
+    var a = document.createElement("a"); a.className = cls; a.textContent = text;
+    if (SRC[k]) { a.href = SRC[k].u; a.target = "_blank"; a.rel = "noopener"; a.title = "Mở nguồn: " + SRC[k].n; }
+    return a;
+  }
+  /* Cụm [chữ|khóa] trong nội dung sẽ thành link tới nguồn SRC[khóa] */
+  var LINK_RE = /\[([^\]|]+)\|([A-Za-z0-9_]+)\]/g;
+  function plain(t) { return t.replace(LINK_RE, "$1"); }
+  function richText(el, t) {
+    var last = 0, m; LINK_RE.lastIndex = 0;
+    while ((m = LINK_RE.exec(t))) {
+      if (m.index > last) el.appendChild(document.createTextNode(t.slice(last, m.index)));
+      el.appendChild(linkTo(m[2], m[1], "il"));
+      last = LINK_RE.lastIndex;
+    }
+    if (last < t.length) el.appendChild(document.createTextNode(t.slice(last)));
   }
   function briefList(id, arr) {
     var ul = document.getElementById(id);
-    arr.forEach(function (b) { var li = document.createElement("li"); li.textContent = b.t; li.appendChild(srcLinks(b.s)); ul.appendChild(li); });
+    arr.forEach(function (t) { var li = document.createElement("li"); richText(li, t); ul.appendChild(li); });
   }
 
-  /* Bản tin nhanh – Dịch bệnh. Mỗi mục: t = nội dung, s = danh sách khóa nguồn trong SRC */
+  /* Bản tin nhanh – Dịch bệnh. Mỗi cụm [chữ|khóa SRC] là một link tới bài gốc. */
   var BRIEF = [
-    { t: "Mùa cúm gia cầm tăng tốc ở Nhật Bản: ổ đầu mùa ở Kameoka, Kyoto (12/11, tiêu hủy khoảng 200.000 gà) và ổ thứ hai ở Chiba (13/11).", s: ["starJP", "nwnJapan"] },
-    { t: "Anh có 6 ổ cúm gia cầm trong mùa 2026–2027 tính đến 9/11 (mới nhất ở Lancashire và East Riding of Yorkshire); Bắc Ireland đang điều tra ổ nghi ngờ ở Co Tyrone (15/11). Châu Âu có 12 ổ trên gia cầm từ 1/10 đến 2/11, Hà Lan ra lệnh nhốt gia cầm toàn quốc.", s: ["gaUK", "irishTy", "gaEU"] },
-    { t: "H5N1 trên bò sữa Mỹ tiếp tục lan: Oklahoma có đàn nhiễm lần đầu kể từ 7/2024 (16/11), sau Indiana và Oregon. Ở Washington, ổ dịch liên quan 3 ca người nhiễm, 1 ca tử vong.", s: ["dhOK", "dtnIN", "dvm360"] },
-    { t: "Dịch tả lợn châu Phi xuất hiện ở Nam Á: Assam (Ấn Độ) khoanh vùng 10 km quanh trại giống Panbari (10/11), Bhutan có ổ ở Samtse với 12/29 con lợn chết.", s: ["sentAssam", "fsBhutan"] },
-    { t: "LMLM / viêm da nổi cục: viêm da nổi cục ở vùng Moskva (Nga, công bố 29/10); LMLM chủng SAT1 vẫn là mối lo ở Namibia.", s: ["dnMos", "woahSAT1"] },
-    { t: "Đông Nam Á: ASF lan ra 91 huyện ở 7 tỉnh của Lào (24/9), Philippines còn ổ dịch ở 236 barangay thuộc 23 tỉnh (22/10), Thái Lan khoanh vùng dịch ở Chiang Mai (1/10).", s: ["starLao", "tribPH", "faoASF"] },
-    { t: "Các nước lớn: Trung Quốc có LMLM type O ở lợn tại Trùng Khánh (8/9); Hàn Quốc có 24 ổ ASF ở trại lợn trong năm 2026; Nam Phi đã tiêm phòng LMLM cho hơn 90% đàn bò (15/11).", s: ["baChina", "faoASF", "saNews"] }
+    "Mùa cúm gia cầm tăng tốc ở Nhật Bản: [ổ đầu mùa ở Kameoka, Kyoto (12/11, tiêu hủy khoảng 200.000 gà)|starJP] và [ổ thứ hai ở Chiba (13/11)|nwnJapan].",
+    "[Anh có 6 ổ cúm gia cầm trong mùa 2026–2027 tính đến 9/11 (mới nhất ở Lancashire và East Riding of Yorkshire)|gaUK]; [Bắc Ireland đang điều tra ổ nghi ngờ ở Co Tyrone (15/11)|irishTy]. [Châu Âu có 12 ổ trên gia cầm từ 1/10 đến 2/11, Hà Lan ra lệnh nhốt gia cầm toàn quốc|gaEU].",
+    "H5N1 trên bò sữa Mỹ tiếp tục lan: [Oklahoma có đàn nhiễm lần đầu kể từ 7/2024 (16/11)|dhOK], sau [Indiana|dtnIN] và [Oregon|dvm360]. [Ở Washington, ổ dịch liên quan 3 ca người nhiễm, 1 ca tử vong|dvm360].",
+    "Dịch tả lợn châu Phi xuất hiện ở Nam Á: [Assam (Ấn Độ) khoanh vùng 10 km quanh trại giống Panbari (10/11)|sentAssam], [Bhutan có ổ ở Samtse với 12/29 con lợn chết|fsBhutan].",
+    "LMLM / viêm da nổi cục: [viêm da nổi cục ở vùng Moskva (Nga, công bố 29/10)|dnMos]; [LMLM chủng SAT1 vẫn là mối lo ở Namibia|woahSAT1].",
+    "Đông Nam Á: [ASF lan ra 91 huyện ở 7 tỉnh của Lào (24/9)|starLao], [Philippines còn ổ dịch ở 236 barangay thuộc 23 tỉnh (22/10)|tribPH], [Thái Lan khoanh vùng dịch ở Chiang Mai (1/10)|faoASF].",
+    "Các nước lớn: [Trung Quốc có LMLM type O ở lợn tại Trùng Khánh (8/9)|baChina]; [Hàn Quốc có 24 ổ ASF ở trại lợn trong năm 2026|faoASF]; [Nam Phi đã tiêm phòng LMLM cho hơn 90% đàn bò (15/11)|saNews]."
   ];
   briefList("brief", BRIEF);
 
-  /* Bản tin nhanh – Chính sách & công nghệ (lấy từ mục Chính sách & khoa học) */
+  /* Bản tin nhanh – Chính sách & công nghệ (lấy từ mục Chính sách & khoa học), cùng cú pháp link */
   var BRIEF_POL = [
-    { t: "Ấn Độ ban hành Quy tắc phòng chống bệnh truyền nhiễm ở động vật 2026 (29/10): ổ dịch phải báo cáo qua cổng Bharat Pashudhan, báo cáo mổ khám nộp trong 12 giờ.", s: ["tlIndia"] },
-    { t: "EuroTier 2026 (10/11): Innotech Vision giới thiệu camera AI ước tính cân nặng lợn với sai số khoảng 3% và hệ thống theo dõi khí thải chuồng nuôi.", s: ["dnInnotech"] },
-    { t: "Kháng sinh: EMA đề xuất ghi rõ giới hạn dùng kháng sinh dự phòng trên nhãn thuốc thú y (11/9); EU cấm kháng sinh kích thích tăng trưởng với hàng nhập khẩu từ 3/9/2026.", s: ["emaCVMP", "agrinfoEU"] }
+    "[Ấn Độ ban hành Quy tắc phòng chống bệnh truyền nhiễm ở động vật 2026|tlIndia] (29/10): ổ dịch phải báo cáo qua cổng Bharat Pashudhan, báo cáo mổ khám nộp trong 12 giờ.",
+    "[EuroTier 2026 (10/11): Innotech Vision giới thiệu camera AI|dnInnotech] ước tính cân nặng lợn với sai số khoảng 3% và hệ thống theo dõi khí thải chuồng nuôi.",
+    "Kháng sinh: [EMA đề xuất ghi rõ giới hạn dùng kháng sinh dự phòng trên nhãn thuốc thú y (11/9)|emaCVMP]; [EU cấm kháng sinh kích thích tăng trưởng với hàng nhập khẩu từ 3/9/2026|agrinfoEU]."
   ];
   briefList("brief-pol", BRIEF_POL);
 
@@ -391,10 +396,9 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     var el = document.createElement("div"); el.className = "alert";
     el.innerHTML = '<div class="bar"></div><div><div class="t"></div><div class="m"></div><p></p></div>';
     el.querySelector(".bar").style.background = TYPES[e.t].c;
-    el.querySelector(".t").textContent = e.n;
+    el.querySelector(".t").appendChild(linkTo(e.src, e.n, "tl"));
     el.querySelector(".m").textContent = TYPES[e.t].n + " · " + e.d;
     el.querySelector("p").textContent = e.x;
-    el.querySelector("p").parentNode.appendChild(srcLinks([e.src]));
     return el;
   }
   var al = document.getElementById("alerts");
@@ -528,16 +532,16 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
       if (q && norm(n.h + " " + n.p).indexOf(q) < 0) return false;
       return true;
     });
+    list.sort(function (x, y) { return dkey(y.d) - dkey(x.d); });
     if (!list.length) { var e = document.createElement("div"); e.className = "empty"; e.textContent = "Không có tin phù hợp. Thử từ khóa khác."; newsEl.appendChild(e); return; }
     list.forEach(function (n) {
       var el = document.createElement("article"); el.className = "card";
-      el.innerHTML = '<div class="meta"><span class="chip"><i class="dot"></i><span></span></span><span class="dt num"></span></div><h3></h3><p></p><div class="meta"><a target="_blank" rel="noopener"></a></div>';
+      el.innerHTML = '<div class="meta"><span class="chip"><i class="dot"></i><span></span></span><span class="dt num"></span></div><h3></h3><p></p>';
       el.querySelector(".chip .dot").style.background = TYPES[n.t].c;
       el.querySelector(".chip span").textContent = TYPES[n.t].n;
       el.querySelector(".dt").textContent = n.d;
-      el.querySelector("h3").textContent = n.h;
+      el.querySelector("h3").appendChild(linkTo(n.src, n.h, "tl"));
       el.querySelector("p").textContent = n.p;
-      var a = el.querySelector("a"); a.href = SRC[n.src].u; a.textContent = "Đọc nguồn: " + SRC[n.src].n;
       newsEl.appendChild(el);
     });
   }
@@ -575,13 +579,12 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     POL.filter(function (x) { return pf === "all" || x.c === pf; }).forEach(function (x) {
       var cat = PCAT[x.c];
       var el = document.createElement("article"); el.className = "card";
-      el.innerHTML = '<div class="meta"><span class="chip"></span><span class="dt num"></span></div><h3></h3><div class="meta org"></div><p></p><div class="meta"><a target="_blank" rel="noopener"></a></div>';
+      el.innerHTML = '<div class="meta"><span class="chip"></span><span class="dt num"></span></div><h3></h3><div class="meta org"></div><p></p>';
       el.querySelector(".chip").textContent = cat.n;
       el.querySelector(".dt").textContent = x.d;
-      el.querySelector("h3").textContent = x.h;
+      el.querySelector("h3").appendChild(linkTo(x.src, x.h, "tl"));
       el.querySelector(".org").textContent = x.org;
       el.querySelector("p").textContent = x.p;
-      var a = el.querySelector("a"); a.href = SRC[x.src].u; a.textContent = "Đọc nguồn: " + SRC[x.src].n;
       polEl.appendChild(el);
     });
   }
@@ -607,8 +610,8 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     lines.push("CHÍNH SÁCH & KHOA HỌC:");
     POL.forEach(function (x) { lines.push("- " + x.d + " [" + PCAT[x.c].n + ", " + x.org + "]: " + x.h + ". " + x.p); });
     lines.push("BẢN TIN TÓM TẮT:");
-    BRIEF.forEach(function (b) { lines.push("- " + b.t); });
-    BRIEF_POL.forEach(function (b) { lines.push("- " + b.t); });
+    BRIEF.forEach(function (b) { lines.push("- " + plain(b)); });
+    BRIEF_POL.forEach(function (b) { lines.push("- " + plain(b)); });
     return lines.join("\n");
   }
   function ask(q) {
