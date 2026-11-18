@@ -79,6 +79,10 @@ header.top { display: flex; flex-wrap: wrap; align-items: center; justify-conten
 .alert .t { font-weight: 600; }
 .alert .m { color: var(--muted); font-size: 12px; }
 .alert p { margin: 2px 0 0; font-size: 13px; }
+.srcl { color: var(--muted); font-size: 12px; }
+.srcl a { color: var(--muted); text-decoration-color: var(--line); }
+.srcl a:hover { color: var(--accent); }
+.alert .srcl { display: block; margin-top: 4px; }
 
 .brief { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .brief-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin: 0 0 8px; }
@@ -224,13 +228,9 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
       <button class="btn" id="ask-btn" type="submit">Hỏi</button>
     </form>
     <div class="answer" id="ask-out" aria-live="polite">Chọn một câu hỏi gợi ý hoặc tự nhập câu hỏi.</div>
-    <div class="note" id="ask-note">Trợ lý chỉ đọc số liệu chốt ngày 18/11/2026 trên trang, không tự tra cứu tin mới. Thông tin chỉ để tham khảo, không thay thế tư vấn của cán bộ thú y.</div>
+    <div class="note" id="ask-note">Trợ lý chỉ đọc số liệu chốt ngày 19/11/2026 trên trang, không tự tra cứu tin mới. Thông tin chỉ để tham khảo, không thay thế tư vấn của cán bộ thú y.</div>
   </section>
 
-  <footer>
-    <div>Số liệu là bản chụp tại ngày 18/11/2026, trang không tự cập nhật. Các con số ở dải tóm tắt chỉ đếm những điểm nóng có trên trang, không phải tổng số ổ dịch toàn cầu.</div>
-    <ol id="sources"></ol>
-  </footer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/dist/echarts.min.js"></script>
@@ -347,26 +347,44 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   });
 
   /* ---------- BẢN TIN ---------- */
-  var BRIEF = [
-    "Mùa cúm gia cầm tăng tốc ở Nhật Bản: ổ đầu mùa ở Kameoka, Kyoto (12/11, tiêu hủy khoảng 200.000 gà) và ổ thứ hai ở Chiba (13/11).",
-    "Anh có 6 ổ cúm gia cầm trong mùa 2026–2027 tính đến 9/11 (mới nhất ở Lancashire và East Riding of Yorkshire); Bắc Ireland đang điều tra ổ nghi ngờ ở Co Tyrone (15/11). Châu Âu có 12 ổ trên gia cầm từ 1/10 đến 2/11, Hà Lan ra lệnh nhốt gia cầm toàn quốc.",
-    "H5N1 trên bò sữa Mỹ tiếp tục lan: Oklahoma có đàn nhiễm lần đầu kể từ 7/2024 (16/11), sau Indiana và Oregon. Ở Washington, ổ dịch liên quan 3 ca người nhiễm, 1 ca tử vong.",
-    "Dịch tả lợn châu Phi xuất hiện ở Nam Á: Assam (Ấn Độ) khoanh vùng 10 km quanh trại giống Panbari (10/11), Bhutan có ổ ở Samtse với 12/29 con lợn chết.",
-    "LMLM / viêm da nổi cục: viêm da nổi cục ở vùng Moskva (Nga, công bố 29/10); LMLM chủng SAT1 vẫn là mối lo ở Namibia.",
-    "Đông Nam Á: ASF lan ra 91 huyện ở 7 tỉnh của Lào (24/9), Philippines còn ổ dịch ở 236 barangay thuộc 23 tỉnh (22/10), Thái Lan khoanh vùng dịch ở Chiang Mai (1/10).",
-    "Các nước lớn: Trung Quốc có LMLM type O ở lợn tại Trùng Khánh (8/9); Hàn Quốc có 24 ổ ASF ở trại lợn trong năm 2026; Nam Phi đã tiêm phòng LMLM cho hơn 90% đàn bò (15/11)."
-  ];
-  var br = document.getElementById("brief");
-  BRIEF.forEach(function (b) { var li = document.createElement("li"); li.textContent = b; br.appendChild(li); });
+  function shortSrc(k) { return SRC[k].n.split(" – ")[0]; }
+  function srcLinks(keys) {
+    var sp = document.createElement("span"); sp.className = "srcl";
+    sp.appendChild(document.createTextNode(" Nguồn: "));
+    var first = true;
+    keys.forEach(function (k) {
+      if (!SRC[k]) return;
+      if (!first) sp.appendChild(document.createTextNode(" · "));
+      first = false;
+      var a = document.createElement("a"); a.href = SRC[k].u; a.target = "_blank"; a.rel = "noopener";
+      a.textContent = shortSrc(k); a.title = SRC[k].n; sp.appendChild(a);
+    });
+    return sp;
+  }
+  function briefList(id, arr) {
+    var ul = document.getElementById(id);
+    arr.forEach(function (b) { var li = document.createElement("li"); li.textContent = b.t; li.appendChild(srcLinks(b.s)); ul.appendChild(li); });
+  }
 
-  /* Tin nổi bật về chính sách, công nghệ, kháng sinh, di truyền (lấy từ mục Chính sách & khoa học) */
-  var BRIEF_POL = [
-    "Ấn Độ ban hành Quy tắc phòng chống bệnh truyền nhiễm ở động vật 2026 (29/10): ổ dịch phải báo cáo qua cổng Bharat Pashudhan, báo cáo mổ khám nộp trong 12 giờ.",
-    "EuroTier 2026 (10/11): Innotech Vision giới thiệu camera AI ước tính cân nặng lợn với sai số khoảng 3% và hệ thống theo dõi khí thải chuồng nuôi.",
-    "Kháng sinh: EMA đề xuất ghi rõ giới hạn dùng kháng sinh dự phòng trên nhãn thuốc thú y (11/9); EU cấm kháng sinh kích thích tăng trưởng với hàng nhập khẩu từ 3/9/2026."
+  /* Bản tin nhanh – Dịch bệnh. Mỗi mục: t = nội dung, s = danh sách khóa nguồn trong SRC */
+  var BRIEF = [
+    { t: "Mùa cúm gia cầm tăng tốc ở Nhật Bản: ổ đầu mùa ở Kameoka, Kyoto (12/11, tiêu hủy khoảng 200.000 gà) và ổ thứ hai ở Chiba (13/11).", s: ["starJP", "nwnJapan"] },
+    { t: "Anh có 6 ổ cúm gia cầm trong mùa 2026–2027 tính đến 9/11 (mới nhất ở Lancashire và East Riding of Yorkshire); Bắc Ireland đang điều tra ổ nghi ngờ ở Co Tyrone (15/11). Châu Âu có 12 ổ trên gia cầm từ 1/10 đến 2/11, Hà Lan ra lệnh nhốt gia cầm toàn quốc.", s: ["gaUK", "irishTy", "gaEU"] },
+    { t: "H5N1 trên bò sữa Mỹ tiếp tục lan: Oklahoma có đàn nhiễm lần đầu kể từ 7/2024 (16/11), sau Indiana và Oregon. Ở Washington, ổ dịch liên quan 3 ca người nhiễm, 1 ca tử vong.", s: ["dhOK", "dtnIN", "dvm360"] },
+    { t: "Dịch tả lợn châu Phi xuất hiện ở Nam Á: Assam (Ấn Độ) khoanh vùng 10 km quanh trại giống Panbari (10/11), Bhutan có ổ ở Samtse với 12/29 con lợn chết.", s: ["sentAssam", "fsBhutan"] },
+    { t: "LMLM / viêm da nổi cục: viêm da nổi cục ở vùng Moskva (Nga, công bố 29/10); LMLM chủng SAT1 vẫn là mối lo ở Namibia.", s: ["dnMos", "woahSAT1"] },
+    { t: "Đông Nam Á: ASF lan ra 91 huyện ở 7 tỉnh của Lào (24/9), Philippines còn ổ dịch ở 236 barangay thuộc 23 tỉnh (22/10), Thái Lan khoanh vùng dịch ở Chiang Mai (1/10).", s: ["starLao", "tribPH", "faoASF"] },
+    { t: "Các nước lớn: Trung Quốc có LMLM type O ở lợn tại Trùng Khánh (8/9); Hàn Quốc có 24 ổ ASF ở trại lợn trong năm 2026; Nam Phi đã tiêm phòng LMLM cho hơn 90% đàn bò (15/11).", s: ["baChina", "faoASF", "saNews"] }
   ];
-  var brp = document.getElementById("brief-pol");
-  BRIEF_POL.forEach(function (b) { var li = document.createElement("li"); li.textContent = b; brp.appendChild(li); });
+  briefList("brief", BRIEF);
+
+  /* Bản tin nhanh – Chính sách & công nghệ (lấy từ mục Chính sách & khoa học) */
+  var BRIEF_POL = [
+    { t: "Ấn Độ ban hành Quy tắc phòng chống bệnh truyền nhiễm ở động vật 2026 (29/10): ổ dịch phải báo cáo qua cổng Bharat Pashudhan, báo cáo mổ khám nộp trong 12 giờ.", s: ["tlIndia"] },
+    { t: "EuroTier 2026 (10/11): Innotech Vision giới thiệu camera AI ước tính cân nặng lợn với sai số khoảng 3% và hệ thống theo dõi khí thải chuồng nuôi.", s: ["dnInnotech"] },
+    { t: "Kháng sinh: EMA đề xuất ghi rõ giới hạn dùng kháng sinh dự phòng trên nhãn thuốc thú y (11/9); EU cấm kháng sinh kích thích tăng trưởng với hàng nhập khẩu từ 3/9/2026.", s: ["emaCVMP", "agrinfoEU"] }
+  ];
+  briefList("brief-pol", BRIEF_POL);
 
   /* ---------- CẢNH BÁO ---------- */
   function alertEl(e) {
@@ -376,6 +394,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     el.querySelector(".t").textContent = e.n;
     el.querySelector(".m").textContent = TYPES[e.t].n + " · " + e.d;
     el.querySelector("p").textContent = e.x;
+    el.querySelector("p").parentNode.appendChild(srcLinks([e.src]));
     return el;
   }
   var al = document.getElementById("alerts");
@@ -574,13 +593,6 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   });
   drawPol();
 
-  /* ---------- NGUỒN ---------- */
-  var so = document.getElementById("sources");
-  Object.keys(SRC).forEach(function (k) {
-    var li = document.createElement("li"); var a = document.createElement("a");
-    a.href = SRC[k].u; a.target = "_blank"; a.rel = "noopener"; a.textContent = SRC[k].n;
-    li.appendChild(a); so.appendChild(li);
-  });
 
   /* ---------- TRỢ LÝ AI ---------- */
   var askForm = document.getElementById("ask-form"), askQ = document.getElementById("ask-q"),
@@ -588,15 +600,15 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   var sampleFn = null, busy = false;
 
   function contextText() {
-    var lines = ["NGÀY CHỐT SỐ LIỆU: 18/11/2026.", "ĐIỂM NÓNG DỊCH BỆNH:"];
+    var lines = ["NGÀY CHỐT SỐ LIỆU: 19/11/2026.", "ĐIỂM NÓNG DỊCH BỆNH:"];
     EV.forEach(function (e) { lines.push("- " + e.n + " [" + TYPES[e.t].n + ", " + e.d + "]: " + e.x); });
     lines.push("TIN TỨC:");
     NEWS.forEach(function (n) { lines.push("- " + n.d + " [" + TYPES[n.t].n + "]: " + n.h + ". " + n.p); });
     lines.push("CHÍNH SÁCH & KHOA HỌC:");
     POL.forEach(function (x) { lines.push("- " + x.d + " [" + PCAT[x.c].n + ", " + x.org + "]: " + x.h + ". " + x.p); });
     lines.push("BẢN TIN TÓM TẮT:");
-    BRIEF.forEach(function (b) { lines.push("- " + b); });
-    BRIEF_POL.forEach(function (b) { lines.push("- " + b); });
+    BRIEF.forEach(function (b) { lines.push("- " + b.t); });
+    BRIEF_POL.forEach(function (b) { lines.push("- " + b.t); });
     return lines.join("\n");
   }
   function ask(q) {
