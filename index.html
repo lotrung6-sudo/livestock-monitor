@@ -88,9 +88,12 @@ header.top { display: flex; flex-wrap: wrap; align-items: center; justify-conten
 .news-tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .news-tools input { background: var(--sunk); border: 1px solid var(--line); color: var(--ink); border-radius: 7px; padding: 6px 10px; font: inherit; min-width: 200px; }
 .news { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
-.card { border: 1px solid var(--line); border-top-width: 3px; border-radius: 8px; padding: 10px 12px; display: grid; gap: 4px; align-content: start; background: var(--sunk); }
+.card { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; gap: 4px; align-content: start; background: var(--sunk); }
 .card .meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; color: var(--muted); font-size: 12px; }
-.chip { font-size: 11px; border-radius: 4px; padding: 0 6px; border: 1px solid currentColor; }
+.chip { font-size: 11px; border-radius: 4px; padding: 0 6px; border: 1px solid var(--line); color: var(--muted); display: inline-flex; align-items: center; gap: 5px; }
+.chip .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+.card a { color: var(--muted); text-decoration-color: var(--line); }
+.card a:hover { color: var(--accent); }
 .card h3 { font-family: var(--body); font-size: 14px; font-weight: 600; letter-spacing: 0; }
 .card p { margin: 0; color: var(--muted); font-size: 13px; }
 .empty { color: var(--muted); padding: 10px 0; }
@@ -456,9 +459,9 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     if (!list.length) { var e = document.createElement("div"); e.className = "empty"; e.textContent = "Không có tin phù hợp. Thử từ khóa khác."; newsEl.appendChild(e); return; }
     list.forEach(function (n) {
       var el = document.createElement("article"); el.className = "card";
-      el.style.borderTopColor = TYPES[n.t].c;
-      el.innerHTML = '<div class="meta"><span class="chip"></span><span class="dt num"></span></div><h3></h3><p></p><div class="meta"><a target="_blank" rel="noopener"></a></div>';
-      var chip = el.querySelector(".chip"); chip.textContent = TYPES[n.t].n; chip.style.color = TYPES[n.t].c;
+      el.innerHTML = '<div class="meta"><span class="chip"><i class="dot"></i><span></span></span><span class="dt num"></span></div><h3></h3><p></p><div class="meta"><a target="_blank" rel="noopener"></a></div>';
+      el.querySelector(".chip .dot").style.background = TYPES[n.t].c;
+      el.querySelector(".chip span").textContent = TYPES[n.t].n;
       el.querySelector(".dt").textContent = n.d;
       el.querySelector("h3").textContent = n.h;
       el.querySelector("p").textContent = n.p;
@@ -500,9 +503,8 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     POL.filter(function (x) { return pf === "all" || x.c === pf; }).forEach(function (x) {
       var cat = PCAT[x.c];
       var el = document.createElement("article"); el.className = "card";
-      el.style.borderTopColor = cat.c;
       el.innerHTML = '<div class="meta"><span class="chip"></span><span class="dt num"></span></div><h3></h3><div class="meta org"></div><p></p><div class="meta"><a target="_blank" rel="noopener"></a></div>';
-      var chip = el.querySelector(".chip"); chip.textContent = cat.n; chip.style.color = cat.c;
+      el.querySelector(".chip").textContent = cat.n;
       el.querySelector(".dt").textContent = x.d;
       el.querySelector("h3").textContent = x.h;
       el.querySelector(".org").textContent = x.org;
