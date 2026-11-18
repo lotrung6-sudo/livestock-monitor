@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Livestock Monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: phòng điều hành dịch bệnh — dải số liệu tóm tắt, bản đồ thế giới làm trung tâm, cột cảnh báo bên phải, luồng tin bên dưới */
+:root {
+  --bg: #0e1513;
+  --panel: #151f1c;
+  --sunk: #111a17;
+  --line: #24332e;
+  --ink: #e6ece8;
+  --muted: #8fa29a;
+  --accent: #e3b65c;          /* màu rơm / lúa chín */
+  --land: #1c2a26;
+  --asf: #e5534b;             /* dịch tả lợn châu Phi */
+  --hpai: #f0883e;            /* cúm gia cầm */
+  --fmd: #a77de8;             /* LMLM / viêm da nổi cục */
+  --human: #ff6fae;           /* ca bệnh trên người */
+  --display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --body: "Be Vietnam Pro", "Segoe UI", Roboto, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 14px; line-height: 1.5; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; letter-spacing: .02em; text-wrap: balance; margin: 0; }
+.num { font-variant-numeric: tabular-nums; }
+
+.wrap { max-width: 1400px; margin: 0 auto; padding: 0 16px 32px; display: grid; gap: 14px; }
+
+header.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 0 6px; border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.brand h1 { font-size: 28px; text-transform: uppercase; letter-spacing: .08em; }
+.brand h1 span { color: var(--accent); }
+.brand p { margin: 0; color: var(--muted); }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 12px; white-space: nowrap; }
+.pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; border-left-width: 3px; }
+.stat .k { color: var(--muted); font-size: 12px; }
+.stat .v { font-family: var(--display); font-size: 26px; font-weight: 600; line-height: 1.2; }
+
+.grid-main { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr); gap: 14px; }
+@media (max-width: 960px) { .grid-main { grid-template-columns: 1fr; } }
+
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.panel-head h2 { font-size: 19px; text-transform: uppercase; letter-spacing: .06em; }
+.panel-head .sub { color: var(--muted); font-size: 12px; }
+
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
+.seg button { background: transparent; color: var(--muted); border: 0; padding: 5px 11px; font: inherit; font-size: 13px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: #1a1408; font-weight: 600; }
+.seg button + button { border-left: 1px solid var(--line); }
+
+#map { width: 100%; height: 480px; }
+@media (max-width: 600px) { #map { height: 340px; } }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; color: var(--muted); font-size: 12px; }
+.legend label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.map-fallback { display: grid; gap: 8px; max-height: 480px; overflow: auto; }
+
+.alerts { display: grid; gap: 8px; }
+.alert { display: grid; grid-template-columns: 4px 1fr; gap: 10px; background: var(--sunk); border-radius: 8px; padding: 9px 10px 9px 0; }
+.alert .bar { border-radius: 0 3px 3px 0; }
+.alert .t { font-weight: 600; }
+.alert .m { color: var(--muted); font-size: 12px; }
+.alert p { margin: 2px 0 0; font-size: 13px; }
+
+.brief { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.brief li { padding-left: 14px; position: relative; font-size: 13.5px; }
+.brief li::before { content: ""; position: absolute; left: 0; top: .6em; width: 6px; height: 6px; background: var(--accent); border-radius: 1px; }
+.tag { font-size: 11px; color: #1a1408; background: var(--accent); border-radius: 4px; padding: 1px 6px; font-weight: 600; }
+
+.news-tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.news-tools input { background: var(--sunk); border: 1px solid var(--line); color: var(--ink); border-radius: 7px; padding: 6px 10px; font: inherit; min-width: 200px; }
+.news { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+.card { border: 1px solid var(--line); border-top-width: 3px; border-radius: 8px; padding: 10px 12px; display: grid; gap: 4px; align-content: start; background: var(--sunk); }
+.card .meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; color: var(--muted); font-size: 12px; }
+.chip { font-size: 11px; border-radius: 4px; padding: 0 6px; border: 1px solid currentColor; }
+.card h3 { font-family: var(--body); font-size: 14px; font-weight: 600; letter-spacing: 0; }
+.card p { margin: 0; color: var(--muted); font-size: 13px; }
+.empty { color: var(--muted); padding: 10px 0; }
+
+.ask { display: grid; gap: 10px; }
+.ask form { display: flex; gap: 8px; flex-wrap: wrap; }
+.ask input { flex: 1 1 260px; background: var(--sunk); border: 1px solid var(--line); color: var(--ink); border-radius: 7px; padding: 9px 12px; font: inherit; }
+.btn { background: var(--accent); color: #1a1408; border: 0; border-radius: 7px; padding: 9px 16px; font: inherit; font-weight: 600; cursor: pointer; }
+.btn[disabled] { opacity: .5; cursor: progress; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips button { background: transparent; border: 1px solid var(--line); color: var(--ink); border-radius: 999px; padding: 4px 11px; font: inherit; font-size: 12.5px; cursor: pointer; }
+.chips button:hover { border-color: var(--accent); }
+.answer { white-space: pre-wrap; background: var(--sunk); border-radius: 8px; padding: 12px; min-height: 48px; font-size: 13.5px; }
+.note { color: var(--muted); font-size: 12px; }
+
+footer { color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 6px; }
+footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <h1>Livestock <span>Monitor</span></h1>
+      <p>Theo dõi dịch bệnh, chính sách và khoa học chăn nuôi thế giới</p>
+    </div>
+    <span class="pill"><span class="dot"></span>Số liệu chốt ngày 18/11/2026</span>
+  </header>
+
+  <section class="stats" id="stats" aria-label="Tóm tắt"></section>
+
+  <div class="grid-main">
+    <section class="panel" id="map-panel">
+      <div class="panel-head">
+        <div>
+          <h2>Bản đồ dịch bệnh</h2>
+          <div class="sub">Điểm nóng được cơ quan thú y và báo chí báo cáo, 6–11/2026. Rê chuột vào điểm để xem chi tiết.</div>
+        </div>
+        <div class="seg" role="group" aria-label="Vùng bản đồ" id="regions">
+          <button type="button" data-r="global" aria-pressed="true">Toàn cầu</button>
+          <button type="button" data-r="asia" aria-pressed="false">Châu Á</button>
+          <button type="button" data-r="europe" aria-pressed="false">Châu Âu</button>
+          <button type="button" data-r="na" aria-pressed="false">Bắc Mỹ</button>
+          <button type="button" data-r="africa" aria-pressed="false">Châu Phi</button>
+        </div>
+      </div>
+      <div id="map" role="img" aria-label="Bản đồ các điểm nóng dịch bệnh"></div>
+      <div class="legend" id="legend"></div>
+    </section>
+
+    <aside class="panel" id="side">
+      <div class="panel-head">
+        <h2>Bản tin nhanh</h2>
+        <span class="tag">Tổng hợp</span>
+      </div>
+      <ul class="brief" id="brief"></ul>
+      <div class="panel-head" style="margin-top:16px">
+        <h2>Cảnh báo mới</h2>
+        <span class="sub">Mới nhất trước</span>
+      </div>
+      <div class="alerts" id="alerts"></div>
+    </aside>
+  </div>
+
+  <section class="panel" id="news-panel">
+    <div class="panel-head">
+      <h2>Luồng tin</h2>
+      <div class="news-tools">
+        <div class="seg" role="group" aria-label="Lọc theo bệnh" id="news-filter">
+          <button type="button" data-f="all" aria-pressed="true">Tất cả</button>
+          <button type="button" data-f="hpai" aria-pressed="false">Cúm gia cầm</button>
+          <button type="button" data-f="asf" aria-pressed="false">Dịch tả lợn châu Phi</button>
+          <button type="button" data-f="fmd" aria-pressed="false">LMLM / VDNC</button>
+          <button type="button" data-f="human" aria-pressed="false">Ca bệnh trên người</button>
+        </div>
+        <input type="search" id="news-q" placeholder="Tìm: H5N1, Namibia, bò sữa…" aria-label="Tìm trong tin">
+      </div>
+    </div>
+    <div class="news" id="news"></div>
+  </section>
+
+  <section class="panel" id="policy-panel">
+    <div class="panel-head">
+      <div>
+        <h2>Chính sách & khoa học</h2>
+        <div class="sub">Luật, quy định, công nghệ, kháng sinh và di truyền động vật. Mỗi tin dựa trên một nguồn đã kiểm tra link.</div>
+      </div>
+      <div class="seg" role="group" aria-label="Lọc theo lĩnh vực" id="pol-filter">
+        <button type="button" data-f="all" aria-pressed="true">Tất cả</button>
+        <button type="button" data-f="policy" aria-pressed="false">Chính sách – luật</button>
+        <button type="button" data-f="tech" aria-pressed="false">Công nghệ</button>
+        <button type="button" data-f="amr" aria-pressed="false">Kháng sinh – AMR</button>
+        <button type="button" data-f="gen" aria-pressed="false">Di truyền</button>
+      </div>
+    </div>
+    <div class="news" id="policy"></div>
+  </section>
+
+  <section class="panel ask" id="ask-panel">
+    <div class="panel-head">
+      <div>
+        <h2>Hỏi trợ lý AI</h2>
+        <div class="sub">Trả lời dựa trên số liệu đang hiển thị trên trang này.</div>
+      </div>
+    </div>
+    <div class="chips" id="ask-chips">
+      <button type="button">Cúm gia cầm đang lan mạnh ở đâu?</button>
+      <button type="button">H5N1 trên bò sữa ở Mỹ đáng lo đến mức nào?</button>
+      <button type="button">Tóm tắt tình hình dịch tả lợn châu Phi</button>
+      <button type="button">LMLM chủng SAT1 là gì, đang ở đâu?</button>
+      <button type="button">Quy định kháng sinh mới của EU ảnh hưởng gì tới nước xuất khẩu?</button>
+      <button type="button">Nước nào đã duyệt lợn chỉnh sửa gen?</button>
+    </div>
+    <form id="ask-form">
+      <input id="ask-q" type="text" placeholder="Nhập câu hỏi về dịch bệnh, chính sách, kháng sinh, di truyền…" aria-label="Câu hỏi cho trợ lý AI" autocomplete="off">
+      <button class="btn" id="ask-btn" type="submit">Hỏi</button>
+    </form>
+    <div class="answer" id="ask-out" aria-live="polite">Chọn một câu hỏi gợi ý hoặc tự nhập câu hỏi.</div>
+    <div class="note" id="ask-note">Trợ lý chỉ đọc số liệu chốt ngày 18/11/2026 trên trang, không tự tra cứu tin mới. Thông tin chỉ để tham khảo, không thay thế tư vấn của cán bộ thú y.</div>
+  </section>
+
+  <footer>
+    <div>Số liệu là bản chụp tại ngày 18/11/2026, trang không tự cập nhật. Các con số ở dải tóm tắt chỉ đếm những điểm nóng có trên trang, không phải tổng số ổ dịch toàn cầu.</div>
+    <ol id="sources"></ol>
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
+<script>
+(function () {
+  "use strict";
+  var css = getComputedStyle(document.documentElement);
+  function v(n) { return css.getPropertyValue(n).trim(); }
+  var C = { ink: v("--ink"), muted: v("--muted"), line: v("--line"), land: v("--land"), accent: v("--accent"), panel: v("--panel"),
+            asf: v("--asf"), hpai: v("--hpai"), fmd: v("--fmd"), human: v("--human") };
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+
+  /* ---------- NGUỒN ---------- */
+  var SRC = {
+    vovCam: { n: "VOV – Tin cúm gia cầm (Campuchia, Australia)", u: "https://vov.vn/xa-hoi/phat-hien-o-dich-cum-gia-cam-tai-dong-thap-post1345459.vov" },
+    nwnJapan: { n: "Nature World News – Cúm gia cầm Nhật Bản", u: "https://www.natureworldnews.com/articles/73860/20261116/bird-flu-investigation-begins-after-significant-poultry-deaths-northern-ireland.htm" },
+    gaUK: { n: "Global Agriculture – Cúm gia cầm ở Anh", u: "https://www.global-agriculture.com/animal-health-welfare/bird-flu-outbreaks-spread-across-england-as-migration-peaks/" },
+    defra: { n: "Defra – Đánh giá HPAI tại Anh và châu Âu, 6/11/2026", u: "https://assets.publishing.service.gov.uk/media/6af3323da4004bdbe54e547a/HPAI_Europe__11_November_2026.pdf" },
+    ecdc: { n: "ECDC – Cúm A(H5) ở Mỹ, cập nhật 9/11/2026", u: "https://www.ecdc.europa.eu/en/public-health-events/2024-irv-00003/2026-11-09" },
+    dvm360: { n: "dvm360 – H5N1 trên bò sữa Oregon và Washington", u: "https://www.dvm360.com/view/bird-flu-hits-oregon-dairy-cattle-for-the-first-time-as-washington-s-infected-herds-climb-into-the-dozens" },
+    odaOR: { n: "Bộ Nông nghiệp Oregon – HPAI ở hạt Clackamas", u: "https://apps.oregon.gov/oregon-newsroom/OR/ODA/Posts/Post/HPAI-confirmed-in-Clackamas-County" },
+    dtnIN: { n: "DTN – H5N1 tới các trại bò sữa Indiana", u: "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/11/06/h5n1-reaches-indiana-dairies-poultry" },
+    ptIN: { n: "Poultry Times – Cúm gia cầm ở Indiana và Michigan", u: "https://www.poultrytimes.com/bird-flu-cases-continue-to-impact-indiana-and-michigan/" },
+    woahASF: { n: "WOAH – Báo cáo ASF số 80", u: "https://www.woah.org/app/uploads/2026/09/asf-report-80.pdf" },
+    pigua: { n: "Pigua – ASF lan rộng ở châu Âu, châu Á, Đông Phi", u: "https://pigua.info/en/post/asf-spreads-across-europe-asia-and-east-africa-new-outbreaks-reported-in-domestic-pigs-and-wild-boar" },
+    piguaKR: { n: "Pigua – ASF ở trang trại Hàn Quốc", u: "https://pigua.info/en/post/new-asf-outbreaks-recorded-in-south-korea-20-farm-cases-reported-since-the-beginning-of-the-year" },
+    annPH: { n: "Asia News Network – ASF ở Negros Occidental", u: "https://asianews.network/over-500-pigs-dead-as-new-asf-outbreak-reported-in-philippines-negros-occidental/" },
+    ajNam: { n: "Al Jazeera – LMLM ở Namibia", u: "https://www.aljazeera.com/economy/2026/10/14/namibia-battles-cattle-disease-outbreak-as-eu-suspends-several-meat-imports" },
+    defraNam: { n: "Defra – Đánh giá sơ bộ LMLM ở Namibia, 16/10/2026", u: "https://assets.publishing.service.gov.uk/media/6ad5f168e5db84746b4797dc/FMD_in_Namibia__1.pdf" },
+    woahSAT1: { n: "WOAH – LMLM lan tới vùng mới", u: "https://www.woah.org/en/article/the-spread-of-fmd-to-new-areas-is-concerning-but-consequences-could-be-worse/" },
+    lsdSard: { n: "Lovguiden (EUR-Lex) – Viêm da nổi cục ở Sardinia", u: "https://lovguiden.dk/en/det-offentlige/eur-lex-eu-tidende/2026-07-16-eu-forlaenger-noedforanstaltninger-mod-lumpy-skin-disease-paa-sardinien" },
+    tlIndia: { n: "TeamLease RegTech – Quy tắc phòng chống dịch bệnh động vật 2026 (Ấn Độ)", u: "https://teamleaseregtech.com/updates/article/60932/prevention-and-control-of-infectious-and-contagious-diseases-in-animal/" },
+    ntRwanda: { n: "The New Times (qua AllAfrica) – Luật chăn nuôi mới của Rwanda", u: "https://allafrica.com/stories/202610200123.html" },
+    emaCVMP: { n: "EMA – Kết quả họp CVMP 8–10/9/2026", u: "https://www.ema.europa.eu/ro/node/286754" },
+    agrinfoEU: { n: "AGRINFO – Quy định kháng sinh với hàng nhập khẩu vào EU", u: "https://agrinfo.eu/webinars/agrinfo-webinar-use-of-antimicrobials-in-farmed-animals/" },
+    faoAMR: { n: "FAO – Báo cáo kinh tế về kháng kháng sinh trong chăn nuôi", u: "https://www.fao.org/newsroom/detail/fao-report-highlights-long-term-economic-case-for-tackling-antimicrobial-resistance-in-livestock/en" },
+    dnInnotech: { n: "DairyNews – Innotech Vision tại EuroTier 2026", u: "https://dairynews.today/global/news/danish-start-up-innotech-vision-presents-ai-based-livestock-barn-monitoring-at-eurotier-2026.html" },
+    anNofence: { n: "AgNavigator – Vòng cổ Nofence N3", u: "https://www.agnavigator.com/Article/2026/09/09/nofence-bets-on-precision-livestock-management-with-launch-of-n3-cattle-collar/" },
+    farmsVax: { n: "Farms.com – Vắc-xin DNA cúm lợn", u: "https://www.farms.com/news/new-swine-influenza-vaccine-technology-could-transform-hog-health-management-243868.aspx" },
+    lgCanada: { n: "Livestock Gentec (ĐH Alberta) – Phê duyệt vật nuôi chỉnh sửa gen", u: "https://livestockgentec.ualberta.ca/2026/03/30/gene-edited-and-cloned-livestock-approvals/" },
+    vegFoE: { n: "vegconomist – Báo cáo của Friends of the Earth", u: "https://vegconomist.com/politics-law/new-report-says-us-food-system-faces-growing-risks-gene-edited-farm-animals/" }
+  };
+
+  /* ---------- LOẠI BỆNH ---------- */
+  var TYPES = {
+    hpai: { n: "Cúm gia cầm", c: C.hpai },
+    asf: { n: "Dịch tả lợn châu Phi", c: C.asf },
+    fmd: { n: "LMLM / viêm da nổi cục", c: C.fmd },
+    human: { n: "Ca bệnh trên người (H5N1)", c: C.human }
+  };
+
+  /* ---------- ĐIỂM NÓNG ---------- */
+  var EV = [
+    { n: "Phnom Penh, Campuchia", co: "Campuchia", t: "human", sev: 3, lat: 11.56, lon: 104.92, d: "16/11/2026", x: "Một thanh niên 22 tuổi tử vong do cúm A/H5N1, theo thông cáo khẩn của Bộ Y tế Campuchia.", src: "vovCam" },
+    { n: "Chiba, Nhật Bản", co: "Nhật Bản", t: "hpai", sev: 2, lat: 35.6, lon: 140.12, d: "13/11/2026", x: "Ổ cúm gia cầm tại trang trại gà, là ổ thứ hai ở trang trại gia cầm trong mùa dịch này.", src: "nwnJapan" },
+    { n: "Washington, Mỹ", co: "Mỹ", t: "human", sev: 3, lat: 46.6, lon: -120.5, d: "12/11/2026", x: "Số đàn bò sữa nhiễm H5N1 lên tới vài chục. Ổ dịch liên quan 3 ca người nhiễm ở hạt Yakima, 1 người tử vong ngày 1/11.", src: "dvm360" },
+    { n: "Anh", co: "Anh", t: "hpai", sev: 2, lat: 52.3, lon: -1.6, d: "11/11/2026", x: "Thêm ổ HPAI khi chim di cư cao điểm. Mùa dịch 2026–2027 tính từ 1/10; đến 6/11 có 4 cơ sở nhiễm.", src: "gaUK" },
+    { n: "Oregon, Mỹ", co: "Mỹ", t: "hpai", sev: 2, lat: 45.3, lon: -122.6, d: "10/11/2026", x: "Đàn bò sữa đầu tiên của bang nhiễm H5N1 (bang thứ 22 có bò nhiễm). Trước đó, ngày 4/11 xác nhận HPAI ở đàn gia cầm thương phẩm tại hạt Clackamas.", src: "dvm360" },
+    { n: "Indiana, Mỹ", co: "Mỹ", t: "hpai", sev: 2, lat: 41.6, lon: -85.9, d: "11/2026", x: "Đàn bò sữa nhiễm H5N1 (2/11). Gần như ngày nào cũng có ổ mới ở gia cầm từ 2/11; cả năm 2026 đã có 20 đàn thương phẩm nhiễm.", src: "dtnIN" },
+    { n: "Karasburg, Namibia", co: "Namibia", t: "fmd", sev: 2, lat: -28.0, lon: 18.7, d: "23/09/2026", x: "LMLM chủng SAT1 ở trang trại thương phẩm, lần đầu trong vùng sạch bệnh không tiêm phòng kể từ 2022. EU tạm ngừng nhập một số mặt hàng thịt.", src: "ajNam" },
+    { n: "Somogy, Hungary", co: "Hungary", t: "asf", sev: 1, lat: 46.4, lon: 17.6, d: "08/2026", x: "Lần đầu ghi nhận ASF trong vùng (sự kiện bắt đầu 6/8/2026).", src: "woahASF" },
+    { n: "Bulgaria", co: "Bulgaria", t: "asf", sev: 1, lat: 42.7, lon: 25.5, d: "2026", x: "Nước thứ 12 ở châu Âu có ASF trên lợn nhà trong năm 2026; cả khu vực đã có 618 ổ trên lợn nhà.", src: "pigua" },
+    { n: "Pocheon, Hàn Quốc", co: "Hàn Quốc", t: "asf", sev: 1, lat: 37.9, lon: 127.2, d: "2026", x: "Hàn Quốc đã ghi nhận 20 ổ ASF tại trang trại từ đầu năm 2026.", src: "piguaKR" },
+    { n: "Negros Occidental, Philippines", co: "Philippines", t: "asf", sev: 1, lat: 10.4, lon: 123.0, d: "24/06/2026", x: "ASF tái bùng phát, hơn 500 con lợn chết ở thị trấn San Enrique.", src: "annPH" },
+    { n: "Sardinia, Italy", co: "Italy", t: "fmd", sev: 1, lat: 40.0, lon: 9.0, d: "09/07/2026", x: "Ổ viêm da nổi cục mới ở Samugheo; EU gia hạn vùng bảo vệ và giám sát.", src: "lsdSard" },
+    { n: "Australia", co: "Australia", t: "hpai", sev: 1, lat: -25.3, lon: 133.8, d: "từ 06/2026", x: "Cúm gia cầm H5 lan dần tới nhiều nơi từ giữa tháng 6/2026; ghi nhận chim chết hàng loạt.", src: "vovCam" }
+  ];
+
+  /* ---------- DẢI TÓM TẮT ---------- */
+  var countries = {}; EV.forEach(function (e) { countries[e.co] = 1; });
+  function cnt(t) { return EV.filter(function (e) { return e.t === t; }).length; }
+  var STATS = [
+    { k: "Điểm nóng đang theo dõi", v: EV.length, c: C.accent },
+    { k: "Quốc gia", v: Object.keys(countries).length, c: C.muted },
+    { k: "Cúm gia cầm", v: cnt("hpai"), c: C.hpai },
+    { k: "Dịch tả lợn châu Phi", v: cnt("asf"), c: C.asf },
+    { k: "LMLM / viêm da nổi cục", v: cnt("fmd"), c: C.fmd },
+    { k: "Có ca bệnh trên người", v: cnt("human"), c: C.human }
+  ];
+  var st = document.getElementById("stats");
+  STATS.forEach(function (s) {
+    var el = document.createElement("div"); el.className = "stat";
+    el.innerHTML = '<div class="k"></div><div class="v num"></div>';
+    el.style.borderLeftColor = s.c;
+    el.querySelector(".k").textContent = s.k; el.querySelector(".v").textContent = s.v;
+    st.appendChild(el);
+  });
+
+  /* ---------- BẢN TIN ---------- */
+  var BRIEF = [
+    "Mùa cúm gia cầm ở Bắc bán cầu đang tăng tốc theo mùa chim di cư: Anh, Nhật Bản và nhiều bang của Mỹ liên tục có ổ mới. Riêng Indiana gần như ngày nào cũng có ổ mới từ 2/11.",
+    "H5N1 trên bò sữa Mỹ lan sang bang mới: Indiana (2/11) và Oregon (10/11), nâng tổng số lên 22 bang. Ở Washington, ổ dịch liên quan 3 ca người nhiễm, trong đó 1 ca tử vong.",
+    "Campuchia ghi nhận thêm một ca tử vong do H5N1 ngày 16/11.",
+    "Dịch tả lợn châu Phi vẫn dai dẳng ở châu Âu (Bulgaria là nước thứ 12 có dịch trên lợn nhà năm 2026) và châu Á (Hàn Quốc, Philippines).",
+    "LMLM chủng SAT1 xuất hiện ở vùng mới: Namibia có ổ đầu tiên trong vùng sạch bệnh kể từ 2022, khiến EU tạm ngừng nhập một số mặt hàng thịt."
+  ];
+  var br = document.getElementById("brief");
+  BRIEF.forEach(function (b) { var li = document.createElement("li"); li.textContent = b; br.appendChild(li); });
+
+  /* ---------- CẢNH BÁO ---------- */
+  function alertEl(e) {
+    var el = document.createElement("div"); el.className = "alert";
+    el.innerHTML = '<div class="bar"></div><div><div class="t"></div><div class="m"></div><p></p></div>';
+    el.querySelector(".bar").style.background = TYPES[e.t].c;
+    el.querySelector(".t").textContent = e.n;
+    el.querySelector(".m").textContent = TYPES[e.t].n + " · " + e.d;
+    el.querySelector("p").textContent = e.x;
+    return el;
+  }
+  var al = document.getElementById("alerts");
+  EV.slice(0, 6).forEach(function (e) { al.appendChild(alertEl(e)); });
+
+  /* ---------- BẢN ĐỒ ---------- */
+  var REG = {
+    global: { c: [20, 20], z: 1.15 },
+    asia: { c: [118, 22], z: 3.2 },
+    europe: { c: [14, 49], z: 4.6 },
+    na: { c: [-100, 42], z: 3.6 },
+    africa: { c: [20, -5], z: 2.6 }
+  };
+  var region = "global", hidden = {};
+  var mapEl = document.getElementById("map");
+  var lg = document.getElementById("legend");
+  Object.keys(TYPES).forEach(function (k) {
+    var id = "lg-" + k;
+    var lab = document.createElement("label"); lab.setAttribute("for", id);
+    lab.innerHTML = '<input type="checkbox" checked><i></i><span></span>';
+    var cb = lab.querySelector("input"); cb.id = id;
+    lab.querySelector("i").style.background = TYPES[k].c;
+    lab.querySelector("span").textContent = TYPES[k].n;
+    cb.addEventListener("change", function () { hidden[k] = !cb.checked; drawMap(); });
+    lg.appendChild(lab);
+  });
+
+  var hasMap = !!(window.echarts && echarts.getMap && echarts.getMap("world"));
+  var mapChart = hasMap ? echarts.init(mapEl) : null;
+
+  function drawMap() {
+    var shown = EV.filter(function (e) { return !hidden[e.t]; });
+    if (!hasMap) { drawFallback(shown); return; }
+    var R = REG[region], global = region === "global";
+    var pts = shown.map(function (e) {
+      return { name: e.n, value: [e.lon, e.lat, e.sev], ev: e, itemStyle: { color: TYPES[e.t].c }, symbolSize: 8 + e.sev * 5 };
+    });
+    var series = [
+      { type: "effectScatter", coordinateSystem: "geo", data: pts.filter(function (d) { return d.ev.sev >= 3; }), rippleEffect: { scale: 3, brushType: "stroke" }, zlevel: 2 },
+      { type: "scatter", coordinateSystem: "geo", data: pts.filter(function (d) { return d.ev.sev < 3; }), itemStyle: { opacity: 0.9, borderColor: "#0e1513", borderWidth: 1 }, zlevel: 2 },
+      { type: "scatter", coordinateSystem: "geo", silent: true, symbolSize: 0, zlevel: 3,
+        data: shown.filter(function (e) { return !global || e.sev >= 2; }).map(function (e) { return { name: e.n, value: [e.lon, e.lat] }; }),
+        label: { show: true, formatter: "{b}", position: "right", color: C.ink, fontSize: 11 } }
+    ];
+    if (region === "asia") {
+      series.push({ type: "scatter", coordinateSystem: "geo", silent: true, symbolSize: 0, zlevel: 3,
+        data: [{ name: "Quần đảo Hoàng Sa (Việt Nam)", value: [112.0, 16.5] }, { name: "Quần đảo Trường Sa (Việt Nam)", value: [114.0, 9.8] }],
+        label: { show: true, formatter: "{b}", color: C.muted, fontSize: 10 } });
+    }
+    mapChart.setOption({
+      backgroundColor: "transparent",
+      tooltip: {
+        trigger: "item", confine: true, backgroundColor: C.panel, borderColor: C.line,
+        textStyle: { color: C.ink, fontSize: 12 }, extraCssText: "max-width:280px;white-space:normal;",
+        formatter: function (p) {
+          if (!p.data || !p.data.ev) return "";
+          var e = p.data.ev;
+          return "<b>" + esc(e.n) + "</b><br>" + esc(TYPES[e.t].n) + " · " + esc(e.d) + "<br>" + esc(e.x) +
+                 '<br><span style="color:' + C.muted + '">Nguồn: ' + esc(SRC[e.src].n) + "</span>";
+        }
+      },
+      geo: { map: "world", roam: true, silent: true, center: R.c, zoom: R.z, scaleLimit: { min: 1, max: 20 },
+             itemStyle: { areaColor: C.land, borderColor: C.line, borderWidth: 0.6 }, label: { show: false } },
+      series: series
+    }, true);
+  }
+  function drawFallback(shown) {
+    mapEl.style.height = "auto";
+    mapEl.innerHTML = "";
+    var box = document.createElement("div"); box.className = "map-fallback";
+    var note = document.createElement("div"); note.className = "note";
+    note.textContent = "Không tải được nền bản đồ, đang hiển thị dạng danh sách.";
+    box.appendChild(note);
+    shown.forEach(function (e) { box.appendChild(alertEl(e)); });
+    mapEl.appendChild(box);
+  }
+  document.querySelectorAll("#regions button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll("#regions button").forEach(function (x) { x.setAttribute("aria-pressed", x === b); });
+      region = b.getAttribute("data-r"); drawMap();
+    });
+  });
+  drawMap();
+
+  /* ---------- TIN TỨC ---------- */
+  var NEWS = [
+    { d: "16/11/2026", t: "human", h: "Campuchia xác nhận ca tử vong do cúm A/H5N1 ở Phnom Penh", p: "Nạn nhân là nam thanh niên 22 tuổi. Bộ Y tế Campuchia ra thông cáo khẩn ngày 16/11.", src: "vovCam" },
+    { d: "13/11/2026", t: "hpai", h: "Nhật Bản có ổ cúm gia cầm thứ hai trong mùa ở trang trại", p: "Ổ dịch được xác nhận tại một trang trại gà ở tỉnh Chiba.", src: "nwnJapan" },
+    { d: "12/11/2026", t: "human", h: "Bò sữa Oregon nhiễm H5N1, số đàn nhiễm ở Washington lên vài chục", p: "Oregon là bang thứ 22 có bò nhiễm. Ổ dịch ở Washington liên quan 3 ca người nhiễm, 1 người tử vong ngày 1/11.", src: "dvm360" },
+    { d: "11/11/2026", t: "hpai", h: "Anh ghi nhận thêm ổ cúm gia cầm khi chim di cư cao điểm", p: "Ổ H5N5 ở đảo Lewis đã được khống chế và dỡ vùng giám sát ngày 5/11.", src: "gaUK" },
+    { d: "09/11/2026", t: "human", h: "ECDC cập nhật các ca người nhiễm H5N1 ở Mỹ", p: "Ba ca ở hạt Yakima (Washington) đều có tiếp xúc với bò nhiễm virus. Từ 4/2024 Mỹ đã có hơn 70 ca người nhiễm A(H5).", src: "ecdc" },
+    { d: "06/11/2026", t: "hpai", h: "H5N1 tới các trại bò sữa Indiana, gia cầm tiếp tục có ổ mới", p: "Virus genotype B3.13 được xác nhận ở một đàn bò sữa qua xét nghiệm định kỳ. Bò sữa ở 21 bang đã bị ảnh hưởng tính đến thời điểm đó.", src: "dtnIN" },
+    { d: "06/11/2026", t: "hpai", h: "Anh: mùa cúm gia cầm 2026–2027 có 4 cơ sở nhiễm trong 5 tuần đầu", p: "Defra nâng mức rủi ro từ chim hoang dã; số cơ sở nhiễm mỗi tuần bắt đầu tăng trong tháng 10.", src: "defra" },
+    { d: "04/11/2026", t: "hpai", h: "Oregon xác nhận HPAI ở đàn gia cầm thương phẩm đầu tiên năm 2026", p: "Đàn ở hạt Clackamas bị cách ly; không có sản phẩm nào từ trang trại vào chuỗi thực phẩm.", src: "odaOR" },
+    { d: "11/2026", t: "hpai", h: "Indiana: gần như ngày nào cũng có ổ cúm gia cầm mới từ 2/11", p: "Vịt giống và gà đẻ trứng bị ảnh hưởng nặng. Cả năm 2026, bang đã có 20 đàn thương phẩm nhiễm.", src: "ptIN" },
+    { d: "14/10/2026", t: "fmd", h: "Namibia chống LMLM, EU tạm ngừng nhập một số mặt hàng thịt", p: "Ổ dịch ở trang trại thương phẩm tại Karasburg được xác nhận ngày 23/9, kéo theo hạn chế vận chuyển gia súc.", src: "ajNam" },
+    { d: "16/10/2026", t: "fmd", h: "Defra: LMLM SAT1 ở Namibia là ổ đầu tiên trong vùng sạch bệnh kể từ 11/2022", p: "Đánh giá sơ bộ của Anh về nguy cơ từ ổ dịch ở Namibia.", src: "defraNam" },
+    { d: "08/2026", t: "fmd", h: "WOAH: LMLM chủng SAT1 lan tới những vùng chưa từng có", p: "Năm 2026, ba quốc gia lần đầu phải đối mặt với chủng SAT1; giới chuyên gia lo ngại hậu quả có thể còn nặng hơn.", src: "woahSAT1" },
+    { d: "08/2026", t: "asf", h: "Hungary lần đầu ghi nhận dịch tả lợn châu Phi trong vùng Somogy", p: "WOAH ghi nhận sự kiện bắt đầu ngày 6/8/2026.", src: "woahASF" },
+    { d: "2026", t: "asf", h: "Bulgaria thành nước thứ 12 ở châu Âu có ASF trên lợn nhà năm 2026", p: "Toàn khu vực đã ghi nhận 618 ổ dịch trên lợn nhà trong năm.", src: "pigua" },
+    { d: "2026", t: "asf", h: "Hàn Quốc: 20 ổ ASF tại trang trại từ đầu năm", p: "Các ổ dịch mới được xác nhận tại trang trại lợn thương phẩm.", src: "piguaKR" },
+    { d: "09/07/2026", t: "fmd", h: "Sardinia có ổ viêm da nổi cục mới, EU gia hạn vùng kiểm soát", p: "Ổ dịch ở đàn bò tại Samugheo; vùng bảo vệ kéo dài tới 14/8, vùng giám sát tới 31/8.", src: "lsdSard" },
+    { d: "24/06/2026", t: "asf", h: "ASF tái bùng phát ở Negros Occidental (Philippines)", p: "Hơn 500 con lợn chết ở thị trấn San Enrique, ba năm sau đợt dịch trước.", src: "annPH" }
+  ];
+  var newsEl = document.getElementById("news");
+  var nf = "all", nq = "";
+  function norm(s) { return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d"); }
+  function drawNews() {
+    newsEl.innerHTML = "";
+    var q = norm(nq.trim());
+    var list = NEWS.filter(function (n) {
+      if (nf !== "all" && n.t !== nf) return false;
+      if (q && norm(n.h + " " + n.p).indexOf(q) < 0) return false;
+      return true;
+    });
+    if (!list.length) { var e = document.createElement("div"); e.className = "empty"; e.textContent = "Không có tin phù hợp. Thử từ khóa khác."; newsEl.appendChild(e); return; }
+    list.forEach(function (n) {
+      var el = document.createElement("article"); el.className = "card";
+      el.style.borderTopColor = TYPES[n.t].c;
+      el.innerHTML = '<div class="meta"><span class="chip"></span><span class="dt num"></span></div><h3></h3><p></p><div class="meta"><a target="_blank" rel="noopener"></a></div>';
+      var chip = el.querySelector(".chip"); chip.textContent = TYPES[n.t].n; chip.style.color = TYPES[n.t].c;
+      el.querySelector(".dt").textContent = n.d;
+      el.querySelector("h3").textContent = n.h;
+      el.querySelector("p").textContent = n.p;
+      var a = el.querySelector("a"); a.href = SRC[n.src].u; a.textContent = "Đọc nguồn: " + SRC[n.src].n;
+      newsEl.appendChild(el);
+    });
+  }
+  document.querySelectorAll("#news-filter button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll("#news-filter button").forEach(function (x) { x.setAttribute("aria-pressed", x === b); });
+      nf = b.getAttribute("data-f"); drawNews();
+    });
+  });
+  document.getElementById("news-q").addEventListener("input", function (e) { nq = e.target.value; drawNews(); });
+  drawNews();
+
+  /* ---------- CHÍNH SÁCH & KHOA HỌC ---------- */
+  var PCAT = {
+    policy: { n: "Chính sách – luật", c: "#6cb6ff" },
+    tech: { n: "Công nghệ", c: "#5cc48a" },
+    amr: { n: "Kháng sinh – AMR", c: "#e3b65c" },
+    gen: { n: "Di truyền", c: "#d18fe8" }
+  };
+  var POL = [
+    { c: "tech", d: "10/11/2026", org: "Đan Mạch · EuroTier 2026", h: "Camera AI ước tính cân nặng lợn và giám sát khí thải chuồng nuôi", p: "Innotech Vision giới thiệu Weight Detect (ước tính cân nặng từ hình dáng, sai số khoảng 3% ở lợn) và Enviro Detect (theo dõi liên tục vi khí hậu, khí thải). Hai sản phẩm nằm trong 175 đổi mới được Hội đồng Đổi mới DLG ghi nhận.", src: "dnInnotech" },
+    { c: "policy", d: "29/10/2026", org: "Ấn Độ · Bộ Thủy sản, Chăn nuôi và Sữa", h: "Ấn Độ ban hành Quy tắc phòng chống bệnh truyền nhiễm ở động vật 2026", p: "Quy tắc mới thay thế bản 2010: ổ dịch phải báo cáo qua cổng Bharat Pashudhan, xác động vật bệnh phải chôn, đốt hoặc xử lý theo khoảng cách an toàn, báo cáo mổ khám nộp trong 12 giờ.", src: "tlIndia" },
+    { c: "policy", d: "19/10/2026", org: "Rwanda", h: "Rwanda siết quản lý thuốc thú y bằng luật chăn nuôi mới", p: "Luật mới kiểm soát chặt việc điều trị vật nuôi và dùng thuốc thú y, hạn chế người nuôi tự chữa bệnh khi không có chuyên môn, nhằm giảm kháng kháng sinh và tồn dư trong thịt, sữa. Các văn bản hướng dẫn đang được soạn.", src: "ntRwanda" },
+    { c: "amr", d: "11/09/2026", org: "EU · EMA", h: "EMA đề xuất ghi rõ giới hạn dùng kháng sinh dự phòng trên nhãn thuốc thú y", p: "Ủy ban CVMP đưa ra tài liệu khái niệm để sửa hướng dẫn về tóm tắt đặc tính sản phẩm, thêm câu chuẩn phản ánh giới hạn pháp lý với dùng kháng sinh dự phòng và điều trị dự phòng theo Quy định (EU) 2019/6; lấy ý kiến 3 tháng. Kỳ họp cũng thông qua 10 ý kiến tích cực.", src: "emaCVMP" },
+    { c: "tech", d: "09/09/2026", org: "Na Uy · Nofence", h: "Nofence ra vòng cổ bò N3 kết nối vệ tinh", p: "Vòng cổ hàng rào ảo N3 có ba lớp kết nối (di động, vệ tinh, mạng nội bộ giữa các vòng cổ), theo dõi vị trí, hành vi, chu kỳ động dục và cảnh báo sinh, hướng tới vùng chăn thả không có sóng di động.", src: "anNofence" },
+    { c: "gen", d: "21/07/2026", org: "Mỹ · Friends of the Earth", h: "Báo cáo cảnh báo rủi ro từ vật nuôi biến đổi gen được FDA phê duyệt", p: "Báo cáo cập nhật của Friends of the Earth Mỹ cho rằng việc FDA phê duyệt đi trước mức thẩm định khoa học cần thiết. Báo cáo xem xét 3 loại vật nuôi được cấp phép giai đoạn 2020–2025 (bò chịu nóng, lợn kháng bệnh, lợn giảm gây dị ứng). Đây là quan điểm của một tổ chức vận động.", src: "vegFoE" },
+    { c: "tech", d: "30/06/2026", org: "Mỹ · ĐH Nebraska–Lincoln", h: "Vắc-xin DNA cúm lợn tránh được biến chứng nặng phổi", p: "Vắc-xin dùng hạt nano lipid đưa gen vào cơ để tạo protein cúm vô hại. Khi nhiễm chủng khác, lợn tiêm vắc-xin thường bị tổn thương phổi nặng, còn lợn tiêm vắc-xin mới gần như không. Nhóm nghiên cứu ước tính làm phiên bản mới chỉ mất khoảng một tháng và đang thử trên gia cầm.", src: "farmsVax" },
+    { c: "amr", d: "03/06/2026", org: "FAO", h: "FAO: dùng kháng sinh trong chăn nuôi có thể tăng gần 30% vào 2040", p: "So với năm 2019. Châu Á – Thái Bình Dương chiếm gần 65% lượng dùng. FAO khuyến nghị kết hợp quy định với khuyến khích kinh tế, đầu tư thú y, giám sát và thay thế bằng vắc-xin, an toàn sinh học.", src: "faoAMR" },
+    { c: "amr", d: "28/05/2026", org: "EU · Quy định 2023/905", h: "EU cấm kháng sinh kích thích tăng trưởng với hàng nhập khẩu từ 3/9/2026", p: "Vật nuôi và sản phẩm động vật xuất vào EU không được dùng kháng sinh để kích thích tăng trưởng hoặc kháng sinh dành riêng cho người; cơ quan thú y nước xuất khẩu phải ký xác nhận trên chứng thư.", src: "agrinfoEU" },
+    { c: "gen", d: "30/03/2026", org: "Canada · Health Canada, CFIA", h: "Canada phê duyệt lợn chỉnh sửa gen kháng PRRS làm thực phẩm", p: "Tháng 1/2026, Health Canada và CFIA chấp thuận lợn chỉnh sửa gen kháng hội chứng rối loạn sinh sản và hô hấp (PRRS), sau Mỹ và Brazil. Bò chỉnh sửa gen chịu nóng được bán ở Mỹ nhưng chưa được duyệt ở Canada.", src: "lgCanada" }
+  ];
+  var polEl = document.getElementById("policy"), pf = "all";
+  function drawPol() {
+    polEl.innerHTML = "";
+    POL.filter(function (x) { return pf === "all" || x.c === pf; }).forEach(function (x) {
+      var cat = PCAT[x.c];
+      var el = document.createElement("article"); el.className = "card";
+      el.style.borderTopColor = cat.c;
+      el.innerHTML = '<div class="meta"><span class="chip"></span><span class="dt num"></span></div><h3></h3><div class="meta org"></div><p></p><div class="meta"><a target="_blank" rel="noopener"></a></div>';
+      var chip = el.querySelector(".chip"); chip.textContent = cat.n; chip.style.color = cat.c;
+      el.querySelector(".dt").textContent = x.d;
+      el.querySelector("h3").textContent = x.h;
+      el.querySelector(".org").textContent = x.org;
+      el.querySelector("p").textContent = x.p;
+      var a = el.querySelector("a"); a.href = SRC[x.src].u; a.textContent = "Đọc nguồn: " + SRC[x.src].n;
+      polEl.appendChild(el);
+    });
+  }
+  document.querySelectorAll("#pol-filter button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll("#pol-filter button").forEach(function (x) { x.setAttribute("aria-pressed", x === b); });
+      pf = b.getAttribute("data-f"); drawPol();
+    });
+  });
+  drawPol();
+
+  /* ---------- NGUỒN ---------- */
+  var so = document.getElementById("sources");
+  Object.keys(SRC).forEach(function (k) {
+    var li = document.createElement("li"); var a = document.createElement("a");
+    a.href = SRC[k].u; a.target = "_blank"; a.rel = "noopener"; a.textContent = SRC[k].n;
+    li.appendChild(a); so.appendChild(li);
+  });
+
+  /* ---------- TRỢ LÝ AI ---------- */
+  var askForm = document.getElementById("ask-form"), askQ = document.getElementById("ask-q"),
+      askOut = document.getElementById("ask-out"), askBtn = document.getElementById("ask-btn"), askNote = document.getElementById("ask-note");
+  var sampleFn = null, busy = false;
+
+  function contextText() {
+    var lines = ["NGÀY CHỐT SỐ LIỆU: 18/11/2026.", "ĐIỂM NÓNG DỊCH BỆNH:"];
+    EV.forEach(function (e) { lines.push("- " + e.n + " [" + TYPES[e.t].n + ", " + e.d + "]: " + e.x); });
+    lines.push("TIN TỨC:");
+    NEWS.forEach(function (n) { lines.push("- " + n.d + " [" + TYPES[n.t].n + "]: " + n.h + ". " + n.p); });
+    lines.push("CHÍNH SÁCH & KHOA HỌC:");
+    POL.forEach(function (x) { lines.push("- " + x.d + " [" + PCAT[x.c].n + ", " + x.org + "]: " + x.h + ". " + x.p); });
+    lines.push("BẢN TIN TÓM TẮT:");
+    BRIEF.forEach(function (b) { lines.push("- " + b); });
+    return lines.join("\n");
+  }
+  function ask(q) {
+    q = (q || "").trim();
+    if (!q || busy) return;
+    if (!sampleFn) { askOut.textContent = "Trợ lý AI chưa sẵn sàng ở chế độ xem này. Hãy mở trang trên claude.ai để dùng tính năng hỏi đáp."; return; }
+    busy = true; askBtn.disabled = true; askOut.textContent = "Đang suy nghĩ…";
+    var prompt = "Bạn là trợ lý phân tích dịch bệnh, chính sách và khoa học chăn nuôi trên thế giới. Chỉ dựa vào DỮ LIỆU bên dưới để trả lời; " +
+      "có thể giải thích ngắn khái niệm chung (ví dụ bệnh là gì, lây thế nào) nhưng mọi con số và sự kiện phải lấy từ dữ liệu. " +
+      "Nếu dữ liệu không có thông tin, nói rõ là trang chưa có số liệu đó. Trả lời bằng tiếng Việt, ngắn gọn (tối đa khoảng 150 chữ), " +
+      "văn bản thường không dùng markdown, nêu ngày của sự kiện. Không đưa ra chẩn đoán hay phác đồ điều trị; khuyên hỏi cán bộ thú y khi cần.\n\nDỮ LIỆU:\n" +
+      contextText() + "\n\nCÂU HỎI: " + q;
+    sampleFn(prompt, { signal: new AbortController().signal, modelTier: "default", onText: function (u) { askOut.textContent = u.text; } })
+      .then(function (r) { askOut.textContent = r.text || "Không có câu trả lời."; })
+      .catch(function (err) {
+        if (err && err.code === "not_granted") { askOut.textContent = "Bạn chưa cho phép trang dùng trợ lý AI."; }
+        else if (err && err.code === "rate_limited") { askOut.textContent = "Đã hỏi quá nhiều trong thời gian ngắn. Hãy thử lại sau ít phút."; }
+        else { askOut.textContent = (err && err.text) ? err.text : "Không lấy được câu trả lời. Hãy thử lại."; }
+      })
+      .then(function () { busy = false; askBtn.disabled = false; });
+  }
+  askForm.addEventListener("submit", function (e) { e.preventDefault(); ask(askQ.value); });
+  document.querySelectorAll("#ask-chips button").forEach(function (b) {
+    b.addEventListener("click", function () { askQ.value = b.textContent; ask(b.textContent); });
+  });
+  var tries = 0;
+  function hookAI() {
+    if (window.claude && typeof window.claude.use === "function") {
+      window.claude.use("sample").then(function (s) {
+        sampleFn = s;
+        if (!s) { document.getElementById("ask-panel").hidden = true; }
+      }).catch(function () { sampleFn = null; document.getElementById("ask-panel").hidden = true; });
+    } else if (tries++ < 10) { setTimeout(hookAI, 500); }
+    else { document.getElementById("ask-panel").hidden = true; }
+  }
+  hookAI();
+
+  window.addEventListener("resize", function () { if (mapChart) mapChart.resize(); });
+})();
+</script>
+</body>
+</html>
