@@ -81,6 +81,8 @@ header.top { display: flex; flex-wrap: wrap; align-items: center; justify-conten
 .alert p { margin: 2px 0 0; font-size: 13px; }
 
 .brief { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.brief-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin: 0 0 8px; }
+.brief + .brief-label { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
 .brief li { padding-left: 14px; position: relative; font-size: 13.5px; }
 .brief li::before { content: ""; position: absolute; left: 0; top: .6em; width: 6px; height: 6px; background: var(--accent); border-radius: 1px; }
 .tag { font-size: 11px; color: var(--on-accent); background: var(--accent); border-radius: 4px; padding: 1px 6px; font-weight: 600; }
@@ -134,7 +136,10 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
           <h2>Bản tin nhanh</h2>
           <span class="tag">Tổng hợp</span>
         </div>
+        <div class="brief-label">Dịch bệnh</div>
         <ul class="brief" id="brief"></ul>
+        <div class="brief-label">Chính sách &amp; công nghệ</div>
+        <ul class="brief" id="brief-pol"></ul>
       </div>
       <div>
         <div class="panel-head">
@@ -329,6 +334,15 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   ];
   var br = document.getElementById("brief");
   BRIEF.forEach(function (b) { var li = document.createElement("li"); li.textContent = b; br.appendChild(li); });
+
+  /* Tin nổi bật về chính sách, công nghệ, kháng sinh, di truyền (lấy từ mục Chính sách & khoa học) */
+  var BRIEF_POL = [
+    "Ấn Độ ban hành Quy tắc phòng chống bệnh truyền nhiễm ở động vật 2026 (29/10): ổ dịch phải báo cáo qua cổng Bharat Pashudhan, báo cáo mổ khám nộp trong 12 giờ.",
+    "EuroTier 2026 (10/11): Innotech Vision giới thiệu camera AI ước tính cân nặng lợn với sai số khoảng 3% và hệ thống theo dõi khí thải chuồng nuôi.",
+    "Kháng sinh: EMA đề xuất ghi rõ giới hạn dùng kháng sinh dự phòng trên nhãn thuốc thú y (11/9); EU cấm kháng sinh kích thích tăng trưởng với hàng nhập khẩu từ 3/9/2026."
+  ];
+  var brp = document.getElementById("brief-pol");
+  BRIEF_POL.forEach(function (b) { var li = document.createElement("li"); li.textContent = b; brp.appendChild(li); });
 
   /* ---------- CẢNH BÁO ---------- */
   function alertEl(e) {
@@ -543,6 +557,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     POL.forEach(function (x) { lines.push("- " + x.d + " [" + PCAT[x.c].n + ", " + x.org + "]: " + x.h + ". " + x.p); });
     lines.push("BẢN TIN TÓM TẮT:");
     BRIEF.forEach(function (b) { lines.push("- " + b); });
+    BRIEF_POL.forEach(function (b) { lines.push("- " + b); });
     return lines.join("\n");
   }
   function ask(q) {
