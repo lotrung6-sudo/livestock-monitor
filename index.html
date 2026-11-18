@@ -55,7 +55,10 @@ header.top { display: flex; flex-wrap: wrap; align-items: center; justify-conten
 
 .side-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 22px; }
 .side-grid > div + div { border-left: 1px solid var(--line); padding-left: 22px; }
-@media (max-width: 960px) { .side-grid { grid-template-columns: 1fr; } .side-grid > div + div { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 14px; } }
+.side-grid > div:last-child { display: flex; flex-direction: column; min-height: 0; }
+.alerts-box { position: relative; flex: 1 1 auto; min-height: 340px; }
+.alerts-box > .alerts { position: absolute; inset: 0; overflow-y: auto; align-content: start; padding-right: 4px; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+@media (max-width: 960px) { .alerts-box { min-height: 0; } .alerts-box > .alerts { position: static; max-height: 560px; } .side-grid { grid-template-columns: 1fr; } .side-grid > div + div { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 14px; } }
 
 .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; }
 .panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
@@ -67,7 +70,8 @@ header.top { display: flex; flex-wrap: wrap; align-items: center; justify-conten
 .seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
 .seg button + button { border-left: 1px solid var(--line); }
 
-#map { width: 100%; height: 460px; }
+#map-panel { display: flex; flex-direction: column; }
+#map { width: 100%; height: auto; flex: 1 1 auto; min-height: 420px; position: relative; }
 .map-tv { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; align-items: stretch; }
 @media (max-width: 1000px) { .map-tv { grid-template-columns: 1fr; } }
 .tv-ch { margin-bottom: 10px; }
@@ -92,7 +96,7 @@ a.tv-cover { text-decoration: none; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; color: var(--muted); font-size: 12px; }
 .legend label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
 .legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-.map-fallback { display: grid; gap: 8px; max-height: 480px; overflow: auto; }
+.map-fallback { display: grid; gap: 8px; position: absolute; inset: 0; overflow: auto; align-content: start; }
 
 .alerts { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
 .map-fallback .alert { margin: 0; }
@@ -195,9 +199,9 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
       <div>
         <div class="panel-head">
           <h2>Cảnh báo mới</h2>
-          <span class="sub">Mới nhất trước</span>
+          <span class="sub" id="alerts-sub">Mới nhất trước</span>
         </div>
-        <div class="alerts" id="alerts"></div>
+        <div class="alerts-box"><div class="alerts" id="alerts"></div></div>
       </div>
     </div>
   </section>
@@ -506,7 +510,8 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     m = /(\d{1,2})\/(\d{4})/.exec(d); if (m) return +m[2] * 10000 + +m[1] * 100;
     m = /(\d{4})/.exec(d); return m ? +m[1] * 10000 : 0;
   }
-  EV.slice().sort(function (x, y) { return dkey(y.d) - dkey(x.d); }).slice(0, 8).forEach(function (e) { al.appendChild(alertEl(e)); });
+  EV.slice().sort(function (x, y) { return dkey(y.d) - dkey(x.d); }).forEach(function (e) { al.appendChild(alertEl(e)); });
+  document.getElementById("alerts-sub").textContent = EV.length + " ổ dịch · mới nhất trước · cuộn để xem thêm";
 
   /* ---------- BẢN ĐỒ ---------- */
   var REG = {
@@ -571,7 +576,6 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     }, true);
   }
   function drawFallback(shown) {
-    mapEl.style.height = "auto";
     mapEl.innerHTML = "";
     var box = document.createElement("div"); box.className = "map-fallback";
     var note = document.createElement("div"); note.className = "note";
