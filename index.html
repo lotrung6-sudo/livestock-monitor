@@ -10,23 +10,23 @@
 <style>
 /* Layout: dải số liệu tóm tắt; khối ngang Bản tin nhanh + Cảnh báo; bản đồ thế giới rộng hết khổ; luồng tin, chính sách & khoa học, hỏi AI bên dưới */
 :root {
-  --bg: #f3f5f0;
-  --panel: #ffffff;
-  --sunk: #f6f8f4;
-  --line: #dbe2d6;
-  --ink: #1b2a22;
-  --muted: #5d6d64;
-  --accent: #2e7d4f;          /* xanh lá đồng cỏ */
-  --on-accent: #ffffff;
-  --land: #e2e9dd;
-  --border-land: #c3cfbd;
-  --asf: #c8372f;             /* dịch tả lợn châu Phi */
-  --hpai: #d96a1c;            /* cúm gia cầm */
-  --fmd: #7650c4;             /* LMLM / viêm da nổi cục */
-  --human: #c23b7a;           /* ca bệnh trên người */
+  --bg: #0e1513;
+  --panel: #151f1c;
+  --sunk: #111a17;
+  --line: #24332e;
+  --ink: #e6ece8;
+  --muted: #8fa29a;
+  --accent: #e3b65c;          /* màu rơm / lúa chín */
+  --on-accent: #1a1408;
+  --land: #1c2a26;
+  --border-land: #2f4039;
+  --asf: #e5534b;             /* dịch tả lợn châu Phi */
+  --hpai: #f0883e;            /* cúm gia cầm */
+  --fmd: #a77de8;             /* LMLM / viêm da nổi cục */
+  --human: #ff6fae;           /* ca bệnh trên người */
   --display: "Barlow Condensed", "Arial Narrow", sans-serif;
   --body: "Be Vietnam Pro", "Segoe UI", Roboto, sans-serif;
-  color-scheme: light;
+  color-scheme: dark;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -55,7 +55,7 @@ header.top { display: flex; flex-wrap: wrap; align-items: center; justify-conten
 .side-grid > div + div { border-left: 1px solid var(--line); padding-left: 22px; }
 @media (max-width: 960px) { .side-grid { grid-template-columns: 1fr; } .side-grid > div + div { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 14px; } }
 
-.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; box-shadow: 0 1px 2px rgba(27,42,34,.05); }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; }
 .panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
 .panel-head h2 { font-size: 19px; text-transform: uppercase; letter-spacing: .06em; }
 .panel-head .sub { color: var(--muted); font-size: 12px; }
@@ -374,7 +374,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     });
     var series = [
       { type: "effectScatter", coordinateSystem: "geo", data: pts.filter(function (d) { return d.ev.sev >= 3; }), rippleEffect: { scale: 3, brushType: "stroke" }, zlevel: 2 },
-      { type: "scatter", coordinateSystem: "geo", data: pts.filter(function (d) { return d.ev.sev < 3; }), itemStyle: { opacity: 0.95, borderColor: "#ffffff", borderWidth: 1 }, zlevel: 2 },
+      { type: "scatter", coordinateSystem: "geo", data: pts.filter(function (d) { return d.ev.sev < 3; }), itemStyle: { opacity: 0.9, borderColor: "#0e1513", borderWidth: 1 }, zlevel: 2 },
       { type: "scatter", coordinateSystem: "geo", silent: true, symbolSize: 0, zlevel: 3,
         data: shown.filter(function (e) { return !global || e.sev >= 2; }).map(function (e) { return { name: e.n, value: [e.lon, e.lat] }; }),
         label: { show: true, formatter: "{b}", position: "right", color: C.ink, fontSize: 11 } }
@@ -388,7 +388,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
       backgroundColor: "transparent",
       tooltip: {
         trigger: "item", confine: true, backgroundColor: C.panel, borderColor: C.line,
-        textStyle: { color: C.ink, fontSize: 12 }, extraCssText: "max-width:280px;white-space:normal;box-shadow:0 4px 14px rgba(0,0,0,.12);",
+        textStyle: { color: C.ink, fontSize: 12 }, extraCssText: "max-width:280px;white-space:normal;",
         formatter: function (p) {
           if (!p.data || !p.data.ev) return "";
           var e = p.data.ev;
@@ -477,10 +477,10 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
   /* ---------- CHÍNH SÁCH & KHOA HỌC ---------- */
   var PCAT = {
-    policy: { n: "Chính sách – luật", c: "#2464a8" },
-    tech: { n: "Công nghệ", c: "#1f7a52" },
-    amr: { n: "Kháng sinh – AMR", c: "#a86a0c" },
-    gen: { n: "Di truyền", c: "#8a3fb0" }
+    policy: { n: "Chính sách – luật", c: "#6cb6ff" },
+    tech: { n: "Công nghệ", c: "#5cc48a" },
+    amr: { n: "Kháng sinh – AMR", c: "#e3b65c" },
+    gen: { n: "Di truyền", c: "#d18fe8" }
   };
   var POL = [
     { c: "tech", d: "10/11/2026", org: "Đan Mạch · EuroTier 2026", h: "Camera AI ước tính cân nặng lợn và giám sát khí thải chuồng nuôi", p: "Innotech Vision giới thiệu Weight Detect (ước tính cân nặng từ hình dáng, sai số khoảng 3% ở lợn) và Enviro Detect (theo dõi liên tục vi khí hậu, khí thải). Hai sản phẩm nằm trong 175 đổi mới được Hội đồng Đổi mới DLG ghi nhận.", src: "dnInnotech" },
