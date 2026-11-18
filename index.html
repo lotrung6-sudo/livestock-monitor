@@ -89,9 +89,9 @@ a.tl:hover::after { color: var(--accent); }
 .brief { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .brief-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin: 0 0 8px; }
 .brief + .brief-label, .pager + .brief-label { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
-#brief li::before { background: var(--dot, var(--accent)); border-radius: 50%; }
-#brief .bd { color: var(--muted); font-size: 12px; margin-right: 6px; font-variant-numeric: tabular-nums; }
-#brief { min-height: 230px; align-content: start; }
+.brief.paged li::before { background: var(--dot, var(--accent)); border-radius: 50%; }
+.paged .bd { color: var(--muted); font-size: 12px; margin-right: 6px; font-variant-numeric: tabular-nums; }
+#brief { min-height: 230px; } #brief-pol { min-height: 145px; } .paged { align-content: start; }
 .pager { display: flex; gap: 6px; align-items: center; margin-top: 10px; }
 .pager button { background: transparent; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; min-width: 30px; height: 28px; padding: 0 8px; font: inherit; font-size: 13px; cursor: pointer; }
 .pager button:hover:not([disabled]) { color: var(--ink); border-color: var(--muted); }
@@ -152,10 +152,11 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
           <span class="tag">Tổng hợp</span>
         </div>
         <div class="brief-label">Dịch bệnh</div>
-        <ul class="brief" id="brief"></ul>
+        <ul class="brief paged" id="brief"></ul>
         <div class="pager" id="brief-pager"></div>
         <div class="brief-label">Chính sách &amp; công nghệ</div>
-        <ul class="brief" id="brief-pol"></ul>
+        <ul class="brief paged" id="brief-pol"></ul>
+        <div class="pager" id="brief-pol-pager"></div>
       </div>
       <div>
         <div class="panel-head">
@@ -405,44 +406,55 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     { d: "10/09/2026", t: "fmd", x: "Trung Quốc: LMLM type O ở lợn tại cơ sở giết mổ ở Trùng Khánh", src: "baChina" },
     { d: "19/02/2026", t: "fmd", x: "Indonesia: hơn 400 con gia súc nhiễm LMLM ở Riau đầu năm 2026", src: "jpRiau" }
   ];
-  var BRIEF_PER_PAGE = 8, briefPage = 1;
-  function drawBrief() {
-    var list = BRIEF.slice().sort(function (x, y) { return dkey(y.d) - dkey(x.d); });
-    var pages = Math.max(1, Math.ceil(list.length / BRIEF_PER_PAGE));
-    if (briefPage > pages) briefPage = pages;
-    var ul = document.getElementById("brief"); ul.innerHTML = "";
-    list.slice((briefPage - 1) * BRIEF_PER_PAGE, briefPage * BRIEF_PER_PAGE).forEach(function (b) {
-      var li = document.createElement("li");
-      if (TYPES[b.t]) li.style.setProperty("--dot", TYPES[b.t].c);
-      var dt = document.createElement("span"); dt.className = "bd"; dt.textContent = b.d.replace(/\/\d{4}$/, "");
-      li.appendChild(dt); li.appendChild(linkTo(b.src, b.x, "il"));
-      ul.appendChild(li);
-    });
-    var pg = document.getElementById("brief-pager"); pg.innerHTML = "";
-    if (pages < 2) return;
-    function btn(label, page, aria) {
-      var bt = document.createElement("button"); bt.type = "button"; bt.textContent = label;
-      if (aria) bt.setAttribute("aria-label", aria);
-      if (page === briefPage && label === String(page)) bt.setAttribute("aria-current", "page");
-      if (page < 1 || page > pages) bt.disabled = true;
-      bt.addEventListener("click", function () { briefPage = page; drawBrief(); });
-      pg.appendChild(bt);
+  /* Danh sách từng tin, xếp mới nhất trước, chia trang 1-2-3 */
+  function pagedList(ulId, pagerId, arr, perPage, colorOf) {
+    var page = 1;
+    function draw() {
+      var list = arr.slice().sort(function (x, y) { return dkey(y.d) - dkey(x.d); });
+      var pages = Math.max(1, Math.ceil(list.length / perPage));
+      if (page > pages) page = pages;
+      var ul = document.getElementById(ulId); ul.innerHTML = "";
+      list.slice((page - 1) * perPage, page * perPage).forEach(function (b) {
+        var li = document.createElement("li");
+        var c = colorOf(b); if (c) li.style.setProperty("--dot", c);
+        var dt = document.createElement("span"); dt.className = "bd"; dt.textContent = b.d.replace(/\/\d{4}$/, "");
+        li.appendChild(dt); li.appendChild(linkTo(b.src, b.x, "il"));
+        ul.appendChild(li);
+      });
+      var pg = document.getElementById(pagerId); pg.innerHTML = "";
+      if (pages < 2) return;
+      function btn(label, to, aria, isNum) {
+        var bt = document.createElement("button"); bt.type = "button"; bt.textContent = label;
+        bt.setAttribute("aria-label", aria);
+        if (isNum && to === page) bt.setAttribute("aria-current", "page");
+        if (to < 1 || to > pages) bt.disabled = true;
+        bt.addEventListener("click", function () { page = to; draw(); });
+        pg.appendChild(bt);
+      }
+      btn("‹", page - 1, "Trang trước");
+      for (var i = 1; i <= pages; i++) btn(String(i), i, "Trang " + i, true);
+      btn("›", page + 1, "Trang sau");
+      var info = document.createElement("span"); info.className = "pinfo"; info.textContent = list.length + " tin";
+      pg.appendChild(info);
     }
-    btn("‹", briefPage - 1, "Trang trước");
-    for (var i = 1; i <= pages; i++) btn(String(i), i, "Trang " + i);
-    btn("›", briefPage + 1, "Trang sau");
-    var info = document.createElement("span"); info.className = "pinfo"; info.textContent = list.length + " tin";
-    pg.appendChild(info);
+    draw();
   }
-  drawBrief();
+  pagedList("brief", "brief-pager", BRIEF, 8, function (b) { return TYPES[b.t] && TYPES[b.t].c; });
 
-  /* Bản tin nhanh – Chính sách & công nghệ (lấy từ mục Chính sách & khoa học), cùng cú pháp link */
+  /* Bản tin nhanh – Chính sách & công nghệ: mỗi mục là MỘT tin riêng, một nguồn.
+     d = ngày, c = lĩnh vực (policy|tech|amr|gen), x = nội dung ngắn (cả câu là link), src = khóa trong SRC */
   var BRIEF_POL = [
-    "[Ấn Độ ban hành Quy tắc phòng chống bệnh truyền nhiễm ở động vật 2026|tlIndia] (29/10): ổ dịch phải báo cáo qua cổng Bharat Pashudhan, báo cáo mổ khám nộp trong 12 giờ.",
-    "[EuroTier 2026 (10/11): Innotech Vision giới thiệu camera AI|dnInnotech] ước tính cân nặng lợn với sai số khoảng 3% và hệ thống theo dõi khí thải chuồng nuôi.",
-    "Kháng sinh: [EMA đề xuất ghi rõ giới hạn dùng kháng sinh dự phòng trên nhãn thuốc thú y (11/9)|emaCVMP]; [EU cấm kháng sinh kích thích tăng trưởng với hàng nhập khẩu từ 3/9/2026|agrinfoEU]."
+    { d: "10/11/2026", c: "tech", x: "EuroTier 2026: camera AI ước tính cân nặng lợn và giám sát khí thải chuồng nuôi", src: "dnInnotech" },
+    { d: "29/10/2026", c: "policy", x: "Ấn Độ ban hành Quy tắc phòng chống bệnh truyền nhiễm ở động vật 2026", src: "tlIndia" },
+    { d: "19/10/2026", c: "policy", x: "Rwanda siết quản lý thuốc thú y bằng luật chăn nuôi mới", src: "ntRwanda" },
+    { d: "11/09/2026", c: "amr", x: "EMA đề xuất ghi rõ giới hạn dùng kháng sinh dự phòng trên nhãn thuốc thú y", src: "emaCVMP" },
+    { d: "09/09/2026", c: "tech", x: "Nofence (Na Uy) ra vòng cổ bò N3 kết nối vệ tinh", src: "anNofence" },
+    { d: "21/07/2026", c: "gen", x: "Friends of the Earth (Mỹ) cảnh báo rủi ro từ vật nuôi biến đổi gen được FDA phê duyệt", src: "vegFoE" },
+    { d: "30/06/2026", c: "tech", x: "Vắc-xin DNA cúm lợn của ĐH Nebraska–Lincoln tránh được biến chứng nặng ở phổi", src: "farmsVax" },
+    { d: "03/06/2026", c: "amr", x: "FAO: dùng kháng sinh trong chăn nuôi có thể tăng gần 30% vào năm 2040", src: "faoAMR" },
+    { d: "28/05/2026", c: "amr", x: "EU cấm kháng sinh kích thích tăng trưởng với hàng nhập khẩu từ 3/9/2026", src: "agrinfoEU" },
+    { d: "30/03/2026", c: "gen", x: "Canada phê duyệt lợn chỉnh sửa gen kháng PRRS làm thực phẩm", src: "lgCanada" }
   ];
-  briefList("brief-pol", BRIEF_POL);
 
   /* ---------- CẢNH BÁO ---------- */
   function alertEl(e) {
@@ -648,6 +660,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     });
   });
   drawPol();
+  pagedList("brief-pol", "brief-pol-pager", BRIEF_POL, 5, function (b) { return PCAT[b.c] && PCAT[b.c].c; });
 
 
   /* ---------- TRỢ LÝ AI ---------- */
@@ -664,7 +677,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     POL.forEach(function (x) { lines.push("- " + x.d + " [" + PCAT[x.c].n + ", " + x.org + "]: " + x.h + ". " + x.p); });
     lines.push("BẢN TIN TÓM TẮT:");
     BRIEF.forEach(function (b) { lines.push("- " + b.d + ": " + b.x); });
-    BRIEF_POL.forEach(function (b) { lines.push("- " + plain(b)); });
+    BRIEF_POL.forEach(function (b) { lines.push("- " + b.d + ": " + b.x); });
     return lines.join("\n");
   }
   function ask(q) {
