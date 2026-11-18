@@ -45,6 +45,8 @@ header.top { display: flex; flex-wrap: wrap; align-items: center; justify-conten
 .brand p { margin: 0; color: var(--muted); }
 .pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 12px; white-space: nowrap; }
 .pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+.pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill .num { color: var(--ink); font-variant-numeric: tabular-nums; }
 
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
 .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; border-left-width: 4px; }
@@ -135,6 +137,8 @@ a.tl:hover::after { color: var(--accent); }
 .card a { color: var(--muted); text-decoration-color: var(--line); }
 .card a:hover { color: var(--accent); }
 .card h3 { font-family: var(--body); font-size: 14px; font-weight: 600; letter-spacing: 0; }
+.card h3 a.tl { color: var(--ink); text-decoration: none; }
+.card h3 a.tl:hover { color: var(--accent); }
 .card p { margin: 0; color: var(--muted); font-size: 13px; }
 .empty { color: var(--muted); padding: 10px 0; }
 
@@ -162,7 +166,11 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
       <h1>Livestock <span>Monitor</span></h1>
       <p>Theo dõi dịch bệnh, chính sách và khoa học chăn nuôi thế giới</p>
     </div>
-    <span class="pill"><span class="dot"></span>Số liệu chốt ngày 19/11/2026</span>
+    <div class="pills">
+      <span class="pill"><span class="dot"></span>Số liệu chốt ngày 19/11/2026</span>
+      <span class="pill" id="vn-clock" title="Giờ Việt Nam (UTC+7)">🕒 <span class="num" id="vn-time">--:--</span> giờ Việt Nam</span>
+      <span class="pill" id="hn-weather" title="Thời tiết hiện tại ở Hà Nội (Open-Meteo)" hidden>🌡 Hà Nội <span class="num" id="hn-temp"></span></span>
+    </div>
   </header>
 
 
@@ -687,8 +695,9 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     POL.filter(function (x) { return pf === "all" || x.c === pf; }).forEach(function (x) {
       var cat = PCAT[x.c];
       var el = document.createElement("article"); el.className = "card";
-      el.innerHTML = '<div class="meta"><span class="chip"></span><span class="dt num"></span></div><h3></h3><div class="meta org"></div><p></p>';
-      el.querySelector(".chip").textContent = cat.n;
+      el.innerHTML = '<div class="meta"><span class="chip"><i class="dot"></i><span></span></span><span class="dt num"></span></div><h3></h3><div class="meta org"></div><p></p>';
+      el.querySelector(".chip .dot").style.background = cat.c;
+      el.querySelector(".chip span").textContent = cat.n;
       el.querySelector(".dt").textContent = x.d;
       el.querySelector("h3").appendChild(linkTo(x.src, x.h, "tl"));
       el.querySelector(".org").textContent = x.org;
@@ -705,6 +714,36 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   drawPol();
   pagedList("brief-pol", "brief-pol-pager", BRIEF_POL, 5, function (b) { return PCAT[b.c] && PCAT[b.c].c; });
 
+
+  /* ---------- GIỜ VIỆT NAM & THỜI TIẾT HÀ NỘI ---------- */
+  (function () {
+    var tEl = document.getElementById("vn-time");
+    function tick() {
+      try {
+        tEl.textContent = new Intl.DateTimeFormat("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }).format(new Date()) +
+          " · " + new Intl.DateTimeFormat("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date());
+      } catch (e) {
+        var d = new Date(Date.now() + 7 * 3600e3), z = function (n) { return (n < 10 ? "0" : "") + n; };
+        tEl.textContent = z(d.getUTCHours()) + ":" + z(d.getUTCMinutes()) + ":" + z(d.getUTCSeconds());
+      }
+    }
+    tick(); setInterval(tick, 1000);
+    var WX = { 0: "trời quang", 1: "ít mây", 2: "có mây", 3: "nhiều mây", 45: "sương mù", 48: "sương mù", 51: "mưa phùn", 53: "mưa phùn", 55: "mưa phùn", 56: "mưa phùn lạnh", 57: "mưa phùn lạnh",
+      61: "mưa nhỏ", 63: "mưa", 65: "mưa to", 66: "mưa lạnh", 67: "mưa lạnh", 80: "mưa rào", 81: "mưa rào", 82: "mưa rào to", 95: "dông", 96: "dông, mưa đá", 99: "dông, mưa đá" };
+    function weather() {
+      if (!window.fetch) return;
+      fetch("https://api.open-meteo.com/v1/forecast?latitude=21.03&longitude=105.85&current=temperature_2m,weather_code&timezone=Asia%2FBangkok")
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) {
+          if (!j || !j.current || typeof j.current.temperature_2m !== "number") return;
+          var w = WX[j.current.weather_code];
+          document.getElementById("hn-temp").textContent = Math.round(j.current.temperature_2m) + "°C" + (w ? ", " + w : "");
+          document.getElementById("hn-weather").hidden = false;
+        })
+        .catch(function () {});
+    }
+    weather(); setInterval(weather, 15 * 60 * 1000);
+  })();
 
   /* ---------- TRUYỀN HÌNH ---------- */
   /* Kênh YouTube chính thức (yt = ID kênh). Khi mở trang: tự tìm kênh đang phát trực tiếp (tắt tiếng, theo quy định trình duyệt);
