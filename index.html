@@ -65,7 +65,24 @@ header.top { display: flex; flex-wrap: wrap; align-items: center; justify-conten
 .seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
 .seg button + button { border-left: 1px solid var(--line); }
 
-#map { width: 100%; height: 540px; }
+#map { width: 100%; height: 460px; }
+.map-tv { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; align-items: stretch; }
+@media (max-width: 1000px) { .map-tv { grid-template-columns: 1fr; } }
+.tv-ch { margin-bottom: 10px; }
+.tv-screen { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+.tv-screen iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.tv-cover { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 8px; text-align: center; padding: 16px;
+  background: radial-gradient(circle at 50% 40%, #1f2d29, #0b110f 70%); color: var(--ink); border: 0; width: 100%; font: inherit; cursor: pointer; }
+.tv-cover .play { width: 62px; height: 62px; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-size: 24px; padding-left: 4px; }
+.tv-cover .nm { font-weight: 600; font-size: 16px; }
+.tv-cover .ds { color: var(--muted); font-size: 12.5px; max-width: 420px; }
+.tv-cover:hover .play { filter: brightness(1.1); }
+a.tv-cover { text-decoration: none; }
+.tv-info { margin-top: 10px; display: grid; gap: 6px; font-size: 12.5px; color: var(--muted); }
+.tv-info .row { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
+.tv-info a { color: var(--ink); }
+.tv-info a:hover { color: var(--accent); }
+.tv-info .tip { background: var(--sunk); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; }
 @media (max-width: 600px) { #map { height: 340px; } }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; color: var(--muted); font-size: 12px; }
 .legend label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
@@ -172,6 +189,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
   <section class="stats" id="stats" aria-label="Tóm tắt"></section>
 
+  <div class="map-tv">
   <section class="panel" id="map-panel">
     <div class="panel-head">
       <div>
@@ -190,6 +208,19 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     <div id="map" role="img" aria-label="Bản đồ các điểm nóng dịch bệnh"></div>
     <div class="legend" id="legend"></div>
   </section>
+
+  <section class="panel" id="tv-panel">
+    <div class="panel-head">
+      <div>
+        <h2>Truyền hình nông nghiệp</h2>
+        <div class="sub">Kênh chính thức của các đài. Phụ đề tiếng Việt dùng tính năng dịch tự động của YouTube.</div>
+      </div>
+    </div>
+    <div class="seg tv-ch" role="group" aria-label="Chọn kênh" id="tv-ch"></div>
+    <div class="tv-screen" id="tv-screen"></div>
+    <div class="tv-info" id="tv-info"></div>
+  </section>
+  </div>
 
   <section class="panel" id="news-panel">
     <div class="panel-head">
@@ -670,6 +701,59 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   drawPol();
   pagedList("brief-pol", "brief-pol-pager", BRIEF_POL, 5, function (b) { return PCAT[b.c] && PCAT[b.c].c; });
 
+
+  /* ---------- TRUYỀN HÌNH ---------- */
+  /* yt = ID kênh YouTube chính thức (phát luồng trực tiếp ngay trên trang); web = trang xem trực tiếp của đài */
+  var TV = [
+    { k: "canalrural", n: "Canal Rural", co: "Brazil", lang: "Tiếng Bồ Đào Nha", d: "Kênh nông nghiệp lớn của Brazil, mạnh về chăn nuôi bò thịt; có chương trình trực tiếp Giro do Boi, Jornal da Pecuária.", yt: "UCPumJ2ayrr-JDsA9JDCUDDQ", web: "https://www.canalrural.com.br/canal-rural-ao-vivo/" },
+    { k: "ddkisan", n: "DD Kisan", co: "Ấn Độ", lang: "Tiếng Hindi, tiếng Anh", d: "Kênh nông nghiệp 24/7 của đài nhà nước Doordarshan, có nội dung cho người nuôi gia súc, gia cầm.", yt: "UCnDfmcUyhgJp6xC1LmBLfUg", web: "https://www.youtube.com/@DDKisan/live" },
+    { k: "cctv17", n: "CCTV-17", co: "Trung Quốc", lang: "Tiếng Trung", d: "Kênh Nông nghiệp – Nông thôn của Đài Truyền hình Trung ương Trung Quốc. Chỉ xem được trên trang của CCTV.", web: "https://tv.cctv.com/live/cctv17/" },
+    { k: "rfdtv", n: "RFD-TV", co: "Mỹ", lang: "Tiếng Anh", d: "Kênh nông thôn – nông nghiệp của Mỹ, có bản tin thị trường chăn nuôi. Phát trực tiếp qua trang và ứng dụng RFD+, phần lớn cần đăng ký.", web: "https://www.rfdtv.com/live" }
+  ];
+  var tvCur = 0;
+  function tvEmbed(c) {
+    return "https://www.youtube.com/embed/live_stream?channel=" + c.yt +
+      "&autoplay=1&cc_load_policy=1&cc_lang_pref=vi&hl=vi&rel=0";
+  }
+  function drawTV(play) {
+    var c = TV[tvCur];
+    document.querySelectorAll("#tv-ch button").forEach(function (b, i) { b.setAttribute("aria-pressed", i === tvCur); });
+    var sc = document.getElementById("tv-screen"); sc.innerHTML = "";
+    if (c.yt && play) {
+      var f = document.createElement("iframe");
+      f.src = tvEmbed(c); f.title = "Truyền hình trực tiếp " + c.n;
+      f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen"; f.allowFullscreen = true;
+      f.referrerPolicy = "strict-origin-when-cross-origin";
+      sc.appendChild(f);
+    } else {
+      var cv = document.createElement(c.yt ? "button" : "a"); cv.className = "tv-cover";
+      if (c.yt) { cv.type = "button"; cv.addEventListener("click", function () { drawTV(true); }); }
+      else { cv.href = c.web; cv.target = "_blank"; cv.rel = "noopener"; }
+      cv.innerHTML = '<span class="play" aria-hidden="true">' + (c.yt ? "▶" : "↗") + '</span><span class="nm"></span><span class="ds"></span>';
+      cv.querySelector(".nm").textContent = c.yt ? "Xem trực tiếp " + c.n : "Mở trang xem trực tiếp " + c.n;
+      cv.querySelector(".ds").textContent = c.d;
+      sc.appendChild(cv);
+    }
+    var inf = document.getElementById("tv-info"); inf.innerHTML = "";
+    var row = document.createElement("div"); row.className = "row";
+    row.appendChild(document.createTextNode(c.co + " · " + c.lang));
+    var a = document.createElement("a"); a.target = "_blank"; a.rel = "noopener";
+    a.href = c.yt ? "https://www.youtube.com/channel/" + c.yt + "/live" : c.web;
+    a.textContent = c.yt ? "Mở trên YouTube ↗" : "Mở trang của đài ↗";
+    row.appendChild(a); inf.appendChild(row);
+    var tip = document.createElement("div"); tip.className = "tip";
+    tip.textContent = c.yt
+      ? "Phụ đề tiếng Việt: trong khung video bấm ⚙ → Phụ đề → Dịch tự động → Tiếng Việt (chỉ có khi đài bật phụ đề). Nếu kênh đang không phát trực tiếp, khung video sẽ báo lỗi: bấm “Mở trên YouTube” để xem các video mới nhất."
+      : "Kênh này không cho phát trên trang khác nên mở ở tab mới. Muốn có phụ đề tiếng Việt, có thể dùng tiện ích dịch của trình duyệt (ví dụ Immersive Translate).";
+    inf.appendChild(tip);
+  }
+  var tvCh = document.getElementById("tv-ch");
+  TV.forEach(function (c, i) {
+    var b = document.createElement("button"); b.type = "button"; b.textContent = c.n;
+    b.addEventListener("click", function () { tvCur = i; drawTV(false); });
+    tvCh.appendChild(b);
+  });
+  drawTV(false);
 
   /* ---------- TRỢ LÝ AI ---------- */
   var askForm = document.getElementById("ask-form"), askQ = document.getElementById("ask-q"),
