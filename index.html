@@ -232,7 +232,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     <div class="panel-head">
       <div>
         <h2>Truyền hình nông nghiệp</h2>
-        <div class="sub">Tự phát kênh đang trực tiếp; nếu không có thì phát tin mới nhất. Phụ đề tiếng Việt dùng tính năng dịch tự động của YouTube.</div>
+        <div class="sub">Tự phát các bản tin mới nhất của kênh. Phụ đề tiếng Việt dùng tính năng dịch tự động của YouTube.</div>
       </div>
     </div>
     <div class="seg tv-ch" role="group" aria-label="Chọn kênh" id="tv-ch"></div>
@@ -763,9 +763,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     { n: "Farm Journal", co: "Mỹ", lang: "Tiếng Anh", d: "Tin nông nghiệp, góc nhìn của nhà sản xuất, chăn nuôi và công nghệ trang trại (AgDay, U.S. Farm Report).", yt: "UCqTizkFSbhBojVtIkjMEoZQ" },
     { n: "Farmers Weekly", co: "Anh", lang: "Tiếng Anh", d: "Kênh video của tạp chí Farmers Weekly: chăn nuôi bò sữa, bò thịt, cừu, lợn, gia cầm, máy móc.", yt: "UC_Tg-jtxlqdKbuKPKG-kxYg" },
     { n: "Pig Progress", co: "Hà Lan", lang: "Tiếng Anh", d: "Tạp chí quốc tế chuyên ngành chăn nuôi lợn: công nghệ, sức khỏe đàn, dịch tả lợn châu Phi.", yt: "UCF9dWYsZuLgN1hgxwjuestw" },
-    { n: "Canal Rural", co: "Brazil", lang: "Tiếng Bồ Đào Nha", d: "Kênh nông nghiệp lớn của Brazil, mạnh về chăn nuôi bò thịt; có chương trình trực tiếp Giro do Boi.", yt: "UCPumJ2ayrr-JDsA9JDCUDDQ" },
-    { n: "DD Kisan", co: "Ấn Độ", lang: "Tiếng Hindi", d: "Kênh nông nghiệp 24/7 của đài nhà nước Doordarshan, có nội dung cho người nuôi gia súc, gia cầm.", yt: "UCnDfmcUyhgJp6xC1LmBLfUg" },
-    { n: "Kisan Tak", co: "Ấn Độ", lang: "Tiếng Hindi", d: "Kênh tin nông nghiệp Ấn Độ: vấn đề của nông dân và các công nghệ mới qua câu chuyện thực tế.", yt: "UC2uZxKp0rxh2Zzwjsw4KgRg" }
+    { n: "Canal Rural", co: "Brazil", lang: "Tiếng Bồ Đào Nha", d: "Kênh nông nghiệp lớn của Brazil, mạnh về chăn nuôi bò thịt; có chương trình trực tiếp Giro do Boi.", yt: "UCPumJ2ayrr-JDsA9JDCUDDQ" }
   ];
   var tvCur = 0, tvPlayer = null, tvMode = "live", tvTimer = null, tvSeq = 0, tvAuto = true, tvSound = false;
   function tvStatus(msg, btns) {
@@ -827,7 +825,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
           if (tvMode === "live") { btns.push({ t: "Xem tin mới nhất", f: function () { tvAuto = false; playYT(tvCur, "vod"); } });
             tvStatus("● Đang phát trực tiếp: " + c.n, btns); }
           else { btns.push({ t: "Thử xem trực tiếp", f: function () { tvAuto = false; playLive(tvCur); } });
-            tvStatus("Đang phát tin mới nhất của " + c.n + (tvAuto ? " (hiện không có kênh nào đang phát trực tiếp)" : ""), btns); }
+            tvStatus("Đang phát tin mới nhất của " + c.n + (tvAuto ? "" : ""), btns); }
         },
         onError: function (ev) { fail(ev.data); }
       } };
@@ -851,11 +849,11 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   var tvCh = document.getElementById("tv-ch");
   TV.forEach(function (c, i) {
     var b = document.createElement("button"); b.type = "button"; b.textContent = c.n;
-    b.addEventListener("click", function () { tvAuto = false; playLive(i); });
+    b.addEventListener("click", function () { tvAuto = false; playYT(i, "vod"); });
     tvCh.appendChild(b);
   });
   markCh();
-  autoScan(0);
+  playYT(0, "vod");
 
   var mapRT = null;
   function onMapResize() { clearTimeout(mapRT); mapRT = setTimeout(function () { if (mapChart) { mapChart.resize(); if (region === "global") drawMap(); } }, 120); }
