@@ -125,7 +125,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
       <div class="panel-head">
         <div>
           <h2>Bản đồ dịch bệnh</h2>
-          <div class="sub">Điểm nóng được cơ quan thú y và báo chí báo cáo, 6–11/2026. Rê chuột vào điểm để xem chi tiết.</div>
+          <div class="sub">Điểm nóng được cơ quan thú y và báo chí báo cáo, 8–11/2026. Rê chuột vào điểm để xem chi tiết.</div>
         </div>
         <div class="seg" role="group" aria-label="Vùng bản đồ" id="regions">
           <button type="button" data-r="global" aria-pressed="true">Toàn cầu</button>
@@ -229,23 +229,27 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
   /* ---------- NGUỒN ---------- */
   var SRC = {
-    vovCam: { n: "VOV – Tin cúm gia cầm (Campuchia, Australia)", u: "https://vov.vn/xa-hoi/phat-hien-o-dich-cum-gia-cam-tai-dong-thap-post1345459.vov" },
-    nwnJapan: { n: "Nature World News – Cúm gia cầm Nhật Bản", u: "https://www.natureworldnews.com/articles/73860/20261116/bird-flu-investigation-begins-after-significant-poultry-deaths-northern-ireland.htm" },
+    dhOK: { n: "Dairy Herd – HPAI trở lại đàn bò sữa Oklahoma", u: "https://www.dairyherd.com/news/hpai-returns-oklahoma-dairy-herds-after-more-two-years" },
+    irishTy: { n: "Irish Times – Ổ nghi cúm gia cầm ở Co Tyrone", u: "https://www.irishtimes.com/ireland/2026/11/16/reported-case-of-avian-influenza-under-investigation-in-co-tyrone/" },
+    fsBhutan: { n: "Feed Strategy – ASF trở lại Nam Á (Bhutan)", u: "https://www.feedstrategy.com/animal-health-veterinary/african-swine-fever/news/16541812/african-swine-fever-returns-to-south-asia" },
+    gaEU: { n: "Global Agriculture – Rủi ro cúm gia cầm tăng ở châu Âu", u: "https://www.global-agriculture.com/animal-health-welfare/bird-flu-risk-rises-sharply-across-europe-as-outbreaks-spread/" },
+    nwnJapan: { n: "Nature World News – Cúm gia cầm Bắc Ireland và Nhật Bản", u: "https://www.natureworldnews.com/articles/73860/20261116/bird-flu-investigation-begins-after-significant-poultry-deaths-northern-ireland.htm" },
+    starJP: { n: "The Star – Nhật Bản có ổ cúm gia cầm đầu mùa ở Kyoto", u: "https://www.thestar.com.my/aseanplus/aseanplus-news/2026/11/12/japan-confirms-1st-bird-flu-of-season-in-kyoto-to-cull-200000-birds" },
+    sentAssam: { n: "The Sentinel Assam – ASF ở Bokakhat", u: "https://www.sentinelassam.com/north-east-india-news/assam-news/assam-african-swine-fever-detected-in-bokakhat" },
+    fwiLanc: { n: "Farmers Weekly – Cúm gia cầm ở Lancashire", u: "https://www.fwi.co.uk/news/avian-flu-confirmed-at-lancashire-poultry-farm" },
+    psWA: { n: "The Poultry Site – H5N1 bò sữa Washington liên quan Idaho", u: "https://www.thepoultrysite.com/news/2026/11/genetic-sequencing-links-washington-dairy-bird-flu-to-idaho" },
     gaUK: { n: "Global Agriculture – Cúm gia cầm ở Anh", u: "https://www.global-agriculture.com/animal-health-welfare/bird-flu-outbreaks-spread-across-england-as-migration-peaks/" },
     defra: { n: "Defra – Đánh giá HPAI tại Anh và châu Âu, 6/11/2026", u: "https://assets.publishing.service.gov.uk/media/6af3323da4004bdbe54e547a/HPAI_Europe__11_November_2026.pdf" },
     ecdc: { n: "ECDC – Cúm A(H5) ở Mỹ, cập nhật 9/11/2026", u: "https://www.ecdc.europa.eu/en/public-health-events/2024-irv-00003/2026-11-09" },
     dvm360: { n: "dvm360 – H5N1 trên bò sữa Oregon và Washington", u: "https://www.dvm360.com/view/bird-flu-hits-oregon-dairy-cattle-for-the-first-time-as-washington-s-infected-herds-climb-into-the-dozens" },
     odaOR: { n: "Bộ Nông nghiệp Oregon – HPAI ở hạt Clackamas", u: "https://apps.oregon.gov/oregon-newsroom/OR/ODA/Posts/Post/HPAI-confirmed-in-Clackamas-County" },
     dtnIN: { n: "DTN – H5N1 tới các trại bò sữa Indiana", u: "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/11/06/h5n1-reaches-indiana-dairies-poultry" },
-    ptIN: { n: "Poultry Times – Cúm gia cầm ở Indiana và Michigan", u: "https://www.poultrytimes.com/bird-flu-cases-continue-to-impact-indiana-and-michigan/" },
+    dnMos: { n: "DairyNews – Viêm da nổi cục ở vùng Moskva", u: "https://dairynews.today/global/news/v_podmoskove_vyyavili_ochag_uzelkovogo_dermatita_krs_v_institute_imeni_ernsta_9790328.html" },
+    whoWP: { n: "WHO Tây Thái Bình Dương – Bản tin cúm gia cầm số 1068", u: "https://cdn.who.int/media/docs/default-source/wpro---documents/emergency/surveillance/avian-influenza/ai_20261030.pdf" },
     woahASF: { n: "WOAH – Báo cáo ASF số 80", u: "https://www.woah.org/app/uploads/2026/09/asf-report-80.pdf" },
-    pigua: { n: "Pigua – ASF lan rộng ở châu Âu, châu Á, Đông Phi", u: "https://pigua.info/en/post/asf-spreads-across-europe-asia-and-east-africa-new-outbreaks-reported-in-domestic-pigs-and-wild-boar" },
-    piguaKR: { n: "Pigua – ASF ở trang trại Hàn Quốc", u: "https://pigua.info/en/post/new-asf-outbreaks-recorded-in-south-korea-20-farm-cases-reported-since-the-beginning-of-the-year" },
-    annPH: { n: "Asia News Network – ASF ở Negros Occidental", u: "https://asianews.network/over-500-pigs-dead-as-new-asf-outbreak-reported-in-philippines-negros-occidental/" },
     ajNam: { n: "Al Jazeera – LMLM ở Namibia", u: "https://www.aljazeera.com/economy/2026/10/14/namibia-battles-cattle-disease-outbreak-as-eu-suspends-several-meat-imports" },
     defraNam: { n: "Defra – Đánh giá sơ bộ LMLM ở Namibia, 16/10/2026", u: "https://assets.publishing.service.gov.uk/media/6ad5f168e5db84746b4797dc/FMD_in_Namibia__1.pdf" },
     woahSAT1: { n: "WOAH – LMLM lan tới vùng mới", u: "https://www.woah.org/en/article/the-spread-of-fmd-to-new-areas-is-concerning-but-consequences-could-be-worse/" },
-    lsdSard: { n: "Lovguiden (EUR-Lex) – Viêm da nổi cục ở Sardinia", u: "https://lovguiden.dk/en/det-offentlige/eur-lex-eu-tidende/2026-07-16-eu-forlaenger-noedforanstaltninger-mod-lumpy-skin-disease-paa-sardinien" },
     tlIndia: { n: "TeamLease RegTech – Quy tắc phòng chống dịch bệnh động vật 2026 (Ấn Độ)", u: "https://teamleaseregtech.com/updates/article/60932/prevention-and-control-of-infectious-and-contagious-diseases-in-animal/" },
     ntRwanda: { n: "The New Times (qua AllAfrica) – Luật chăn nuôi mới của Rwanda", u: "https://allafrica.com/stories/202610200123.html" },
     emaCVMP: { n: "EMA – Kết quả họp CVMP 8–10/9/2026", u: "https://www.ema.europa.eu/ro/node/286754" },
@@ -268,19 +272,20 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
   /* ---------- ĐIỂM NÓNG ---------- */
   var EV = [
-    { n: "Phnom Penh, Campuchia", co: "Campuchia", t: "human", sev: 3, lat: 11.56, lon: 104.92, d: "16/11/2026", x: "Một thanh niên 22 tuổi tử vong do cúm A/H5N1, theo thông cáo khẩn của Bộ Y tế Campuchia.", src: "vovCam" },
-    { n: "Chiba, Nhật Bản", co: "Nhật Bản", t: "hpai", sev: 2, lat: 35.6, lon: 140.12, d: "13/11/2026", x: "Ổ cúm gia cầm tại trang trại gà, là ổ thứ hai ở trang trại gia cầm trong mùa dịch này.", src: "nwnJapan" },
+    { n: "Oklahoma, Mỹ", co: "Mỹ", t: "hpai", sev: 2, lat: 35.5, lon: -97.5, d: "16/11/2026", x: "Một đàn bò sữa nhiễm HPAI, ca đầu tiên trên bò sữa của bang kể từ tháng 7/2024 (cơ quan nông nghiệp Oklahoma xác nhận).", src: "dhOK" },
+    { n: "Co Tyrone, Bắc Ireland", co: "Vương quốc Anh", t: "hpai", sev: 1, lat: 54.6, lon: -7.0, d: "15/11/2026", x: "Nghi cúm gia cầm ở một đàn gia cầm thương phẩm có tỷ lệ chết cao; đã phong tỏa và lấy mẫu, chưa xác nhận tại thời điểm đưa tin.", src: "irishTy" },
+    { n: "Chiba, Nhật Bản", co: "Nhật Bản", t: "hpai", sev: 2, lat: 35.6, lon: 140.12, d: "13/11/2026", x: "Ổ cúm gia cầm tại trang trại gà, là ổ thứ hai ở trang trại gia cầm của Nhật Bản trong mùa dịch này.", src: "nwnJapan" },
+    { n: "Kameoka, Kyoto, Nhật Bản", co: "Nhật Bản", t: "hpai", sev: 2, lat: 35.01, lon: 135.57, d: "12/11/2026", x: "Ổ cúm gia cầm đầu tiên của mùa ở Nhật Bản; 14 con chết, bắt đầu tiêu hủy khoảng 200.000 con gà.", src: "starJP" },
     { n: "Washington, Mỹ", co: "Mỹ", t: "human", sev: 3, lat: 46.6, lon: -120.5, d: "12/11/2026", x: "Số đàn bò sữa nhiễm H5N1 lên tới vài chục. Ổ dịch liên quan 3 ca người nhiễm ở hạt Yakima, 1 người tử vong ngày 1/11.", src: "dvm360" },
-    { n: "Anh", co: "Anh", t: "hpai", sev: 2, lat: 52.3, lon: -1.6, d: "11/11/2026", x: "Thêm ổ HPAI khi chim di cư cao điểm. Mùa dịch 2026–2027 tính từ 1/10; đến 6/11 có 4 cơ sở nhiễm.", src: "gaUK" },
-    { n: "Oregon, Mỹ", co: "Mỹ", t: "hpai", sev: 2, lat: 45.3, lon: -122.6, d: "10/11/2026", x: "Đàn bò sữa đầu tiên của bang nhiễm H5N1 (bang thứ 22 có bò nhiễm). Trước đó, ngày 4/11 xác nhận HPAI ở đàn gia cầm thương phẩm tại hạt Clackamas.", src: "dvm360" },
+    { n: "Bokakhat, Assam, Ấn Độ", co: "Ấn Độ", t: "asf", sev: 1, lat: 26.64, lon: 93.6, d: "10/11/2026", x: "ASF tại trại giống lợn Panbari; trại và vùng lân cận bị công bố là vùng nhiễm, hạn chế trong bán kính 10 km.", src: "sentAssam" },
+    { n: "Oregon, Mỹ", co: "Mỹ", t: "hpai", sev: 2, lat: 45.3, lon: -122.6, d: "10/11/2026", x: "Đàn bò sữa đầu tiên của bang nhiễm H5N1. Trước đó, ngày 4/11 xác nhận HPAI ở đàn gia cầm thương phẩm tại hạt Clackamas.", src: "dvm360" },
+    { n: "Garstang, Lancashire, Anh", co: "Vương quốc Anh", t: "hpai", sev: 2, lat: 53.9, lon: -2.77, d: "07/11/2026", x: "H5N1 ở trang trại gia cầm hỗn hợp (gà tây, ngỗng). Thêm ổ ở cơ sở 14.000 gà đẻ gần Pocklington; mùa 2026–2027 có 6 ổ tính đến 9/11.", src: "fwiLanc" },
     { n: "Indiana, Mỹ", co: "Mỹ", t: "hpai", sev: 2, lat: 41.6, lon: -85.9, d: "11/2026", x: "Đàn bò sữa nhiễm H5N1 (2/11). Gần như ngày nào cũng có ổ mới ở gia cầm từ 2/11; cả năm 2026 đã có 20 đàn thương phẩm nhiễm.", src: "dtnIN" },
+    { n: "Samtse, Bhutan", co: "Bhutan", t: "asf", sev: 1, lat: 26.9, lon: 89.1, d: "11/2026", x: "ASF trở lại sau 3 tháng: ổ dịch ở đàn lợn hộ gia đình, 12/29 con chết; báo cáo WOAH đầu tháng 11.", src: "fsBhutan" },
+    { n: "Dubrovitsy, vùng Moskva, Nga", co: "Nga", t: "fmd", sev: 1, lat: 55.44, lon: 37.49, d: "29/10/2026", x: "Ổ viêm da nổi cục ở bò tại trung tâm nghiên cứu chăn nuôi L.K. Ernst; lập vùng nhiễm bán kính 3 km.", src: "dnMos" },
+    { n: "Oddar Meanchey, Campuchia", co: "Campuchia", t: "human", sev: 2, lat: 14.16, lon: 103.5, d: "24/09/2026", x: "Ca H5N1 trên người gần nhất ở Tây Thái Bình Dương theo WHO (khởi phát 24/9).", src: "whoWP" },
     { n: "Karasburg, Namibia", co: "Namibia", t: "fmd", sev: 2, lat: -28.0, lon: 18.7, d: "23/09/2026", x: "LMLM chủng SAT1 ở trang trại thương phẩm, lần đầu trong vùng sạch bệnh không tiêm phòng kể từ 2022. EU tạm ngừng nhập một số mặt hàng thịt.", src: "ajNam" },
-    { n: "Somogy, Hungary", co: "Hungary", t: "asf", sev: 1, lat: 46.4, lon: 17.6, d: "08/2026", x: "Lần đầu ghi nhận ASF trong vùng (sự kiện bắt đầu 6/8/2026).", src: "woahASF" },
-    { n: "Bulgaria", co: "Bulgaria", t: "asf", sev: 1, lat: 42.7, lon: 25.5, d: "2026", x: "Nước thứ 12 ở châu Âu có ASF trên lợn nhà trong năm 2026; cả khu vực đã có 618 ổ trên lợn nhà.", src: "pigua" },
-    { n: "Pocheon, Hàn Quốc", co: "Hàn Quốc", t: "asf", sev: 1, lat: 37.9, lon: 127.2, d: "2026", x: "Hàn Quốc đã ghi nhận 20 ổ ASF tại trang trại từ đầu năm 2026.", src: "piguaKR" },
-    { n: "Negros Occidental, Philippines", co: "Philippines", t: "asf", sev: 1, lat: 10.4, lon: 123.0, d: "24/06/2026", x: "ASF tái bùng phát, hơn 500 con lợn chết ở thị trấn San Enrique.", src: "annPH" },
-    { n: "Sardinia, Italy", co: "Italy", t: "fmd", sev: 1, lat: 40.0, lon: 9.0, d: "09/07/2026", x: "Ổ viêm da nổi cục mới ở Samugheo; EU gia hạn vùng bảo vệ và giám sát.", src: "lsdSard" },
-    { n: "Australia", co: "Australia", t: "hpai", sev: 1, lat: -25.3, lon: 133.8, d: "từ 06/2026", x: "Cúm gia cầm H5 lan dần tới nhiều nơi từ giữa tháng 6/2026; ghi nhận chim chết hàng loạt.", src: "vovCam" }
+    { n: "Somogy, Hungary", co: "Hungary", t: "asf", sev: 1, lat: 46.4, lon: 17.6, d: "08/2026", x: "Lần đầu ghi nhận ASF trong vùng (sự kiện bắt đầu 6/8/2026).", src: "woahASF" }
   ];
 
   /* ---------- DẢI TÓM TẮT ---------- */
@@ -305,11 +310,11 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
   /* ---------- BẢN TIN ---------- */
   var BRIEF = [
-    "Mùa cúm gia cầm ở Bắc bán cầu đang tăng tốc theo mùa chim di cư: Anh, Nhật Bản và nhiều bang của Mỹ liên tục có ổ mới. Riêng Indiana gần như ngày nào cũng có ổ mới từ 2/11.",
-    "H5N1 trên bò sữa Mỹ lan sang bang mới: Indiana (2/11) và Oregon (10/11), nâng tổng số lên 22 bang. Ở Washington, ổ dịch liên quan 3 ca người nhiễm, trong đó 1 ca tử vong.",
-    "Campuchia ghi nhận thêm một ca tử vong do H5N1 ngày 16/11.",
-    "Dịch tả lợn châu Phi vẫn dai dẳng ở châu Âu (Bulgaria là nước thứ 12 có dịch trên lợn nhà năm 2026) và châu Á (Hàn Quốc, Philippines).",
-    "LMLM chủng SAT1 xuất hiện ở vùng mới: Namibia có ổ đầu tiên trong vùng sạch bệnh kể từ 2022, khiến EU tạm ngừng nhập một số mặt hàng thịt."
+    "Mùa cúm gia cầm tăng tốc ở Nhật Bản: ổ đầu mùa ở Kameoka, Kyoto (12/11, tiêu hủy khoảng 200.000 gà) và ổ thứ hai ở Chiba (13/11).",
+    "Anh có 6 ổ cúm gia cầm trong mùa 2026–2027 tính đến 9/11 (mới nhất ở Lancashire và East Riding of Yorkshire); Bắc Ireland đang điều tra ổ nghi ngờ ở Co Tyrone (15/11). Châu Âu có 12 ổ trên gia cầm từ 1/10 đến 2/11, Hà Lan ra lệnh nhốt gia cầm toàn quốc.",
+    "H5N1 trên bò sữa Mỹ tiếp tục lan: Oklahoma có đàn nhiễm lần đầu kể từ 7/2024 (16/11), sau Indiana và Oregon. Ở Washington, ổ dịch liên quan 3 ca người nhiễm, 1 ca tử vong.",
+    "Dịch tả lợn châu Phi xuất hiện ở Nam Á: Assam (Ấn Độ) khoanh vùng 10 km quanh trại giống Panbari (10/11), Bhutan có ổ ở Samtse với 12/29 con lợn chết.",
+    "LMLM / viêm da nổi cục: viêm da nổi cục ở vùng Moskva (Nga, công bố 29/10); LMLM chủng SAT1 vẫn là mối lo ở Namibia."
   ];
   var br = document.getElementById("brief");
   BRIEF.forEach(function (b) { var li = document.createElement("li"); li.textContent = b; br.appendChild(li); });
@@ -408,23 +413,26 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
   /* ---------- TIN TỨC ---------- */
   var NEWS = [
-    { d: "16/11/2026", t: "human", h: "Campuchia xác nhận ca tử vong do cúm A/H5N1 ở Phnom Penh", p: "Nạn nhân là nam thanh niên 22 tuổi. Bộ Y tế Campuchia ra thông cáo khẩn ngày 16/11.", src: "vovCam" },
+    { d: "17/11/2026", t: "asf", h: "Dịch tả lợn châu Phi trở lại Bhutan sau ba tháng", p: "Ổ dịch ở đàn lợn hộ gia đình tại huyện Samtse, giáp Sikkim (Ấn Độ); 12 trong 29 con chết, chưa rõ nguồn lây.", src: "fsBhutan" },
+    { d: "16/11/2026", t: "hpai", h: "Oklahoma có đàn bò sữa nhiễm HPAI sau hơn hai năm", p: "Đây là ca đầu tiên trên bò sữa của bang kể từ tháng 7/2024. Bò sữa ở 22 bang khác đã từng nhiễm kể từ 3/2024.", src: "dhOK" },
+    { d: "16/11/2026", t: "hpai", h: "Bắc Ireland điều tra ổ nghi cúm gia cầm ở Co Tyrone", p: "Đàn gia cầm thương phẩm có tỷ lệ chết cao bị phong tỏa ngày 15/11; mẫu được gửi phòng thí nghiệm tham chiếu ở Anh.", src: "irishTy" },
+    { d: "14/11/2026", t: "hpai", h: "Châu Âu: 12 ổ cúm gia cầm trên gia cầm trong 5 tuần, Hà Lan ra lệnh nhốt gia cầm", p: "Các ổ ở Albania, Bulgaria, Đan Mạch, Đức và Hà Lan (1/10–2/11). Pháp nâng mức rủi ro quốc gia lên trung bình.", src: "gaEU" },
     { d: "13/11/2026", t: "hpai", h: "Nhật Bản có ổ cúm gia cầm thứ hai trong mùa ở trang trại", p: "Ổ dịch được xác nhận tại một trang trại gà ở tỉnh Chiba.", src: "nwnJapan" },
-    { d: "12/11/2026", t: "human", h: "Bò sữa Oregon nhiễm H5N1, số đàn nhiễm ở Washington lên vài chục", p: "Oregon là bang thứ 22 có bò nhiễm. Ổ dịch ở Washington liên quan 3 ca người nhiễm, 1 người tử vong ngày 1/11.", src: "dvm360" },
+    { d: "12/11/2026", t: "hpai", h: "Nhật Bản xác nhận ổ cúm gia cầm đầu mùa ở Kyoto", p: "Trang trại ở thành phố Kameoka có 14 con chết; khoảng 200.000 con gà bị tiêu hủy.", src: "starJP" },
+    { d: "12/11/2026", t: "human", h: "Bò sữa Oregon nhiễm H5N1, số đàn nhiễm ở Washington lên vài chục", p: "Ổ dịch ở Washington liên quan 3 ca người nhiễm, 1 người tử vong ngày 1/11.", src: "dvm360" },
     { d: "11/11/2026", t: "hpai", h: "Anh ghi nhận thêm ổ cúm gia cầm khi chim di cư cao điểm", p: "Ổ H5N5 ở đảo Lewis đã được khống chế và dỡ vùng giám sát ngày 5/11.", src: "gaUK" },
+    { d: "10/11/2026", t: "asf", h: "Assam (Ấn Độ) phát hiện dịch tả lợn châu Phi ở trại giống Bokakhat", p: "Trại giống lợn Panbari và khu vực lân cận bị công bố là vùng nhiễm, áp dụng hạn chế trong bán kính 10 km.", src: "sentAssam" },
+    { d: "09/11/2026", t: "hpai", h: "Cúm gia cầm H5N1 ở trang trại gần Garstang, Lancashire", p: "Thêm một ổ ở cơ sở 14.000 gà đẻ thả vườn gần Pocklington. Mùa 2026–2027 ở Anh có 6 ổ: 5 H5N1, 1 H5N5.", src: "fwiLanc" },
     { d: "09/11/2026", t: "human", h: "ECDC cập nhật các ca người nhiễm H5N1 ở Mỹ", p: "Ba ca ở hạt Yakima (Washington) đều có tiếp xúc với bò nhiễm virus. Từ 4/2024 Mỹ đã có hơn 70 ca người nhiễm A(H5).", src: "ecdc" },
-    { d: "06/11/2026", t: "hpai", h: "H5N1 tới các trại bò sữa Indiana, gia cầm tiếp tục có ổ mới", p: "Virus genotype B3.13 được xác nhận ở một đàn bò sữa qua xét nghiệm định kỳ. Bò sữa ở 21 bang đã bị ảnh hưởng tính đến thời điểm đó.", src: "dtnIN" },
-    { d: "06/11/2026", t: "hpai", h: "Anh: mùa cúm gia cầm 2026–2027 có 4 cơ sở nhiễm trong 5 tuần đầu", p: "Defra nâng mức rủi ro từ chim hoang dã; số cơ sở nhiễm mỗi tuần bắt đầu tăng trong tháng 10.", src: "defra" },
+    { d: "06/11/2026", t: "hpai", h: "Giải trình tự gen: H5N1 ở bò sữa Washington có liên hệ với Idaho", p: "Virus genotype B3.13, nhiều khả năng lây qua vận chuyển gia súc. Hai đàn đầu tiên được phát hiện ngày 8/10.", src: "psWA" },
+    { d: "06/11/2026", t: "hpai", h: "H5N1 tới các trại bò sữa Indiana, gia cầm tiếp tục có ổ mới", p: "Virus genotype B3.13 được xác nhận ở một đàn bò sữa qua xét nghiệm định kỳ.", src: "dtnIN" },
+    { d: "06/11/2026", t: "hpai", h: "Defra nâng mức rủi ro cúm gia cầm từ chim hoang dã", p: "Rủi ro với chim hoang dã ở Anh tăng từ trung bình lên cao; số cơ sở nhiễm mỗi tuần bắt đầu tăng trong tháng 10.", src: "defra" },
     { d: "04/11/2026", t: "hpai", h: "Oregon xác nhận HPAI ở đàn gia cầm thương phẩm đầu tiên năm 2026", p: "Đàn ở hạt Clackamas bị cách ly; không có sản phẩm nào từ trang trại vào chuỗi thực phẩm.", src: "odaOR" },
-    { d: "11/2026", t: "hpai", h: "Indiana: gần như ngày nào cũng có ổ cúm gia cầm mới từ 2/11", p: "Vịt giống và gà đẻ trứng bị ảnh hưởng nặng. Cả năm 2026, bang đã có 20 đàn thương phẩm nhiễm.", src: "ptIN" },
-    { d: "14/10/2026", t: "fmd", h: "Namibia chống LMLM, EU tạm ngừng nhập một số mặt hàng thịt", p: "Ổ dịch ở trang trại thương phẩm tại Karasburg được xác nhận ngày 23/9, kéo theo hạn chế vận chuyển gia súc.", src: "ajNam" },
+    { d: "29/10/2026", t: "fmd", h: "Viêm da nổi cục ở trung tâm nghiên cứu chăn nuôi gần Moskva", p: "Vùng nhiễm bán kính 3 km quanh Dubrovitsy và 8 làng lân cận; sữa từ bò bệnh hoặc nghi bệnh phải tiêu hủy.", src: "dnMos" },
+    { d: "29/10/2026", t: "human", h: "WHO: không có ca H5N1 mới ở Tây Thái Bình Dương trong tuần 23–29/10", p: "Ca gần nhất ở tỉnh Oddar Meanchey (Campuchia), khởi phát 24/9. Toàn cầu từ 2003 có 1.005 ca, 479 ca tử vong.", src: "whoWP" },
     { d: "16/10/2026", t: "fmd", h: "Defra: LMLM SAT1 ở Namibia là ổ đầu tiên trong vùng sạch bệnh kể từ 11/2022", p: "Đánh giá sơ bộ của Anh về nguy cơ từ ổ dịch ở Namibia.", src: "defraNam" },
-    { d: "08/2026", t: "fmd", h: "WOAH: LMLM chủng SAT1 lan tới những vùng chưa từng có", p: "Năm 2026, ba quốc gia lần đầu phải đối mặt với chủng SAT1; giới chuyên gia lo ngại hậu quả có thể còn nặng hơn.", src: "woahSAT1" },
-    { d: "08/2026", t: "asf", h: "Hungary lần đầu ghi nhận dịch tả lợn châu Phi trong vùng Somogy", p: "WOAH ghi nhận sự kiện bắt đầu ngày 6/8/2026.", src: "woahASF" },
-    { d: "2026", t: "asf", h: "Bulgaria thành nước thứ 12 ở châu Âu có ASF trên lợn nhà năm 2026", p: "Toàn khu vực đã ghi nhận 618 ổ dịch trên lợn nhà trong năm.", src: "pigua" },
-    { d: "2026", t: "asf", h: "Hàn Quốc: 20 ổ ASF tại trang trại từ đầu năm", p: "Các ổ dịch mới được xác nhận tại trang trại lợn thương phẩm.", src: "piguaKR" },
-    { d: "09/07/2026", t: "fmd", h: "Sardinia có ổ viêm da nổi cục mới, EU gia hạn vùng kiểm soát", p: "Ổ dịch ở đàn bò tại Samugheo; vùng bảo vệ kéo dài tới 14/8, vùng giám sát tới 31/8.", src: "lsdSard" },
-    { d: "24/06/2026", t: "asf", h: "ASF tái bùng phát ở Negros Occidental (Philippines)", p: "Hơn 500 con lợn chết ở thị trấn San Enrique, ba năm sau đợt dịch trước.", src: "annPH" }
+    { d: "14/10/2026", t: "fmd", h: "Namibia chống LMLM, EU tạm ngừng nhập một số mặt hàng thịt", p: "Ổ dịch ở trang trại thương phẩm tại Karasburg được xác nhận ngày 23/9, kéo theo hạn chế vận chuyển gia súc.", src: "ajNam" },
+    { d: "08/2026", t: "fmd", h: "WOAH: LMLM chủng SAT1 lan tới những vùng chưa từng có", p: "Năm 2026, ba quốc gia lần đầu phải đối mặt với chủng SAT1; giới chuyên gia lo ngại hậu quả có thể còn nặng hơn.", src: "woahSAT1" }
   ];
   var newsEl = document.getElementById("news");
   var nf = "all", nq = "";
