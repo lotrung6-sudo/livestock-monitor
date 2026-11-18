@@ -246,7 +246,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
   <section class="panel" id="news-panel">
     <div class="panel-head">
-      <h2>Luồng tin</h2>
+      <h2>Tin dịch bệnh</h2>
       <div class="news-tools">
         <div class="seg" role="group" aria-label="Lọc theo bệnh" id="news-filter">
           <button type="button" data-f="all" aria-pressed="true">Tất cả</button>
@@ -311,6 +311,14 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
   /* ---------- NGUỒN ---------- */
   var SRC = {
+    fjBovaer: { n: "Irish Farmers Journal – Trung Quốc duyệt Bovaer cho bò sữa", u: "https://www.farmersjournal.ie/news/news/methane-reducing-feed-additive-approved-for-use-in-cows-in-china-941062" },
+    vegEU27: { n: "vegconomist – Chương trình làm việc 2027 của EU và luật phúc lợi vật nuôi", u: "https://vegconomist.com/politics-law/end-the-cage-age-proposals-left-out-european-commissions-2027-work-programme/" },
+    nlVax: { n: "NL Times – Hà Lan nhốt gia cầm, chuẩn bị bắt buộc tiêm phòng", u: "https://nltimes.nl/2026/10/28/poultry-farmers-ordered-keep-chickens-indoors-three-bird-flu-outbreaks" },
+    anChinaPlan: { n: "AgNavigator – Kế hoạch phát triển chăn nuôi và thú y của Trung Quốc", u: "https://www.agnavigator.com/Article/2026/10/07/china-emphasises-ai-and-smart-livestock-farming-as-pork-industry-enters-post-growth-era/" },
+    dnEuroTier: { n: "DairyNews – Giải thưởng đổi mới EuroTier 2026", u: "https://dairynews.today/news/animal-welfare-award-takes-centre-stage-at-eurotier-2026-as-technology-shifts-from-animal-monitoring.html" },
+    iicaEU: { n: "IICA – Quy định (EU) 2026/1189 về kháng sinh với hàng nhập khẩu", u: "https://opsaa.iica.int/en/frame-5453" },
+    daPH: { n: "Bộ Nông nghiệp Philippines – Cấp phép bán vắc-xin ASF", u: "https://www.da.gov.ph/bai-clears-first-asf-vaccine-for-commercial-sale/" },
+    anIndiaASF: { n: "AgNavigator – Ấn Độ ra mắt vắc-xin ASF nội địa", u: "https://www.agnavigator.com/Article/2026/08/12/india-unveils-asf-vaccine-as-outbreaks-inflict-heavy-losses-on-pig-sector/" },
     dhOK: { n: "Dairy Herd – HPAI trở lại đàn bò sữa Oklahoma", u: "https://www.dairyherd.com/news/hpai-returns-oklahoma-dairy-herds-after-more-two-years" },
     irishTy: { n: "Irish Times – Ổ nghi cúm gia cầm ở Co Tyrone", u: "https://www.irishtimes.com/ireland/2026/11/16/reported-case-of-avian-influenza-under-investigation-in-co-tyrone/" },
     fsBhutan: { n: "Feed Strategy – ASF trở lại Nam Á (Bhutan)", u: "https://www.feedstrategy.com/animal-health-veterinary/african-swine-fever/news/16541812/african-swine-fever-returns-to-south-asia" },
@@ -501,6 +509,14 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   /* Bản tin nhanh – Chính sách & công nghệ: mỗi mục là MỘT tin riêng, một nguồn.
      d = ngày, c = lĩnh vực (policy|tech|amr|gen), x = nội dung ngắn (cả câu là link), src = khóa trong SRC */
   var BRIEF_POL = [
+    { d: "16/11/2026", c: "tech", x: "Trung Quốc cấp phép phụ gia giảm khí mê-tan Bovaer cho bò sữa", src: "fjBovaer" },
+    { d: "05/11/2026", c: "policy", x: "EU: chương trình làm việc 2027 chưa nhắc luật phúc lợi gà, lợn đã cam kết", src: "vegEU27" },
+    { d: "28/10/2026", c: "policy", x: "Hà Lan chuẩn bị bắt buộc tiêm vắc-xin cúm gia cầm cho gà đẻ", src: "nlVax" },
+    { d: "07/10/2026", c: "policy", x: "Trung Quốc đưa AI, chăn nuôi thông minh vào kế hoạch phát triển ngành đến 2030", src: "anChinaPlan" },
+    { d: "23/09/2026", c: "tech", x: "EuroTier 2026: 4 huy chương vàng, 27 bạc cho công nghệ chăn nuôi mới", src: "dnEuroTier" },
+    { d: "03/09/2026", c: "amr", x: "EU áp dụng danh sách nước được xuất khẩu theo lệnh cấm kháng sinh tăng trọng", src: "iicaEU" },
+    { d: "02/09/2026", c: "tech", x: "Philippines cho bán thương mại vắc-xin dịch tả lợn châu Phi đầu tiên", src: "daPH" },
+    { d: "12/08/2026", c: "tech", x: "Ấn Độ ra mắt vắc-xin dịch tả lợn châu Phi nội địa đầu tiên", src: "anIndiaASF" },
     { d: "10/11/2026", c: "tech", x: "EuroTier 2026: camera AI ước tính cân nặng lợn và giám sát khí thải chuồng nuôi", src: "dnInnotech" },
     { d: "29/10/2026", c: "policy", x: "Ấn Độ ban hành Quy tắc phòng chống bệnh truyền nhiễm ở động vật 2026", src: "tlIndia" },
     { d: "19/10/2026", c: "policy", x: "Rwanda siết quản lý thuốc thú y bằng luật chăn nuôi mới", src: "ntRwanda" },
@@ -712,6 +728,14 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     gen: { n: "Di truyền", c: "#d18fe8" }
   };
   var POL = [
+    { c: "tech", d: "16/11/2026", org: "Trung Quốc · Bộ Nông nghiệp và Nông thôn", h: "Trung Quốc cấp phép phụ gia giảm khí mê-tan Bovaer cho bò sữa", p: "Bộ Nông nghiệp và Nông thôn Trung Quốc cho phép dùng Bovaer (hoạt chất 3-NOP, đã được phép ở EU) cho bò đang vắt sữa. Theo nghiên cứu của nhà sản xuất DSM-Firmenich, phụ gia giảm trung bình khoảng 30% khí mê-tan từ dạ cỏ; đây là số liệu của doanh nghiệp.", src: "fjBovaer" },
+    { c: "policy", d: "05/11/2026", org: "EU · Ủy ban châu Âu", h: "Chương trình làm việc 2027 của EU chưa nhắc tới luật phúc lợi gà và lợn đã cam kết", p: "Chiến lược Chăn nuôi (7/7/2026) hứa đề xuất sửa luật phúc lợi cho gà đẻ, gà thịt trước cuối 2026 và cho lợn (chuyển từ cũi sang chuồng quây) vào quý II/2027. Chương trình làm việc 2027 công bố ngày 4/11 không có các đề xuất này; một viện vận động về luật động vật cho rằng đề xuất về gia cầm vẫn có thể ra trong tháng 12.", src: "vegEU27" },
+    { c: "policy", d: "28/10/2026", org: "Hà Lan", h: "Hà Lan chuẩn bị bắt buộc tiêm vắc-xin cúm gia cầm cho gà đẻ", p: "Sau 3 ổ dịch trong 3 ngày, Hà Lan buộc nhốt gia cầm trên toàn quốc. Quốc vụ khanh Silvio Erkens muốn trình kế hoạch bắt buộc tiêm phòng cúm gia cầm cho gà đẻ ngay trong năm nay và đang bàn cách làm với ngành gia cầm.", src: "nlVax" },
+    { c: "policy", d: "07/10/2026", org: "Trung Quốc · Bộ Nông nghiệp và Nông thôn", h: "Trung Quốc đưa AI và chăn nuôi thông minh vào kế hoạch phát triển ngành đến 2030", p: "Kế hoạch phát triển ngành chăn nuôi và thú y quốc gia đặt 15 chỉ tiêu định lượng nhưng không đặt mục tiêu tăng tổng sản lượng thịt. Một trong năm nhiệm vụ chính là đẩy nhanh ứng dụng trí tuệ nhân tạo và chăn nuôi thông minh; kế hoạch cũng hướng tới giảm lượng kháng sinh thú y trên mỗi đơn vị sản phẩm.", src: "anChinaPlan" },
+    { c: "tech", d: "23/09/2026", org: "Đức · DLG / EuroTier 2026", h: "EuroTier 2026 trao 4 huy chương vàng, 27 huy chương bạc cho đổi mới chăn nuôi", p: "Giải thưởng nhận 217 hồ sơ, 176 hồ sơ đạt điều kiện; hai sản phẩm được thêm giải Phúc lợi động vật. Các hướng nổi bật: cho ăn tiết kiệm tài nguyên, theo dõi hành vi và sức khỏe vật nuôi, điều khiển khí hậu chuồng tự động, thích ứng với nắng nóng.", src: "dnEuroTier" },
+    { c: "amr", d: "03/09/2026", org: "EU · Quy định 2026/1189", h: "EU áp dụng danh sách nước được xuất khẩu theo lệnh cấm kháng sinh tăng trọng", p: "Quy định (EU) 2026/1189 (thông qua 4/6/2026) bổ sung danh sách nước được xuất khẩu động vật và sản phẩm động vật vào EU theo lệnh cấm dùng kháng sinh để kích thích tăng trưởng, áp dụng từ 3/9/2026. Brazil bị bỏ dấu cho phép với sản phẩm từ bò, ngựa, gia cầm, thủy sản, mật ong và vỏ bọc xúc xích.", src: "iicaEU" },
+    { c: "tech", d: "02/09/2026", org: "Philippines · Cục Chăn nuôi (BAI)", h: "Philippines cho bán thương mại vắc-xin dịch tả lợn châu Phi đầu tiên", p: "BAI cấp phép bán AVAC ASF LIVE, vắc-xin sống nhược độc, xóa gen, dạng đông khô dành cho lợn thịt. Bộ Nông nghiệp đề nghị 1 tỷ peso để hỗ trợ tiêm, kể cả cho hộ chăn nuôi nhỏ; vắc-xin thứ hai là PROVAC (Hàn Quốc) đang được thử nghiệm.", src: "daPH" },
+    { c: "tech", d: "12/08/2026", org: "Ấn Độ · ICAR-NIHSAD", h: "Ấn Độ có vắc-xin dịch tả lợn châu Phi nội địa đầu tiên", p: "Vắc-xin sống nhược độc do ICAR-NIHSAD phát triển trên dòng tế bào MA-104, dùng cho lợn khỏe trên 8 tuần tuổi: tiêm bắp 1 ml, nhắc lại sau 14 ngày. Thử nghiệm thực địa đã làm cùng Cục Chăn nuôi và Sữa Ấn Độ; chưa có ngày bán ra thị trường.", src: "anIndiaASF" },
     { c: "tech", d: "10/11/2026", org: "Đan Mạch · EuroTier 2026", h: "Camera AI ước tính cân nặng lợn và giám sát khí thải chuồng nuôi", p: "Innotech Vision giới thiệu Weight Detect (ước tính cân nặng từ hình dáng, sai số khoảng 3% ở lợn) và Enviro Detect (theo dõi liên tục vi khí hậu, khí thải). Hai sản phẩm nằm trong 175 đổi mới được Hội đồng Đổi mới DLG ghi nhận.", src: "dnInnotech" },
     { c: "policy", d: "29/10/2026", org: "Ấn Độ · Bộ Thủy sản, Chăn nuôi và Sữa", h: "Ấn Độ ban hành Quy tắc phòng chống bệnh truyền nhiễm ở động vật 2026", p: "Quy tắc mới thay thế bản 2010: ổ dịch phải báo cáo qua cổng Bharat Pashudhan, xác động vật bệnh phải chôn, đốt hoặc xử lý theo khoảng cách an toàn, báo cáo mổ khám nộp trong 12 giờ.", src: "tlIndia" },
     { c: "policy", d: "19/10/2026", org: "Rwanda", h: "Rwanda siết quản lý thuốc thú y bằng luật chăn nuôi mới", p: "Luật mới kiểm soát chặt việc điều trị vật nuôi và dùng thuốc thú y, hạn chế người nuôi tự chữa bệnh khi không có chuyên môn, nhằm giảm kháng kháng sinh và tồn dư trong thịt, sữa. Các văn bản hướng dẫn đang được soạn.", src: "ntRwanda" },
