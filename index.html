@@ -124,7 +124,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
       <h1>Livestock <span>Monitor</span></h1>
       <p>Theo dõi dịch bệnh, chính sách và khoa học chăn nuôi thế giới</p>
     </div>
-    <span class="pill"><span class="dot"></span>Số liệu chốt ngày 18/11/2026</span>
+    <span class="pill"><span class="dot"></span>Số liệu chốt ngày 19/11/2026</span>
   </header>
 
   <section class="stats" id="stats" aria-label="Tóm tắt"></section>
@@ -160,6 +160,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
       <div class="seg" role="group" aria-label="Vùng bản đồ" id="regions">
         <button type="button" data-r="global" aria-pressed="true">Toàn cầu</button>
         <button type="button" data-r="asia" aria-pressed="false">Châu Á</button>
+        <button type="button" data-r="sea" aria-pressed="false">Đông Nam Á</button>
         <button type="button" data-r="europe" aria-pressed="false">Châu Âu</button>
         <button type="button" data-r="na" aria-pressed="false">Bắc Mỹ</button>
         <button type="button" data-r="africa" aria-pressed="false">Châu Phi</button>
@@ -178,7 +179,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
           <button type="button" data-f="hpai" aria-pressed="false">Cúm gia cầm</button>
           <button type="button" data-f="asf" aria-pressed="false">Dịch tả lợn châu Phi</button>
           <button type="button" data-f="fmd" aria-pressed="false">LMLM / VDNC</button>
-          <button type="button" data-f="human" aria-pressed="false">Ca bệnh trên người</button>
+          <button type="button" data-f="human" aria-pressed="false">Cúm gia cầm trên người</button>
         </div>
         <input type="search" id="news-q" placeholder="Tìm: H5N1, Namibia, bò sữa…" aria-label="Tìm trong tin">
       </div>
@@ -266,6 +267,15 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     ajNam: { n: "Al Jazeera – LMLM ở Namibia", u: "https://www.aljazeera.com/economy/2026/10/14/namibia-battles-cattle-disease-outbreak-as-eu-suspends-several-meat-imports" },
     defraNam: { n: "Defra – Đánh giá sơ bộ LMLM ở Namibia, 16/10/2026", u: "https://assets.publishing.service.gov.uk/media/6ad5f168e5db84746b4797dc/FMD_in_Namibia__1.pdf" },
     woahSAT1: { n: "WOAH – LMLM lan tới vùng mới", u: "https://www.woah.org/en/article/the-spread-of-fmd-to-new-areas-is-concerning-but-consequences-could-be-worse/" },
+    tribPH: { n: "Daily Tribune – Philippines đẩy nhanh tiêm vắc-xin ASF", u: "https://tribune.net.ph/2026/11/16/da-fast-tracks-asf-jabs-to-revive-hog-industry" },
+    starLao: { n: "The Star – Lào tăng tốc chống ASF", u: "https://www.thestar.com.my/aseanplus/aseanplus-news/2026/09/26/laos-accelerates-efforts-to-curb-african-swine-fever-spread" },
+    faoASF: { n: "FAO – Cập nhật ASF châu Á – Thái Bình Dương, 15/10/2026", u: "https://www.fao.org/animal-health/situation-updates/asf-in-asia-pacific" },
+    jpRiau: { n: "The Jakarta Post – LMLM ở Riau (Indonesia)", u: "https://www.thejakartapost.com/indonesia/2026/02/20/riau-intensifies-livestock-vaccination-amid-fmd-outbreak" },
+    baChina: { n: "Brasilagro – LMLM ở lợn tại Trùng Khánh (Trung Quốc)", u: "https://brasilagro.com.br/conteudo/china-registra-caso-de-febre-aftosa-em-suinos.html" },
+    ecdcH9: { n: "ECDC – Ca cúm A(H9N2) trên người ở Trung Quốc", u: "https://www.ecdc.europa.eu/en/epipulse_event/2097" },
+    heraldGJ: { n: "Korea Herald – Cúm gia cầm ở Gyeongju", u: "https://mbiz.heraldcorp.com/article/10939037" },
+    saNews: { n: "SAnews – Nam Phi tiêm phòng LMLM cho hơn 90% đàn bò", u: "https://www.sanews.gov.za/node/85642" },
+    ukrEU: { n: "UkrAgroConsult – ASF ở châu Âu và châu Á, 5/2026", u: "https://ukragroconsult.com/en/news/epizootic-situation-with-asf-continues-to-worsen-in-europe-and-asia/" },
     tlIndia: { n: "TeamLease RegTech – Quy tắc phòng chống dịch bệnh động vật 2026 (Ấn Độ)", u: "https://teamleaseregtech.com/updates/article/60932/prevention-and-control-of-infectious-and-contagious-diseases-in-animal/" },
     ntRwanda: { n: "The New Times (qua AllAfrica) – Luật chăn nuôi mới của Rwanda", u: "https://allafrica.com/stories/202610200123.html" },
     emaCVMP: { n: "EMA – Kết quả họp CVMP 8–10/9/2026", u: "https://www.ema.europa.eu/ro/node/286754" },
@@ -283,7 +293,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     hpai: { n: "Cúm gia cầm", c: C.hpai },
     asf: { n: "Dịch tả lợn châu Phi", c: C.asf },
     fmd: { n: "LMLM / viêm da nổi cục", c: C.fmd },
-    human: { n: "Ca bệnh trên người (H5N1)", c: C.human }
+    human: { n: "Cúm gia cầm trên người", c: C.human }
   };
 
   /* ---------- ĐIỂM NÓNG ---------- */
@@ -301,7 +311,19 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     { n: "Dubrovitsy, vùng Moskva, Nga", co: "Nga", t: "fmd", sev: 1, lat: 55.44, lon: 37.49, d: "29/10/2026", x: "Ổ viêm da nổi cục ở bò tại trung tâm nghiên cứu chăn nuôi L.K. Ernst; lập vùng nhiễm bán kính 3 km.", src: "dnMos" },
     { n: "Oddar Meanchey, Campuchia", co: "Campuchia", t: "human", sev: 2, lat: 14.16, lon: 103.5, d: "24/09/2026", x: "Ca H5N1 trên người gần nhất ở Tây Thái Bình Dương theo WHO (khởi phát 24/9).", src: "whoWP" },
     { n: "Karasburg, Namibia", co: "Namibia", t: "fmd", sev: 2, lat: -28.0, lon: 18.7, d: "23/09/2026", x: "LMLM chủng SAT1 ở trang trại thương phẩm, lần đầu trong vùng sạch bệnh không tiêm phòng kể từ 2022. EU tạm ngừng nhập một số mặt hàng thịt.", src: "ajNam" },
-    { n: "Somogy, Hungary", co: "Hungary", t: "asf", sev: 1, lat: 46.4, lon: 17.6, d: "08/2026", x: "Lần đầu ghi nhận ASF trong vùng (sự kiện bắt đầu 6/8/2026).", src: "woahASF" }
+    { n: "Somogy, Hungary", co: "Hungary", t: "asf", sev: 1, lat: 46.4, lon: 17.6, d: "08/2026", x: "Lần đầu ghi nhận ASF trong vùng (sự kiện bắt đầu 6/8/2026).", src: "woahASF" },
+    { n: "Gyeongju, Hàn Quốc", co: "Hàn Quốc", t: "hpai", sev: 2, lat: 35.85, lon: 129.21, d: "16/11/2026", x: "Cúm gia cầm độc lực cao ở trại ngỗng cảnh; tiêu hủy toàn bộ 48 con, kiểm tra 29 trại trong bán kính 3 km.", src: "heraldGJ" },
+    { n: "Nam Phi", co: "Nam Phi", t: "fmd", sev: 2, lat: -26.2, lon: 28.0, d: "15/11/2026", x: "Đã tiêm phòng LMLM cho hơn 90% đàn bò cả nước (hơn 22 triệu liều); số ổ dịch mới giảm mạnh, mọi tỉnh đã chuyển sang mũi nhắc.", src: "saNews" },
+    { n: "Philippines", co: "Philippines", t: "asf", sev: 2, lat: 15.0, lon: 120.9, d: "22/10/2026", x: "Ổ ASF còn hoạt động ở 236 barangay thuộc 23 tỉnh. Đã tiêm 499.008 liều vắc-xin ASF (2024 – giữa 2026); AVAC ASF được cấp phép thương mại 27/8.", src: "tribPH" },
+    { n: "Lào", co: "Lào", t: "asf", sev: 2, lat: 20.0, lon: 102.6, d: "24/09/2026", x: "ASF lan ra 91 huyện ở 7 tỉnh (Phongsaly, Xayaboury, Xaysomboun, Huaphan, Vientiane, Oudomxay, Luang Prabang); 14.002 con lợn chết hoặc tiêu hủy.", src: "starLao" },
+    { n: "Chiang Mai, Thái Lan", co: "Thái Lan", t: "asf", sev: 1, lat: 18.79, lon: 98.98, d: "01/10/2026", x: "Công bố vùng dịch ASF tạm thời ở Chai Prakan (hiệu lực đến 30/10). Trước đó, 28/8 có ổ dịch ở Ubon Ratchathani.", src: "faoASF" },
+    { n: "Yangon, Myanmar", co: "Myanmar", t: "asf", sev: 1, lat: 16.84, lon: 96.17, d: "08/2026", x: "Báo chí đưa tin nghi ASF: hơn 40 con lợn chết trong 4–5 ngày; ổ dịch chính thức gần nhất báo WOAH là 8/2023.", src: "faoASF" },
+    { n: "Selangor, Malaysia", co: "Malaysia", t: "asf", sev: 1, lat: 3.07, lon: 101.52, d: "2026", x: "Năm 2026 có ổ ASF trên lợn nhà ở Selangor và Sarawak; Malaysia có 241 ổ dịch kể từ 2021.", src: "faoASF" },
+    { n: "Riau, Indonesia", co: "Indonesia", t: "fmd", sev: 2, lat: 0.51, lon: 101.45, d: "19/02/2026", x: "LMLM tăng mạnh: hơn 400 con nhiễm ở 6 huyện trong đầu năm 2026, vượt cả năm 2025 (304 ca); tỉnh đẩy nhanh tiêm phòng.", src: "jpRiau" },
+    { n: "Trùng Khánh, Trung Quốc", co: "Trung Quốc", t: "fmd", sev: 2, lat: 29.7, lon: 105.7, d: "08/09/2026", x: "LMLM type O ở lợn tại cơ sở giết mổ quận Dazu: 37/677 con có triệu chứng; tiêu hủy, khử trùng, điều tra dịch tễ.", src: "baChina" },
+    { n: "Hà Nam, Trung Quốc", co: "Trung Quốc", t: "human", sev: 1, lat: 34.0, lon: 113.6, d: "09/10/2026", x: "Hai ca cúm A(H9N2) trên người (người lớn ở Hà Nam, trẻ em ở Quý Châu), không liên quan nhau; ECDC đánh giá nguy cơ rất thấp.", src: "ecdcH9" },
+    { n: "Hàn Quốc (ASF)", co: "Hàn Quốc", t: "asf", sev: 1, lat: 37.9, lon: 127.2, d: "10/2026", x: "Năm 2026 có 24 ổ ASF ở trại lợn, gấp hơn ba lần năm 2025.", src: "faoASF" },
+    { n: "Ba Lan", co: "Ba Lan", t: "asf", sev: 1, lat: 52.1, lon: 19.4, d: "05/2026", x: "Châu Âu có hơn 4.300 ca ASF trên động vật hoang dã ở 17 nước; nhiều nhất ở Ba Lan, Litva, Italy, Hungary và Đức.", src: "ukrEU" }
   ];
 
   /* ---------- DẢI TÓM TẮT ---------- */
@@ -330,7 +352,9 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     "Anh có 6 ổ cúm gia cầm trong mùa 2026–2027 tính đến 9/11 (mới nhất ở Lancashire và East Riding of Yorkshire); Bắc Ireland đang điều tra ổ nghi ngờ ở Co Tyrone (15/11). Châu Âu có 12 ổ trên gia cầm từ 1/10 đến 2/11, Hà Lan ra lệnh nhốt gia cầm toàn quốc.",
     "H5N1 trên bò sữa Mỹ tiếp tục lan: Oklahoma có đàn nhiễm lần đầu kể từ 7/2024 (16/11), sau Indiana và Oregon. Ở Washington, ổ dịch liên quan 3 ca người nhiễm, 1 ca tử vong.",
     "Dịch tả lợn châu Phi xuất hiện ở Nam Á: Assam (Ấn Độ) khoanh vùng 10 km quanh trại giống Panbari (10/11), Bhutan có ổ ở Samtse với 12/29 con lợn chết.",
-    "LMLM / viêm da nổi cục: viêm da nổi cục ở vùng Moskva (Nga, công bố 29/10); LMLM chủng SAT1 vẫn là mối lo ở Namibia."
+    "LMLM / viêm da nổi cục: viêm da nổi cục ở vùng Moskva (Nga, công bố 29/10); LMLM chủng SAT1 vẫn là mối lo ở Namibia.",
+    "Đông Nam Á: ASF lan ra 91 huyện ở 7 tỉnh của Lào (24/9), Philippines còn ổ dịch ở 236 barangay thuộc 23 tỉnh (22/10), Thái Lan khoanh vùng dịch ở Chiang Mai (1/10).",
+    "Các nước lớn: Trung Quốc có LMLM type O ở lợn tại Trùng Khánh (8/9); Hàn Quốc có 24 ổ ASF ở trại lợn trong năm 2026; Nam Phi đã tiêm phòng LMLM cho hơn 90% đàn bò (15/11)."
   ];
   var br = document.getElementById("brief");
   BRIEF.forEach(function (b) { var li = document.createElement("li"); li.textContent = b; br.appendChild(li); });
@@ -355,12 +379,18 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     return el;
   }
   var al = document.getElementById("alerts");
-  EV.slice(0, 6).forEach(function (e) { al.appendChild(alertEl(e)); });
+  function dkey(d) {
+    var m = /(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(d); if (m) return +m[3] * 10000 + +m[2] * 100 + +m[1];
+    m = /(\d{1,2})\/(\d{4})/.exec(d); if (m) return +m[2] * 10000 + +m[1] * 100;
+    m = /(\d{4})/.exec(d); return m ? +m[1] * 10000 : 0;
+  }
+  EV.slice().sort(function (x, y) { return dkey(y.d) - dkey(x.d); }).slice(0, 8).forEach(function (e) { al.appendChild(alertEl(e)); });
 
   /* ---------- BẢN ĐỒ ---------- */
   var REG = {
     global: { c: [20, 20], z: 1.15 },
     asia: { c: [118, 22], z: 3.2 },
+    sea: { c: [108, 10], z: 5.2 },
     europe: { c: [14, 49], z: 4.6 },
     na: { c: [-100, 42], z: 3.6 },
     africa: { c: [20, -5], z: 2.6 }
@@ -396,7 +426,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
         data: shown.filter(function (e) { return !global || e.sev >= 2; }).map(function (e) { return { name: e.n, value: [e.lon, e.lat] }; }),
         label: { show: true, formatter: "{b}", position: "right", color: C.ink, fontSize: 11 } }
     ];
-    if (region === "asia") {
+    if (region === "asia" || region === "sea") {
       series.push({ type: "scatter", coordinateSystem: "geo", silent: true, symbolSize: 0, zlevel: 3,
         data: [{ name: "Quần đảo Hoàng Sa (Việt Nam)", value: [112.0, 16.5] }, { name: "Quần đảo Trường Sa (Việt Nam)", value: [114.0, 9.8] }],
         label: { show: true, formatter: "{b}", color: C.muted, fontSize: 10 } });
@@ -438,6 +468,15 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
   /* ---------- TIN TỨC ---------- */
   var NEWS = [
+    { d: "16/11/2026", t: "hpai", h: "Hàn Quốc: cúm gia cầm ở trại ngỗng cảnh tại Gyeongju", p: "Phát hiện qua giám sát định kỳ; 48 con ngỗng bị tiêu hủy, 29 trại trong bán kính 3 km được kiểm tra.", src: "heraldGJ" },
+    { d: "16/11/2026", t: "asf", h: "Philippines đẩy nhanh tiêm vắc-xin dịch tả lợn châu Phi", p: "Đã tiêm 499.008 liều ở 54 trại thuộc 7 tỉnh. Tính đến 22/10, ổ dịch còn hoạt động ở 236 barangay thuộc 23 tỉnh.", src: "tribPH" },
+    { d: "15/11/2026", t: "fmd", h: "Nam Phi tiêm phòng LMLM cho hơn 90% đàn bò", p: "Vượt mục tiêu 80% trước hạn cuối năm; hơn 22 triệu liều đã được mua và phân phối, số ổ dịch mới giảm mạnh.", src: "saNews" },
+    { d: "15/10/2026", t: "asf", h: "FAO: ASF vẫn hoạt động ở nhiều nước châu Á", p: "Thái Lan khoanh vùng dịch ở Chiang Mai (1/10), Malaysia có ổ dịch ở Selangor và Sarawak, Hàn Quốc ghi nhận 24 ổ ở trại lợn năm 2026.", src: "faoASF" },
+    { d: "09/10/2026", t: "human", h: "Trung Quốc có thêm 2 ca cúm A(H9N2) trên người", p: "Một người lớn ở Hà Nam và một trẻ em ở Quý Châu, không liên quan nhau; ECDC đánh giá nguy cơ với cộng đồng châu Âu rất thấp.", src: "ecdcH9" },
+    { d: "26/09/2026", t: "asf", h: "Lào: dịch tả lợn châu Phi lan ra 91 huyện ở 7 tỉnh", p: "14.002 con lợn bị mất, trong đó 10.041 con chết vì bệnh và 3.961 con bị tiêu hủy; dịch đang giảm nhưng chưa được kiểm soát hoàn toàn.", src: "starLao" },
+    { d: "10/09/2026", t: "fmd", h: "Trung Quốc: LMLM type O ở lợn tại Trùng Khánh", p: "Ổ dịch ở cơ sở giết mổ quận Dazu, 37 trên 677 con có triệu chứng; địa phương tiêu hủy, khử trùng và điều tra dịch tễ.", src: "baChina" },
+    { d: "19/05/2026", t: "asf", h: "Châu Âu: hơn 4.300 ca ASF trên động vật hoang dã ở 17 nước", p: "Ba Lan, Litva, Italy, Hungary và Đức có nhiều ca nhất; Romania, Serbia, Moldova dẫn đầu ổ dịch trên lợn nhà.", src: "ukrEU" },
+    { d: "19/02/2026", t: "fmd", h: "Indonesia: LMLM bùng phát ở Riau", p: "Hơn 400 con nhiễm ở 6 huyện trong đầu năm 2026, vượt tổng cả năm 2025; tỉnh đẩy nhanh tiêm phòng.", src: "jpRiau" },
     { d: "17/11/2026", t: "asf", h: "Dịch tả lợn châu Phi trở lại Bhutan sau ba tháng", p: "Ổ dịch ở đàn lợn hộ gia đình tại huyện Samtse, giáp Sikkim (Ấn Độ); 12 trong 29 con chết, chưa rõ nguồn lây.", src: "fsBhutan" },
     { d: "16/11/2026", t: "hpai", h: "Oklahoma có đàn bò sữa nhiễm HPAI sau hơn hai năm", p: "Đây là ca đầu tiên trên bò sữa của bang kể từ tháng 7/2024. Bò sữa ở 22 bang khác đã từng nhiễm kể từ 3/2024.", src: "dhOK" },
     { d: "16/11/2026", t: "hpai", h: "Bắc Ireland điều tra ổ nghi cúm gia cầm ở Co Tyrone", p: "Đàn gia cầm thương phẩm có tỷ lệ chết cao bị phong tỏa ngày 15/11; mẫu được gửi phòng thí nghiệm tham chiếu ở Anh.", src: "irishTy" },
