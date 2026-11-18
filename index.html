@@ -88,7 +88,16 @@ a.tl:hover::after { color: var(--accent); }
 
 .brief { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .brief-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin: 0 0 8px; }
-.brief + .brief-label { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+.brief + .brief-label, .pager + .brief-label { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+#brief li::before { background: var(--dot, var(--accent)); border-radius: 50%; }
+#brief .bd { color: var(--muted); font-size: 12px; margin-right: 6px; font-variant-numeric: tabular-nums; }
+#brief { min-height: 230px; align-content: start; }
+.pager { display: flex; gap: 6px; align-items: center; margin-top: 10px; }
+.pager button { background: transparent; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; min-width: 30px; height: 28px; padding: 0 8px; font: inherit; font-size: 13px; cursor: pointer; }
+.pager button:hover:not([disabled]) { color: var(--ink); border-color: var(--muted); }
+.pager button[aria-current="page"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+.pager button[disabled] { opacity: .35; cursor: default; }
+.pager .pinfo { color: var(--muted); font-size: 12px; margin-left: auto; }
 .brief li { padding-left: 14px; position: relative; font-size: 13.5px; }
 .brief li::before { content: ""; position: absolute; left: 0; top: .6em; width: 6px; height: 6px; background: var(--accent); border-radius: 1px; }
 .tag { font-size: 11px; color: var(--on-accent); background: var(--accent); border-radius: 4px; padding: 1px 6px; font-weight: 600; }
@@ -144,6 +153,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
         </div>
         <div class="brief-label">Dịch bệnh</div>
         <ul class="brief" id="brief"></ul>
+        <div class="pager" id="brief-pager"></div>
         <div class="brief-label">Chính sách &amp; công nghệ</div>
         <ul class="brief" id="brief-pol"></ul>
       </div>
@@ -371,17 +381,60 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     arr.forEach(function (t) { var li = document.createElement("li"); richText(li, t); ul.appendChild(li); });
   }
 
-  /* Bản tin nhanh – Dịch bệnh. Mỗi cụm [chữ|khóa SRC] là một link tới bài gốc. */
+  /* Bản tin nhanh – Dịch bệnh: mỗi mục là MỘT tin riêng, một nguồn.
+     d = ngày, t = loại bệnh (hpai|asf|fmd|human), x = nội dung ngắn (cả câu là link), src = khóa trong SRC */
   var BRIEF = [
-    "Mùa cúm gia cầm tăng tốc ở Nhật Bản: [ổ đầu mùa ở Kameoka, Kyoto (12/11, tiêu hủy khoảng 200.000 gà)|starJP] và [ổ thứ hai ở Chiba (13/11)|nwnJapan].",
-    "[Anh có 6 ổ cúm gia cầm trong mùa 2026–2027 tính đến 9/11 (mới nhất ở Lancashire và East Riding of Yorkshire)|gaUK]; [Bắc Ireland đang điều tra ổ nghi ngờ ở Co Tyrone (15/11)|irishTy]. [Châu Âu có 12 ổ trên gia cầm từ 1/10 đến 2/11, Hà Lan ra lệnh nhốt gia cầm toàn quốc|gaEU].",
-    "H5N1 trên bò sữa Mỹ tiếp tục lan: [Oklahoma có đàn nhiễm lần đầu kể từ 7/2024 (16/11)|dhOK], sau [Indiana|dtnIN] và [Oregon|dvm360]. [Ở Washington, ổ dịch liên quan 3 ca người nhiễm, 1 ca tử vong|dvm360].",
-    "Dịch tả lợn châu Phi xuất hiện ở Nam Á: [Assam (Ấn Độ) khoanh vùng 10 km quanh trại giống Panbari (10/11)|sentAssam], [Bhutan có ổ ở Samtse với 12/29 con lợn chết|fsBhutan].",
-    "LMLM / viêm da nổi cục: [viêm da nổi cục ở vùng Moskva (Nga, công bố 29/10)|dnMos]; [LMLM chủng SAT1 vẫn là mối lo ở Namibia|woahSAT1].",
-    "Đông Nam Á: [ASF lan ra 91 huyện ở 7 tỉnh của Lào (24/9)|starLao], [Philippines còn ổ dịch ở 236 barangay thuộc 23 tỉnh (22/10)|tribPH], [Thái Lan khoanh vùng dịch ở Chiang Mai (1/10)|faoASF].",
-    "Các nước lớn: [Trung Quốc có LMLM type O ở lợn tại Trùng Khánh (8/9)|baChina]; [Hàn Quốc có 24 ổ ASF ở trại lợn trong năm 2026|faoASF]; [Nam Phi đã tiêm phòng LMLM cho hơn 90% đàn bò (15/11)|saNews]."
+    { d: "17/11/2026", t: "asf", x: "Dịch tả lợn châu Phi trở lại Bhutan: 12/29 con lợn chết ở huyện Samtse", src: "fsBhutan" },
+    { d: "16/11/2026", t: "hpai", x: "Oklahoma (Mỹ) có đàn bò sữa nhiễm cúm gia cầm, lần đầu ở bang kể từ 7/2024", src: "dhOK" },
+    { d: "16/11/2026", t: "hpai", x: "Hàn Quốc: cúm gia cầm ở trại ngỗng cảnh tại Gyeongju, tiêu hủy 48 con", src: "heraldGJ" },
+    { d: "16/11/2026", t: "asf", x: "Philippines còn ổ dịch tả lợn châu Phi ở 236 barangay thuộc 23 tỉnh (tính đến 22/10)", src: "tribPH" },
+    { d: "16/11/2026", t: "hpai", x: "Bắc Ireland điều tra ổ nghi cúm gia cầm ở Co Tyrone", src: "irishTy" },
+    { d: "15/11/2026", t: "fmd", x: "Nam Phi đã tiêm phòng LMLM cho hơn 90% đàn bò cả nước", src: "saNews" },
+    { d: "14/11/2026", t: "hpai", x: "Châu Âu có 12 ổ cúm gia cầm trên gia cầm trong 5 tuần, Hà Lan ra lệnh nhốt gia cầm", src: "gaEU" },
+    { d: "13/11/2026", t: "hpai", x: "Nhật Bản có ổ cúm gia cầm thứ hai trong mùa ở Chiba", src: "nwnJapan" },
+    { d: "12/11/2026", t: "hpai", x: "Nhật Bản: ổ cúm gia cầm đầu mùa ở Kameoka, Kyoto, tiêu hủy khoảng 200.000 gà", src: "starJP" },
+    { d: "12/11/2026", t: "human", x: "Bò sữa Oregon nhiễm H5N1; ổ dịch ở Washington liên quan 3 ca người nhiễm, 1 ca tử vong", src: "dvm360" },
+    { d: "10/11/2026", t: "asf", x: "Assam (Ấn Độ): dịch tả lợn châu Phi ở trại giống Panbari, khoanh vùng 10 km", src: "sentAssam" },
+    { d: "09/11/2026", t: "hpai", x: "Anh: H5N1 ở trang trại gần Garstang, Lancashire; mùa 2026–2027 đã có 6 ổ", src: "fwiLanc" },
+    { d: "06/11/2026", t: "hpai", x: "H5N1 tới các trại bò sữa Indiana (Mỹ)", src: "dtnIN" },
+    { d: "29/10/2026", t: "fmd", x: "Nga: viêm da nổi cục ở trung tâm nghiên cứu chăn nuôi gần Moskva", src: "dnMos" },
+    { d: "15/10/2026", t: "asf", x: "FAO: Thái Lan khoanh vùng dịch tả lợn châu Phi ở Chiang Mai, Hàn Quốc có 24 ổ ở trại lợn năm 2026", src: "faoASF" },
+    { d: "14/10/2026", t: "fmd", x: "Namibia chống LMLM chủng SAT1, EU tạm ngừng nhập một số mặt hàng thịt", src: "ajNam" },
+    { d: "09/10/2026", t: "human", x: "Trung Quốc có thêm 2 ca cúm A(H9N2) trên người ở Hà Nam và Quý Châu", src: "ecdcH9" },
+    { d: "26/09/2026", t: "asf", x: "Lào: dịch tả lợn châu Phi lan ra 91 huyện ở 7 tỉnh, 14.002 con lợn bị mất", src: "starLao" },
+    { d: "10/09/2026", t: "fmd", x: "Trung Quốc: LMLM type O ở lợn tại cơ sở giết mổ ở Trùng Khánh", src: "baChina" },
+    { d: "19/02/2026", t: "fmd", x: "Indonesia: hơn 400 con gia súc nhiễm LMLM ở Riau đầu năm 2026", src: "jpRiau" }
   ];
-  briefList("brief", BRIEF);
+  var BRIEF_PER_PAGE = 8, briefPage = 1;
+  function drawBrief() {
+    var list = BRIEF.slice().sort(function (x, y) { return dkey(y.d) - dkey(x.d); });
+    var pages = Math.max(1, Math.ceil(list.length / BRIEF_PER_PAGE));
+    if (briefPage > pages) briefPage = pages;
+    var ul = document.getElementById("brief"); ul.innerHTML = "";
+    list.slice((briefPage - 1) * BRIEF_PER_PAGE, briefPage * BRIEF_PER_PAGE).forEach(function (b) {
+      var li = document.createElement("li");
+      if (TYPES[b.t]) li.style.setProperty("--dot", TYPES[b.t].c);
+      var dt = document.createElement("span"); dt.className = "bd"; dt.textContent = b.d.replace(/\/\d{4}$/, "");
+      li.appendChild(dt); li.appendChild(linkTo(b.src, b.x, "il"));
+      ul.appendChild(li);
+    });
+    var pg = document.getElementById("brief-pager"); pg.innerHTML = "";
+    if (pages < 2) return;
+    function btn(label, page, aria) {
+      var bt = document.createElement("button"); bt.type = "button"; bt.textContent = label;
+      if (aria) bt.setAttribute("aria-label", aria);
+      if (page === briefPage && label === String(page)) bt.setAttribute("aria-current", "page");
+      if (page < 1 || page > pages) bt.disabled = true;
+      bt.addEventListener("click", function () { briefPage = page; drawBrief(); });
+      pg.appendChild(bt);
+    }
+    btn("‹", briefPage - 1, "Trang trước");
+    for (var i = 1; i <= pages; i++) btn(String(i), i, "Trang " + i);
+    btn("›", briefPage + 1, "Trang sau");
+    var info = document.createElement("span"); info.className = "pinfo"; info.textContent = list.length + " tin";
+    pg.appendChild(info);
+  }
+  drawBrief();
 
   /* Bản tin nhanh – Chính sách & công nghệ (lấy từ mục Chính sách & khoa học), cùng cú pháp link */
   var BRIEF_POL = [
@@ -610,7 +663,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     lines.push("CHÍNH SÁCH & KHOA HỌC:");
     POL.forEach(function (x) { lines.push("- " + x.d + " [" + PCAT[x.c].n + ", " + x.org + "]: " + x.h + ". " + x.p); });
     lines.push("BẢN TIN TÓM TẮT:");
-    BRIEF.forEach(function (b) { lines.push("- " + plain(b)); });
+    BRIEF.forEach(function (b) { lines.push("- " + b.d + ": " + b.x); });
     BRIEF_POL.forEach(function (b) { lines.push("- " + plain(b)); });
     return lines.join("\n");
   }
