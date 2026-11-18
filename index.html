@@ -8,23 +8,25 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* Layout: phòng điều hành dịch bệnh — dải số liệu tóm tắt, bản đồ thế giới làm trung tâm, cột cảnh báo bên phải, luồng tin bên dưới */
+/* Layout: dải số liệu tóm tắt; khối ngang Bản tin nhanh + Cảnh báo; bản đồ thế giới rộng hết khổ; luồng tin, chính sách & khoa học, hỏi AI bên dưới */
 :root {
-  --bg: #0e1513;
-  --panel: #151f1c;
-  --sunk: #111a17;
-  --line: #24332e;
-  --ink: #e6ece8;
-  --muted: #8fa29a;
-  --accent: #e3b65c;          /* màu rơm / lúa chín */
-  --land: #1c2a26;
-  --asf: #e5534b;             /* dịch tả lợn châu Phi */
-  --hpai: #f0883e;            /* cúm gia cầm */
-  --fmd: #a77de8;             /* LMLM / viêm da nổi cục */
-  --human: #ff6fae;           /* ca bệnh trên người */
+  --bg: #f3f5f0;
+  --panel: #ffffff;
+  --sunk: #f6f8f4;
+  --line: #dbe2d6;
+  --ink: #1b2a22;
+  --muted: #5d6d64;
+  --accent: #2e7d4f;          /* xanh lá đồng cỏ */
+  --on-accent: #ffffff;
+  --land: #e2e9dd;
+  --border-land: #c3cfbd;
+  --asf: #c8372f;             /* dịch tả lợn châu Phi */
+  --hpai: #d96a1c;            /* cúm gia cầm */
+  --fmd: #7650c4;             /* LMLM / viêm da nổi cục */
+  --human: #c23b7a;           /* ca bệnh trên người */
   --display: "Barlow Condensed", "Arial Narrow", sans-serif;
   --body: "Be Vietnam Pro", "Segoe UI", Roboto, sans-serif;
-  color-scheme: dark;
+  color-scheme: light;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -45,31 +47,33 @@ header.top { display: flex; flex-wrap: wrap; align-items: center; justify-conten
 .pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
 
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
-.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; border-left-width: 3px; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; border-left-width: 4px; }
 .stat .k { color: var(--muted); font-size: 12px; }
 .stat .v { font-family: var(--display); font-size: 26px; font-weight: 600; line-height: 1.2; }
 
-.grid-main { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr); gap: 14px; }
-@media (max-width: 960px) { .grid-main { grid-template-columns: 1fr; } }
+.side-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 22px; }
+.side-grid > div + div { border-left: 1px solid var(--line); padding-left: 22px; }
+@media (max-width: 960px) { .side-grid { grid-template-columns: 1fr; } .side-grid > div + div { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 14px; } }
 
-.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; min-width: 0; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; box-shadow: 0 1px 2px rgba(27,42,34,.05); }
 .panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
 .panel-head h2 { font-size: 19px; text-transform: uppercase; letter-spacing: .06em; }
 .panel-head .sub { color: var(--muted); font-size: 12px; }
 
 .seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
 .seg button { background: transparent; color: var(--muted); border: 0; padding: 5px 11px; font: inherit; font-size: 13px; cursor: pointer; }
-.seg button[aria-pressed="true"] { background: var(--accent); color: #1a1408; font-weight: 600; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
 .seg button + button { border-left: 1px solid var(--line); }
 
-#map { width: 100%; height: 480px; }
+#map { width: 100%; height: 540px; }
 @media (max-width: 600px) { #map { height: 340px; } }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; color: var(--muted); font-size: 12px; }
 .legend label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
 .legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 .map-fallback { display: grid; gap: 8px; max-height: 480px; overflow: auto; }
 
-.alerts { display: grid; gap: 8px; }
+.alerts { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+.map-fallback .alert { margin: 0; }
 .alert { display: grid; grid-template-columns: 4px 1fr; gap: 10px; background: var(--sunk); border-radius: 8px; padding: 9px 10px 9px 0; }
 .alert .bar { border-radius: 0 3px 3px 0; }
 .alert .t { font-weight: 600; }
@@ -79,7 +83,7 @@ header.top { display: flex; flex-wrap: wrap; align-items: center; justify-conten
 .brief { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .brief li { padding-left: 14px; position: relative; font-size: 13.5px; }
 .brief li::before { content: ""; position: absolute; left: 0; top: .6em; width: 6px; height: 6px; background: var(--accent); border-radius: 1px; }
-.tag { font-size: 11px; color: #1a1408; background: var(--accent); border-radius: 4px; padding: 1px 6px; font-weight: 600; }
+.tag { font-size: 11px; color: var(--on-accent); background: var(--accent); border-radius: 4px; padding: 1px 6px; font-weight: 600; }
 
 .news-tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .news-tools input { background: var(--sunk); border: 1px solid var(--line); color: var(--ink); border-radius: 7px; padding: 6px 10px; font: inherit; min-width: 200px; }
@@ -94,7 +98,7 @@ header.top { display: flex; flex-wrap: wrap; align-items: center; justify-conten
 .ask { display: grid; gap: 10px; }
 .ask form { display: flex; gap: 8px; flex-wrap: wrap; }
 .ask input { flex: 1 1 260px; background: var(--sunk); border: 1px solid var(--line); color: var(--ink); border-radius: 7px; padding: 9px 12px; font: inherit; }
-.btn { background: var(--accent); color: #1a1408; border: 0; border-radius: 7px; padding: 9px 16px; font: inherit; font-weight: 600; cursor: pointer; }
+.btn { background: var(--accent); color: var(--on-accent); border: 0; border-radius: 7px; padding: 9px 16px; font: inherit; font-weight: 600; cursor: pointer; }
 .btn[disabled] { opacity: .5; cursor: progress; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chips button { background: transparent; border: 1px solid var(--line); color: var(--ink); border-radius: 999px; padding: 4px 11px; font: inherit; font-size: 12.5px; cursor: pointer; }
@@ -120,38 +124,42 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
   <section class="stats" id="stats" aria-label="Tóm tắt"></section>
 
-  <div class="grid-main">
-    <section class="panel" id="map-panel">
-      <div class="panel-head">
-        <div>
-          <h2>Bản đồ dịch bệnh</h2>
-          <div class="sub">Điểm nóng được cơ quan thú y và báo chí báo cáo, 8–11/2026. Rê chuột vào điểm để xem chi tiết.</div>
+  <section class="panel" id="side">
+    <div class="side-grid">
+      <div>
+        <div class="panel-head">
+          <h2>Bản tin nhanh</h2>
+          <span class="tag">Tổng hợp</span>
         </div>
-        <div class="seg" role="group" aria-label="Vùng bản đồ" id="regions">
-          <button type="button" data-r="global" aria-pressed="true">Toàn cầu</button>
-          <button type="button" data-r="asia" aria-pressed="false">Châu Á</button>
-          <button type="button" data-r="europe" aria-pressed="false">Châu Âu</button>
-          <button type="button" data-r="na" aria-pressed="false">Bắc Mỹ</button>
-          <button type="button" data-r="africa" aria-pressed="false">Châu Phi</button>
-        </div>
+        <ul class="brief" id="brief"></ul>
       </div>
-      <div id="map" role="img" aria-label="Bản đồ các điểm nóng dịch bệnh"></div>
-      <div class="legend" id="legend"></div>
-    </section>
+      <div>
+        <div class="panel-head">
+          <h2>Cảnh báo mới</h2>
+          <span class="sub">Mới nhất trước</span>
+        </div>
+        <div class="alerts" id="alerts"></div>
+      </div>
+    </div>
+  </section>
 
-    <aside class="panel" id="side">
-      <div class="panel-head">
-        <h2>Bản tin nhanh</h2>
-        <span class="tag">Tổng hợp</span>
+  <section class="panel" id="map-panel">
+    <div class="panel-head">
+      <div>
+        <h2>Bản đồ dịch bệnh</h2>
+        <div class="sub">Điểm nóng được cơ quan thú y và báo chí báo cáo, 8–11/2026. Rê chuột vào điểm để xem chi tiết.</div>
       </div>
-      <ul class="brief" id="brief"></ul>
-      <div class="panel-head" style="margin-top:16px">
-        <h2>Cảnh báo mới</h2>
-        <span class="sub">Mới nhất trước</span>
+      <div class="seg" role="group" aria-label="Vùng bản đồ" id="regions">
+        <button type="button" data-r="global" aria-pressed="true">Toàn cầu</button>
+        <button type="button" data-r="asia" aria-pressed="false">Châu Á</button>
+        <button type="button" data-r="europe" aria-pressed="false">Châu Âu</button>
+        <button type="button" data-r="na" aria-pressed="false">Bắc Mỹ</button>
+        <button type="button" data-r="africa" aria-pressed="false">Châu Phi</button>
       </div>
-      <div class="alerts" id="alerts"></div>
-    </aside>
-  </div>
+    </div>
+    <div id="map" role="img" aria-label="Bản đồ các điểm nóng dịch bệnh"></div>
+    <div class="legend" id="legend"></div>
+  </section>
 
   <section class="panel" id="news-panel">
     <div class="panel-head">
@@ -366,7 +374,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     });
     var series = [
       { type: "effectScatter", coordinateSystem: "geo", data: pts.filter(function (d) { return d.ev.sev >= 3; }), rippleEffect: { scale: 3, brushType: "stroke" }, zlevel: 2 },
-      { type: "scatter", coordinateSystem: "geo", data: pts.filter(function (d) { return d.ev.sev < 3; }), itemStyle: { opacity: 0.9, borderColor: "#0e1513", borderWidth: 1 }, zlevel: 2 },
+      { type: "scatter", coordinateSystem: "geo", data: pts.filter(function (d) { return d.ev.sev < 3; }), itemStyle: { opacity: 0.95, borderColor: "#ffffff", borderWidth: 1 }, zlevel: 2 },
       { type: "scatter", coordinateSystem: "geo", silent: true, symbolSize: 0, zlevel: 3,
         data: shown.filter(function (e) { return !global || e.sev >= 2; }).map(function (e) { return { name: e.n, value: [e.lon, e.lat] }; }),
         label: { show: true, formatter: "{b}", position: "right", color: C.ink, fontSize: 11 } }
@@ -380,7 +388,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
       backgroundColor: "transparent",
       tooltip: {
         trigger: "item", confine: true, backgroundColor: C.panel, borderColor: C.line,
-        textStyle: { color: C.ink, fontSize: 12 }, extraCssText: "max-width:280px;white-space:normal;",
+        textStyle: { color: C.ink, fontSize: 12 }, extraCssText: "max-width:280px;white-space:normal;box-shadow:0 4px 14px rgba(0,0,0,.12);",
         formatter: function (p) {
           if (!p.data || !p.data.ev) return "";
           var e = p.data.ev;
@@ -389,7 +397,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
         }
       },
       geo: { map: "world", roam: true, silent: true, center: R.c, zoom: R.z, scaleLimit: { min: 1, max: 20 },
-             itemStyle: { areaColor: C.land, borderColor: C.line, borderWidth: 0.6 }, label: { show: false } },
+             itemStyle: { areaColor: C.land, borderColor: v("--border-land"), borderWidth: 0.6 }, label: { show: false } },
       series: series
     }, true);
   }
@@ -469,10 +477,10 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
   /* ---------- CHÍNH SÁCH & KHOA HỌC ---------- */
   var PCAT = {
-    policy: { n: "Chính sách – luật", c: "#6cb6ff" },
-    tech: { n: "Công nghệ", c: "#5cc48a" },
-    amr: { n: "Kháng sinh – AMR", c: "#e3b65c" },
-    gen: { n: "Di truyền", c: "#d18fe8" }
+    policy: { n: "Chính sách – luật", c: "#2464a8" },
+    tech: { n: "Công nghệ", c: "#1f7a52" },
+    amr: { n: "Kháng sinh – AMR", c: "#a86a0c" },
+    gen: { n: "Di truyền", c: "#8a3fb0" }
   };
   var POL = [
     { c: "tech", d: "10/11/2026", org: "Đan Mạch · EuroTier 2026", h: "Camera AI ước tính cân nặng lợn và giám sát khí thải chuồng nuôi", p: "Innotech Vision giới thiệu Weight Detect (ước tính cân nặng từ hình dáng, sai số khoảng 3% ở lợn) và Enviro Detect (theo dõi liên tục vi khí hậu, khí thải). Hai sản phẩm nằm trong 175 đổi mới được Hội đồng Đổi mới DLG ghi nhận.", src: "dnInnotech" },
