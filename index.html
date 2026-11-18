@@ -155,12 +155,10 @@ a.tl:hover::after { color: var(--accent); }
 
 footer { color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 6px; }
 footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
-.sig { position: fixed; right: 18px; bottom: 14px; z-index: 40; pointer-events: none; text-align: right; opacity: .55;
-  display: grid; justify-items: end; gap: 2px; }
+.sig { justify-self: end; text-align: right; display: grid; justify-items: end; gap: 2px; margin: -6px 2px 6px 0; opacity: .7; }
 .sig-k { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
 .sig-n { font-size: 15px; font-weight: 600; letter-spacing: .04em; color: var(--ink); line-height: 1.1; }
-@media (max-width: 600px) { .sig { right: 12px; bottom: 10px; } .sig-n { font-size: 13px; } .sig-k { font-size: 9px; } }
-@media print { .sig { position: static; opacity: 1; margin: 20px 0 0 auto; } }
+@media (max-width: 600px) { .sig-n { font-size: 13px; } .sig-k { font-size: 9px; } }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
 </head>
@@ -275,9 +273,8 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   </section>
 
 
+  <div class="sig" aria-hidden="true"><span class="sig-k">curated by</span><span class="sig-n">Trung Lo</span></div>
 </div>
-
-<div class="sig" aria-hidden="true"><span class="sig-k">curated by</span><span class="sig-n">Trung Lo</span></div>
 
 <script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/dist/echarts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
