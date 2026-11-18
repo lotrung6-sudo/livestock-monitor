@@ -123,6 +123,7 @@ a.tl:hover::after { color: var(--accent); }
 .paged .bd { color: var(--muted); font-size: 12px; margin-right: 6px; font-variant-numeric: tabular-nums; }
 #brief-pol { min-height: 290px; } #brief { min-height: 140px; } .paged { align-content: start; }
 .pager { display: flex; gap: 6px; align-items: center; margin-top: 10px; }
+#news-pager, #policy-pager { margin-top: 14px; }
 .pager button { background: transparent; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; min-width: 30px; height: 28px; padding: 0 8px; font: inherit; font-size: 13px; cursor: pointer; }
 .pager button:hover:not([disabled]) { color: var(--ink); border-color: var(--muted); }
 .pager button[aria-current="page"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
@@ -258,6 +259,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
       </div>
     </div>
     <div class="news" id="news"></div>
+    <div class="pager" id="news-pager"></div>
   </section>
 
   <section class="panel" id="policy-panel">
@@ -275,6 +277,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
       </div>
     </div>
     <div class="news" id="policy"></div>
+    <div class="pager" id="policy-pager"></div>
   </section>
 
 
@@ -285,6 +288,20 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 <script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
 <script>
 (function () {
+  /* Khóa ngày dạng YYYYMMDD từ "dd/mm/yyyy", "mm/yyyy" hoặc "yyyy" */
+  function dkey(d) {
+    var m = /(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(d); if (m) return +m[3] * 10000 + +m[2] * 100 + +m[1];
+    m = /(\d{1,2})\/(\d{4})/.exec(d); if (m) return +m[2] * 10000 + +m[1] * 100;
+    m = /(\d{4})/.exec(d); return m ? +m[1] * 10000 : 0;
+  }
+  /* Tin chỉ bị ẩn khi đã cũ hơn 4 tháng so với hôm nay (giờ GMT+7) */
+  var KEEP_MONTHS = 4;
+  var CUTOFF = (function () {
+    var t = new Date(Date.now() + 7 * 3600e3), y = t.getUTCFullYear(), mo = t.getUTCMonth() + 1 - KEEP_MONTHS, d = t.getUTCDate();
+    while (mo < 1) { mo += 12; y--; }
+    return y * 10000 + mo * 100 + d;
+  })();
+  function fresh(x) { var k = dkey(x.d); return k === 0 || k >= CUTOFF; }
   "use strict";
   var css = getComputedStyle(document.documentElement);
   function v(n) { return css.getPropertyValue(n).trim(); }
@@ -373,6 +390,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     { n: "Hàn Quốc (ASF)", co: "Hàn Quốc", t: "asf", sev: 1, lat: 37.9, lon: 127.2, d: "10/2026", x: "Năm 2026 có 24 ổ ASF ở trại lợn, gấp hơn ba lần năm 2025.", src: "faoASF" },
     { n: "Ba Lan", co: "Ba Lan", t: "asf", sev: 1, lat: 52.1, lon: 19.4, d: "05/2026", x: "Châu Âu có hơn 4.300 ca ASF trên động vật hoang dã ở 17 nước; nhiều nhất ở Ba Lan, Litva, Italy, Hungary và Đức.", src: "ukrEU" }
   ];
+  EV = EV.filter(fresh);
 
   /* ---------- DẢI TÓM TẮT ---------- */
   var countries = {}; EV.forEach(function (e) { countries[e.co] = 1; });
@@ -441,6 +459,24 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     { d: "10/09/2026", t: "fmd", x: "Trung Quốc: LMLM type O ở lợn tại cơ sở giết mổ ở Trùng Khánh", src: "baChina" },
     { d: "19/02/2026", t: "fmd", x: "Indonesia: hơn 400 con gia súc nhiễm LMLM ở Riau đầu năm 2026", src: "jpRiau" }
   ];
+  BRIEF = BRIEF.filter(fresh);
+  /* Thanh chuyển trang ‹ 1 2 3 › dùng chung */
+  function pagerUI(pg, page, pages, total, go) {
+    pg.innerHTML = "";
+    if (pages < 2) return;
+    function btn(label, to, aria, isNum) {
+      var bt = document.createElement("button"); bt.type = "button"; bt.textContent = label; bt.setAttribute("aria-label", aria);
+      if (isNum && to === page) bt.setAttribute("aria-current", "page");
+      if (to < 1 || to > pages) bt.disabled = true;
+      bt.addEventListener("click", function () { go(to); });
+      pg.appendChild(bt);
+    }
+    btn("‹", page - 1, "Trang trước");
+    for (var i = 1; i <= pages; i++) btn(String(i), i, "Trang " + i, true);
+    btn("›", page + 1, "Trang sau");
+    var info = document.createElement("span"); info.className = "pinfo"; info.textContent = total + " tin";
+    pg.appendChild(info);
+  }
   /* Danh sách từng tin, xếp mới nhất trước, chia trang 1-2-3 */
   function pagedList(ulId, pagerId, arr, perPage, colorOf) {
     var page = 1;
@@ -456,21 +492,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
         li.appendChild(dt); li.appendChild(linkTo(b.src, b.x, "il"));
         ul.appendChild(li);
       });
-      var pg = document.getElementById(pagerId); pg.innerHTML = "";
-      if (pages < 2) return;
-      function btn(label, to, aria, isNum) {
-        var bt = document.createElement("button"); bt.type = "button"; bt.textContent = label;
-        bt.setAttribute("aria-label", aria);
-        if (isNum && to === page) bt.setAttribute("aria-current", "page");
-        if (to < 1 || to > pages) bt.disabled = true;
-        bt.addEventListener("click", function () { page = to; draw(); });
-        pg.appendChild(bt);
-      }
-      btn("‹", page - 1, "Trang trước");
-      for (var i = 1; i <= pages; i++) btn(String(i), i, "Trang " + i, true);
-      btn("›", page + 1, "Trang sau");
-      var info = document.createElement("span"); info.className = "pinfo"; info.textContent = list.length + " tin";
-      pg.appendChild(info);
+      pagerUI(document.getElementById(pagerId), page, pages, list.length, function (to) { page = to; draw(); });
     }
     draw();
   }
@@ -490,6 +512,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     { d: "28/05/2026", c: "amr", x: "EU cấm kháng sinh kích thích tăng trưởng với hàng nhập khẩu từ 3/9/2026", src: "agrinfoEU" },
     { d: "30/03/2026", c: "gen", x: "Canada phê duyệt lợn chỉnh sửa gen kháng PRRS làm thực phẩm", src: "lgCanada" }
   ];
+  BRIEF_POL = BRIEF_POL.filter(fresh);
 
   /* ---------- CẢNH BÁO ---------- */
   function alertEl(e) {
@@ -506,11 +529,6 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     return el;
   }
   var al = document.getElementById("alerts");
-  function dkey(d) {
-    var m = /(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(d); if (m) return +m[3] * 10000 + +m[2] * 100 + +m[1];
-    m = /(\d{1,2})\/(\d{4})/.exec(d); if (m) return +m[2] * 10000 + +m[1] * 100;
-    m = /(\d{4})/.exec(d); return m ? +m[1] * 10000 : 0;
-  }
   EV.slice().sort(function (x, y) { return dkey(y.d) - dkey(x.d); }).forEach(function (e) { al.appendChild(alertEl(e)); });
   document.getElementById("alerts-sub").textContent = EV.length + " ổ dịch · mới nhất trước · cuộn để xem thêm";
 
@@ -648,9 +666,12 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     { d: "14/10/2026", t: "fmd", h: "Namibia chống LMLM, EU tạm ngừng nhập một số mặt hàng thịt", p: "Ổ dịch ở trang trại thương phẩm tại Karasburg được xác nhận ngày 23/9, kéo theo hạn chế vận chuyển gia súc.", src: "ajNam" },
     { d: "08/2026", t: "fmd", h: "WOAH: LMLM chủng SAT1 lan tới những vùng chưa từng có", p: "Năm 2026, ba quốc gia lần đầu phải đối mặt với chủng SAT1; giới chuyên gia lo ngại hậu quả có thể còn nặng hơn.", src: "woahSAT1" }
   ];
+  NEWS = NEWS.filter(fresh);
   var newsEl = document.getElementById("news");
   var nf = "all", nq = "";
   function norm(s) { return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d"); }
+  var NEWS_PER_PAGE = 12, newsPage = 1;
+  function scrollIntoPanel(id) { var el = document.getElementById(id); if (el && el.getBoundingClientRect().top < 0) el.scrollIntoView({ behavior: "smooth", block: "start" }); }
   function drawNews() {
     newsEl.innerHTML = "";
     var q = norm(nq.trim());
@@ -660,8 +681,10 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
       return true;
     });
     list.sort(function (x, y) { return dkey(y.d) - dkey(x.d); });
+    var pages = Math.max(1, Math.ceil(list.length / NEWS_PER_PAGE)); if (newsPage > pages) newsPage = pages;
+    pagerUI(document.getElementById("news-pager"), newsPage, pages, list.length, function (to) { newsPage = to; drawNews(); scrollIntoPanel("news-panel"); });
     if (!list.length) { var e = document.createElement("div"); e.className = "empty"; e.textContent = "Không có tin phù hợp. Thử từ khóa khác."; newsEl.appendChild(e); return; }
-    list.forEach(function (n) {
+    list.slice((newsPage - 1) * NEWS_PER_PAGE, newsPage * NEWS_PER_PAGE).forEach(function (n) {
       var el = document.createElement("article"); el.className = "card";
       el.innerHTML = '<div class="meta"><span class="chip"><i class="dot"></i><span></span></span><span class="dt num"></span></div><h3></h3><p></p>';
       el.querySelector(".chip .dot").style.background = TYPES[n.t].c;
@@ -675,10 +698,10 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   document.querySelectorAll("#news-filter button").forEach(function (b) {
     b.addEventListener("click", function () {
       document.querySelectorAll("#news-filter button").forEach(function (x) { x.setAttribute("aria-pressed", x === b); });
-      nf = b.getAttribute("data-f"); drawNews();
+      nf = b.getAttribute("data-f"); newsPage = 1; drawNews();
     });
   });
-  document.getElementById("news-q").addEventListener("input", function (e) { nq = e.target.value; drawNews(); });
+  document.getElementById("news-q").addEventListener("input", function (e) { nq = e.target.value; newsPage = 1; drawNews(); });
   drawNews();
 
   /* ---------- CHÍNH SÁCH & KHOA HỌC ---------- */
@@ -700,10 +723,15 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     { c: "amr", d: "28/05/2026", org: "EU · Quy định 2023/905", h: "EU cấm kháng sinh kích thích tăng trưởng với hàng nhập khẩu từ 3/9/2026", p: "Vật nuôi và sản phẩm động vật xuất vào EU không được dùng kháng sinh để kích thích tăng trưởng hoặc kháng sinh dành riêng cho người; cơ quan thú y nước xuất khẩu phải ký xác nhận trên chứng thư.", src: "agrinfoEU" },
     { c: "gen", d: "30/03/2026", org: "Canada · Health Canada, CFIA", h: "Canada phê duyệt lợn chỉnh sửa gen kháng PRRS làm thực phẩm", p: "Tháng 1/2026, Health Canada và CFIA chấp thuận lợn chỉnh sửa gen kháng hội chứng rối loạn sinh sản và hô hấp (PRRS), sau Mỹ và Brazil. Bò chỉnh sửa gen chịu nóng được bán ở Mỹ nhưng chưa được duyệt ở Canada.", src: "lgCanada" }
   ];
+  POL = POL.filter(fresh);
   var polEl = document.getElementById("policy"), pf = "all";
+  var POL_PER_PAGE = 8, polPage = 1;
   function drawPol() {
     polEl.innerHTML = "";
-    POL.filter(function (x) { return pf === "all" || x.c === pf; }).forEach(function (x) {
+    var list = POL.filter(function (x) { return pf === "all" || x.c === pf; }).sort(function (x, y) { return dkey(y.d) - dkey(x.d); });
+    var pages = Math.max(1, Math.ceil(list.length / POL_PER_PAGE)); if (polPage > pages) polPage = pages;
+    pagerUI(document.getElementById("policy-pager"), polPage, pages, list.length, function (to) { polPage = to; drawPol(); scrollIntoPanel("policy-panel"); });
+    list.slice((polPage - 1) * POL_PER_PAGE, polPage * POL_PER_PAGE).forEach(function (x) {
       var cat = PCAT[x.c];
       var el = document.createElement("article"); el.className = "card";
       el.innerHTML = '<div class="meta"><span class="chip"><i class="dot"></i><span></span></span><span class="dt num"></span></div><h3></h3><div class="meta org"></div><p></p>';
@@ -719,7 +747,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   document.querySelectorAll("#pol-filter button").forEach(function (b) {
     b.addEventListener("click", function () {
       document.querySelectorAll("#pol-filter button").forEach(function (x) { x.setAttribute("aria-pressed", x === b); });
-      pf = b.getAttribute("data-f"); drawPol();
+      pf = b.getAttribute("data-f"); polPage = 1; drawPol();
     });
   });
   drawPol();
