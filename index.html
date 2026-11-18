@@ -268,28 +268,6 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     <div class="news" id="policy"></div>
   </section>
 
-  <section class="panel ask" id="ask-panel">
-    <div class="panel-head">
-      <div>
-        <h2>Hỏi trợ lý AI</h2>
-        <div class="sub">Trả lời dựa trên số liệu đang hiển thị trên trang này.</div>
-      </div>
-    </div>
-    <div class="chips" id="ask-chips">
-      <button type="button">Cúm gia cầm đang lan mạnh ở đâu?</button>
-      <button type="button">H5N1 trên bò sữa ở Mỹ đáng lo đến mức nào?</button>
-      <button type="button">Tóm tắt tình hình dịch tả lợn châu Phi</button>
-      <button type="button">LMLM chủng SAT1 là gì, đang ở đâu?</button>
-      <button type="button">Quy định kháng sinh mới của EU ảnh hưởng gì tới nước xuất khẩu?</button>
-      <button type="button">Nước nào đã duyệt lợn chỉnh sửa gen?</button>
-    </div>
-    <form id="ask-form">
-      <input id="ask-q" type="text" placeholder="Nhập câu hỏi về dịch bệnh, chính sách, kháng sinh, di truyền…" aria-label="Câu hỏi cho trợ lý AI" autocomplete="off">
-      <button class="btn" id="ask-btn" type="submit">Hỏi</button>
-    </form>
-    <div class="answer" id="ask-out" aria-live="polite">Chọn một câu hỏi gợi ý hoặc tự nhập câu hỏi.</div>
-    <div class="note" id="ask-note">Trợ lý chỉ đọc số liệu chốt ngày 19/11/2026 trên trang, không tự tra cứu tin mới. Thông tin chỉ để tham khảo, không thay thế tư vấn của cán bộ thú y.</div>
-  </section>
 
 </div>
 
@@ -846,58 +824,6 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   });
   markCh();
   autoScan(0);
-
-  /* ---------- TRỢ LÝ AI ---------- */
-  var askForm = document.getElementById("ask-form"), askQ = document.getElementById("ask-q"),
-      askOut = document.getElementById("ask-out"), askBtn = document.getElementById("ask-btn"), askNote = document.getElementById("ask-note");
-  var sampleFn = null, busy = false;
-
-  function contextText() {
-    var lines = ["NGÀY CHỐT SỐ LIỆU: 19/11/2026.", "ĐIỂM NÓNG DỊCH BỆNH:"];
-    EV.forEach(function (e) { lines.push("- " + e.n + " [" + TYPES[e.t].n + ", " + e.d + "]: " + e.x); });
-    lines.push("TIN TỨC:");
-    NEWS.forEach(function (n) { lines.push("- " + n.d + " [" + TYPES[n.t].n + "]: " + n.h + ". " + n.p); });
-    lines.push("CHÍNH SÁCH & KHOA HỌC:");
-    POL.forEach(function (x) { lines.push("- " + x.d + " [" + PCAT[x.c].n + ", " + x.org + "]: " + x.h + ". " + x.p); });
-    lines.push("BẢN TIN TÓM TẮT:");
-    BRIEF.forEach(function (b) { lines.push("- " + b.d + ": " + b.x); });
-    BRIEF_POL.forEach(function (b) { lines.push("- " + b.d + ": " + b.x); });
-    return lines.join("\n");
-  }
-  function ask(q) {
-    q = (q || "").trim();
-    if (!q || busy) return;
-    if (!sampleFn) { askOut.textContent = "Trợ lý AI chưa sẵn sàng ở chế độ xem này. Hãy mở trang trên claude.ai để dùng tính năng hỏi đáp."; return; }
-    busy = true; askBtn.disabled = true; askOut.textContent = "Đang suy nghĩ…";
-    var prompt = "Bạn là trợ lý phân tích dịch bệnh, chính sách và khoa học chăn nuôi trên thế giới. Chỉ dựa vào DỮ LIỆU bên dưới để trả lời; " +
-      "có thể giải thích ngắn khái niệm chung (ví dụ bệnh là gì, lây thế nào) nhưng mọi con số và sự kiện phải lấy từ dữ liệu. " +
-      "Nếu dữ liệu không có thông tin, nói rõ là trang chưa có số liệu đó. Trả lời bằng tiếng Việt, ngắn gọn (tối đa khoảng 150 chữ), " +
-      "văn bản thường không dùng markdown, nêu ngày của sự kiện. Không đưa ra chẩn đoán hay phác đồ điều trị; khuyên hỏi cán bộ thú y khi cần.\n\nDỮ LIỆU:\n" +
-      contextText() + "\n\nCÂU HỎI: " + q;
-    sampleFn(prompt, { signal: new AbortController().signal, modelTier: "default", onText: function (u) { askOut.textContent = u.text; } })
-      .then(function (r) { askOut.textContent = r.text || "Không có câu trả lời."; })
-      .catch(function (err) {
-        if (err && err.code === "not_granted") { askOut.textContent = "Bạn chưa cho phép trang dùng trợ lý AI."; }
-        else if (err && err.code === "rate_limited") { askOut.textContent = "Đã hỏi quá nhiều trong thời gian ngắn. Hãy thử lại sau ít phút."; }
-        else { askOut.textContent = (err && err.text) ? err.text : "Không lấy được câu trả lời. Hãy thử lại."; }
-      })
-      .then(function () { busy = false; askBtn.disabled = false; });
-  }
-  askForm.addEventListener("submit", function (e) { e.preventDefault(); ask(askQ.value); });
-  document.querySelectorAll("#ask-chips button").forEach(function (b) {
-    b.addEventListener("click", function () { askQ.value = b.textContent; ask(b.textContent); });
-  });
-  var tries = 0;
-  function hookAI() {
-    if (window.claude && typeof window.claude.use === "function") {
-      window.claude.use("sample").then(function (s) {
-        sampleFn = s;
-        if (!s) { document.getElementById("ask-panel").hidden = true; }
-      }).catch(function () { sampleFn = null; document.getElementById("ask-panel").hidden = true; });
-    } else if (tries++ < 10) { setTimeout(hookAI, 500); }
-    else { document.getElementById("ask-panel").hidden = true; }
-  }
-  hookAI();
 
   window.addEventListener("resize", function () { if (mapChart) mapChart.resize(); });
 })();
