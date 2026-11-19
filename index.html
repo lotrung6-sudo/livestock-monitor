@@ -67,8 +67,8 @@ header.top + .sec { border-top: 0; }
 .sec-l .sub { font-size: 13px; color: var(--muted); }
 .sec-b { min-width: 0; display: flex; flex-direction: column; gap: 18px; }
 .bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 22px; }
-.big-h { display: flex; align-items: baseline; gap: 18px; }
-.big-h h2 { font-size: clamp(34px, 5.4vw, 72px); font-weight: 900; font-stretch: 125%; line-height: .9; letter-spacing: -.04em; text-transform: uppercase; }
+.big-h { display: flex; align-items: baseline; gap: 12px; }
+.big-h h2 { font-size: 22px; font-weight: 800; font-stretch: 112%; line-height: 1.1; }
 
 /* Nút lọc dạng khối */
 .seg { display: inline-flex; flex-wrap: wrap; border: 1.5px solid var(--rule); align-self: flex-start; max-width: 100%; }
@@ -159,15 +159,14 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
 /* Tin dịch bệnh */
 .tools { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 .tools input { background: transparent; border: 1.5px solid var(--rule); border-radius: 0; color: var(--ink); padding: 8px 12px; font: inherit; font-size: 14px; min-width: 240px; }
-.news { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 30px 28px; }
-.card { border-top: 5px solid var(--c, var(--ink)); padding-top: 14px; display: flex; flex-direction: column; gap: 8px; transition: transform .4s cubic-bezier(.16, 1, .3, 1); }
+.news { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 26px 26px; }
+.card { border-top: 3px solid var(--c, var(--ink)); padding-top: 12px; display: flex; flex-direction: column; gap: 6px; transition: transform .4s cubic-bezier(.16, 1, .3, 1); }
 .card:hover { transform: translateY(-4px); }
 .card .top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
-.card .no { font-size: 40px; font-weight: 900; font-stretch: 125%; line-height: 1; letter-spacing: -.04em; }
-.card .dt { font-size: 13px; font-weight: 700; }
+.card .dt { font-size: 12.5px; font-weight: 600; color: var(--muted); white-space: nowrap; }
 .card .cat { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--c); }
-.card h3 { font-size: 20px; font-weight: 800; font-stretch: 105%; line-height: 1.2; letter-spacing: -.01em; }
-.card p { margin: 0; font-size: 14px; color: var(--soft); }
+.card h3 { font-size: 16.5px; font-weight: 700; line-height: 1.32; }
+.card p { margin: 0; font-size: 13.5px; color: var(--soft); }
 .empty { color: var(--muted); padding: 10px 0; }
 #news-pager, #policy-pager { margin-top: 28px; }
 
@@ -280,13 +279,12 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
   table.al tbody tr:hover * { color: inherit !important; }
   .bar { margin-bottom: 16px; gap: 12px; }
   .big-h { gap: 12px; }
-  .big-h h2 { font-size: 34px; }
+  .big-h h2 { font-size: 21px; }
   .tools { width: 100%; }
   .tools .seg { width: 100%; }
   .tools input { min-width: 0; width: 100%; font-size: 16px; }
   .news { gap: 24px; }
-  .card .no { font-size: 30px; }
-  .card h3 { font-size: 18px; }
+  .card h3 { font-size: 16px; }
   .card:hover { transform: none; }
   .pol-grid { gap: 16px; }
   .prow { grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 16px 0; }
@@ -936,8 +934,7 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
     list.slice((newsPage - 1) * NEWS_PER_PAGE, newsPage * NEWS_PER_PAGE).forEach(function (n, i) {
       var el = document.createElement("article"); el.className = "card";
       el.style.setProperty("--c", TYPES[n.t].c);
-      el.innerHTML = '<div class="top"><span class="no num"></span><span class="dt num"></span></div><span class="cat"></span><h3></h3><p></p>';
-      el.querySelector(".no").textContent = String((newsPage - 1) * NEWS_PER_PAGE + i + 1).padStart(2, "0");
+      el.innerHTML = '<div class="top"><span class="cat"></span><span class="dt num"></span></div><h3></h3><p></p>';
       el.querySelector(".dt").textContent = n.d;
       el.querySelector(".cat").textContent = TYPES[n.t].n;
       el.querySelector("h3").appendChild(linkTo(n.src, n.h, "tl"));
