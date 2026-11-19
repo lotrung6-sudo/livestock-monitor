@@ -6,217 +6,337 @@
 <title>Livestock Monitor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
 <style>
-/* Layout: dải số liệu tóm tắt; khối ngang Bản tin nhanh + Cảnh báo; bản đồ thế giới rộng hết khổ; luồng tin, chính sách & khoa học, hỏi AI bên dưới */
+/* Giao diện Swiss tối: nền đen, chữ trắng ngà, màu nhấn cam đỏ; lưới 12 cột; Bản tin nhanh lên đầu */
 :root {
-  --bg: #0e1513;
-  --panel: #151f1c;
-  --sunk: #111a17;
-  --line: #24332e;
-  --ink: #e6ece8;
-  --muted: #8fa29a;
-  --accent: #e3b65c;          /* màu rơm / lúa chín */
-  --on-accent: #1a1408;
-  --land: #1c2a26;
-  --border-land: #2f4039;
-  --asf: #e5534b;             /* dịch tả lợn châu Phi */
-  --hpai: #f0883e;            /* cúm gia cầm */
-  --fmd: #a77de8;             /* LMLM / viêm da nổi cục */
-  --human: #ff6fae;           /* ca bệnh trên người */
-  --display: "Barlow Condensed", "Arial Narrow", sans-serif;
-  --body: "Be Vietnam Pro", "Segoe UI", Roboto, sans-serif;
+  --bg: #0b0b0b;
+  --panel: #141414;
+  --sunk: #111111;
+  --line: #262626;
+  --rule: #f2f2ef;
+  --ink: #f2f2ef;
+  --muted: #9a9a96;
+  --soft: #c4c4bf;
+  --accent: #ff4a1c;
+  --accent-t: #ff6a3d;
+  --on-accent: #0b0b0b;
+  --land: #1c1c1b;
+  --border-land: #33332f;
+  --asf: #ff2d3d;             /* dịch tả lợn châu Phi */
+  --hpai: #ffc400;            /* cúm gia cầm */
+  --fmd: #00d5ff;             /* LMLM / viêm da nổi cục */
+  --human: #ff3df2;           /* cúm gia cầm trên người */
+  --font: "Archivo", "Helvetica Neue", Arial, sans-serif;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 14px; line-height: 1.5; }
-a { color: var(--accent); }
+html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.5; -webkit-text-size-adjust: 100%; }
+a { color: var(--ink); }
 a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-h1, h2, h3 { font-family: var(--display); font-weight: 600; letter-spacing: .02em; text-wrap: balance; margin: 0; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
 .num { font-variant-numeric: tabular-nums; }
 
-.wrap { max-width: 2400px; margin: 0 auto; padding: 0 clamp(12px, 1.6vw, 28px) 56px; display: grid; gap: 14px; }
+/* Dải tin chạy */
+.ticker { background: #161616; border-bottom: 1px solid var(--line); overflow: hidden; white-space: nowrap; font-size: 12.5px; font-weight: 600; letter-spacing: .06em; }
+.marq { display: inline-flex; gap: 44px; padding: 9px 0; animation: marq 70s linear infinite; will-change: transform; }
+.ticker:hover .marq { animation-play-state: paused; }
+.marq a { color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; text-transform: uppercase; }
+.marq a:hover { color: var(--accent-t); }
+.marq i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: 0 0 auto; }
+@keyframes marq { to { transform: translateX(-50%); } }
 
-header.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 0 6px; border-bottom: 1px solid var(--line); }
-.brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-.brand h1 { font-size: 28px; text-transform: uppercase; letter-spacing: .08em; }
-.brand h1 span { color: var(--accent); }
-.brand p { margin: 0; color: var(--muted); }
-.pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 12px; white-space: nowrap; }
-.pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
-.pills { display: flex; flex-wrap: wrap; gap: 6px; }
-.pill .num { color: var(--ink); font-variant-numeric: tabular-nums; }
+.wrap { max-width: 1640px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 40px) 96px; background-image: linear-gradient(90deg, #141414 1px, transparent 1px); background-size: calc(100% / 12) 100%; }
 
-.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
-.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; border-left-width: 4px; }
-.stat .k { color: var(--muted); font-size: 12px; }
-.stat .v { font-family: var(--display); font-size: 26px; font-weight: 600; line-height: 1.2; }
+header.top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 18px 32px; padding: 32px 0 18px; border-bottom: 3px solid var(--rule); }
+header.top h1 { font-size: clamp(28px, 4vw, 52px); font-weight: 900; font-stretch: 125%; line-height: .95; letter-spacing: -.03em; text-transform: uppercase; }
+header.top h1 span { color: var(--accent); }
+.brand p { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
+.meta-dl { margin: 0; display: flex; flex-wrap: wrap; gap: 8px 32px; }
+.meta-dl dt { color: var(--muted); font-size: 12px; }
+.meta-dl dd { margin: 0; font-weight: 700; font-size: 14px; }
 
-.side-grid { display: grid; grid-template-columns: fit-content(48%) minmax(0, 1fr); gap: 32px; }
-.side-grid > div + div { border-left: 1px solid var(--line); padding-left: 32px; }
-.side-grid > div:last-child { display: flex; flex-direction: column; min-height: 0; }
-.alerts-box { position: relative; flex: 1 1 auto; min-height: 340px; }
-.alerts-box > .alerts { position: absolute; inset: 0; overflow-y: auto; align-content: start; padding-right: 4px; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
-@media (max-width: 960px) { .alerts-box { min-height: 0; } .alerts-box > .alerts { position: static; max-height: 560px; } .side-grid { grid-template-columns: 1fr; } .side-grid > div + div { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 14px; } }
+/* Các mục đánh số */
+.sec { display: grid; grid-template-columns: minmax(150px, 2fr) minmax(0, 10fr); gap: 24px; padding: 32px 0 44px; border-top: 1px solid var(--rule); }
+header.top + .sec { border-top: 0; }
+.sec.wide { grid-template-columns: minmax(0, 1fr); }
+.sec-l { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.sec-n { font-size: 14px; font-weight: 700; color: var(--accent); }
+.sec-l h2 { font-size: 22px; font-weight: 800; font-stretch: 112%; line-height: 1.1; }
+.sec-l .sub { font-size: 13px; color: var(--muted); }
+.sec-b { min-width: 0; display: flex; flex-direction: column; gap: 18px; }
+.bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 22px; }
+.big-h { display: flex; align-items: baseline; gap: 18px; }
+.big-h h2 { font-size: clamp(34px, 5.4vw, 72px); font-weight: 900; font-stretch: 125%; line-height: .9; letter-spacing: -.04em; text-transform: uppercase; }
 
-.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; }
-.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-.panel-head h2 { font-size: 19px; text-transform: uppercase; letter-spacing: .06em; }
-.panel-head .sub { color: var(--muted); font-size: 12px; }
+/* Nút lọc dạng khối */
+.seg { display: inline-flex; flex-wrap: wrap; border: 1.5px solid var(--rule); align-self: flex-start; max-width: 100%; }
+.seg button { background: transparent; color: var(--ink); border: 0; padding: 8px 15px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: background-color .2s, color .2s; }
+.seg button + button { border-left: 1.5px solid var(--rule); }
+.seg button:hover { background: #1f1f1f; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
 
-.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
-.seg button { background: transparent; color: var(--muted); border: 0; padding: 5px 11px; font: inherit; font-size: 13px; cursor: pointer; }
-.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
-.seg button + button { border-left: 1px solid var(--line); }
+a.il { color: inherit; text-decoration: none; transition: color .2s; }
+a.il:hover { color: var(--accent-t); }
+a.tl { color: inherit; text-decoration: none; transition: color .2s; }
+a.tl::after { content: " ↗"; color: var(--muted); font-size: .78em; font-weight: 400; }
+a.tl:hover { color: var(--accent-t); }
+a.tl:hover::after { color: var(--accent-t); }
 
-#map-panel { display: flex; flex-direction: column; }
-#map { width: 100%; height: auto; flex: 1 1 auto; min-height: 420px; position: relative; }
-.map-tv { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 14px; align-items: stretch; }
-@media (max-width: 1000px) { .map-tv { grid-template-columns: 1fr; } }
-.tv-ch { margin-bottom: 10px; }
-.tv-screen { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
-.tv-screen iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-.tv-wait { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; background: #0b110f; color: var(--muted); font-size: 13px; }
-.tv-status { margin-top: 8px; font-size: 12.5px; color: var(--muted); min-height: 1.4em; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.tv-status button { background: transparent; color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 3px 9px; font: inherit; font-size: 12px; cursor: pointer; }
-.tv-status button:hover { border-color: var(--accent); color: var(--accent); }
-.tv-cover { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 8px; text-align: center; padding: 16px;
-  background: radial-gradient(circle at 50% 40%, #1f2d29, #0b110f 70%); color: var(--ink); border: 0; width: 100%; font: inherit; cursor: pointer; }
-.tv-cover .play { width: 62px; height: 62px; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-size: 24px; padding-left: 4px; }
-.tv-cover .nm { font-weight: 600; font-size: 16px; }
-.tv-cover .ds { color: var(--muted); font-size: 12.5px; max-width: 420px; }
-.tv-cover:hover .play { filter: brightness(1.1); }
-a.tv-cover { text-decoration: none; }
-.tv-info { margin-top: 10px; display: grid; gap: 6px; font-size: 12.5px; color: var(--muted); }
-.tv-info .row { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
-.tv-info a { color: var(--ink); }
-.tv-info a:hover { color: var(--accent); }
-.tv-info .tip { background: var(--sunk); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; }
-@media (max-width: 600px) { #map { height: 340px; } }
-.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; color: var(--muted); font-size: 12px; }
-.legend label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
-.legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+/* Bản tin nhanh */
+.brief { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); column-gap: 32px; }
+.brief li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; padding: 13px 0; border-top: 1px solid var(--line); }
+.brief .bn { font-size: 21px; font-weight: 900; font-stretch: 125%; line-height: 1.1; }
+.brief .bc { display: block; font-size: 12px; font-weight: 700; color: var(--dot, var(--accent)); margin-bottom: 2px; }
+.brief .bc span { color: var(--muted); font-weight: 500; }
+.brief .il { font-size: 15.5px; font-weight: 600; line-height: 1.38; }
+#brief-pol, #brief { min-height: 120px; align-content: start; }
+
+/* Phân trang */
+.pager { display: flex; flex-wrap: wrap; align-items: center; row-gap: 8px; }
+.pager:empty { display: none; }
+.pager button { min-width: 42px; height: 42px; padding: 0 10px; margin-left: -1.5px; background: transparent; color: var(--ink); border: 1.5px solid var(--rule); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: background-color .2s, color .2s; }
+.pager button:first-child { margin-left: 0; }
+.pager button:hover:not([disabled]):not([aria-current]) { background: #1f1f1f; }
+.pager button[aria-current="page"] { background: var(--ink); color: var(--bg); }
+.pager button[disabled] { opacity: .3; cursor: default; }
+.pager .pinfo { margin-left: 14px; color: var(--muted); font-size: 13px; }
+
+/* Bản đồ */
+.map-box { position: relative; }
+#map { width: 100%; height: clamp(300px, 44vw, 640px); position: relative; }
+.waves { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 1; }
+.waves i { position: absolute; border-radius: 50%; border: 2px solid; transform: translate(-50%, -50%); opacity: 0; animation: wave var(--d) cubic-bezier(.2, .6, .3, 1) infinite; }
+@keyframes wave { from { transform: translate(-50%, -50%) scale(1); opacity: .9; } to { transform: translate(-50%, -50%) scale(var(--s)); opacity: 0; } }
+.map-stats { position: absolute; left: 0; bottom: 12px; z-index: 2; display: flex; border: 1.5px solid var(--rule); background: rgba(11, 11, 11, .86); }
+.map-stats:empty { display: none; }
+.map-stats div { padding: 9px 16px; display: flex; flex-direction: column; line-height: 1.1; }
+.map-stats div + div { border-left: 1.5px solid var(--rule); }
+.map-stats b { font-size: 28px; font-weight: 900; font-stretch: 125%; letter-spacing: -.03em; }
+.map-stats b.hot { color: var(--accent); }
+.map-stats span { font-size: 12px; font-weight: 600; color: var(--soft); }
 .map-fallback { display: grid; gap: 8px; position: absolute; inset: 0; overflow: auto; align-content: start; }
-
-.alerts { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); }
-.map-fallback .alert { margin: 0; }
-.alert { display: grid; grid-template-columns: 4px 1fr; gap: 12px; background: var(--sunk); border-radius: 8px; padding: 11px 14px 11px 0; }
-.alert .bar { border-radius: 0 3px 3px 0; }
-.alert.clk { cursor: pointer; transition: background .15s; }
-.alert.clk:hover { background: var(--line); }
-.alert.clk:hover .t a { color: var(--accent); }
-.alert .t { font-weight: 600; }
-.alert .m { color: var(--muted); font-size: 12px; }
-.alert p { margin: 2px 0 0; font-size: 13px; }
-a.il { color: inherit; text-decoration: underline; text-decoration-color: var(--border-land); text-underline-offset: 3px; }
-a.il:hover { color: var(--accent); text-decoration-color: var(--accent); }
-a.tl { color: inherit; text-decoration: none; }
-a.tl::after { content: " ↗"; color: var(--muted); font-size: .85em; font-weight: 400; }
-a.tl:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
-a.tl:hover::after { color: var(--accent); }
-
-.brief { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.brief-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin: 0 0 8px; }
-.brief + .brief-label, .pager + .brief-label { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
-.brief.paged li::before { background: var(--dot, var(--accent)); border-radius: 50%; }
-.paged .bd { color: var(--muted); font-size: 12px; margin-right: 6px; font-variant-numeric: tabular-nums; }
-#brief-pol { min-height: 290px; } #brief { min-height: 140px; } .paged { align-content: start; }
-.pager { display: flex; gap: 6px; align-items: center; margin-top: 10px; }
-#news-pager, #policy-pager { margin-top: 14px; }
-.pager button { background: transparent; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; min-width: 30px; height: 28px; padding: 0 8px; font: inherit; font-size: 13px; cursor: pointer; }
-.pager button:hover:not([disabled]) { color: var(--ink); border-color: var(--muted); }
-.pager button[aria-current="page"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
-.pager button[disabled] { opacity: .35; cursor: default; }
-.pager .pinfo { color: var(--muted); font-size: 12px; margin-left: auto; }
-.brief li { padding-left: 14px; position: relative; font-size: 13.5px; }
-.brief li::before { content: ""; position: absolute; left: 0; top: .6em; width: 6px; height: 6px; background: var(--accent); border-radius: 1px; }
-.tag { font-size: 11px; color: var(--on-accent); background: var(--accent); border-radius: 4px; padding: 1px 6px; font-weight: 600; }
-
-.news-tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.news-tools input { background: var(--sunk); border: 1px solid var(--line); color: var(--ink); border-radius: 7px; padding: 6px 10px; font: inherit; min-width: 200px; }
-.news { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
-.card { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; gap: 4px; align-content: start; background: var(--sunk); }
-.card .meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; color: var(--muted); font-size: 12.5px; }
-.chip { font-size: 13px; font-weight: 500; border-radius: 5px; padding: 2px 8px; border: 1px solid var(--line); color: var(--muted); display: inline-flex; align-items: center; gap: 5px; }
-.chip .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-.card a { color: var(--muted); text-decoration-color: var(--line); }
-.card a:hover { color: var(--accent); }
-.card h3 { font-family: var(--body); font-size: 14px; font-weight: 600; letter-spacing: 0; }
-.card h3 a.tl { color: var(--ink); text-decoration: none; }
-.card h3 a.tl:hover { color: var(--accent); }
-.card p { margin: 0; color: var(--muted); font-size: 13px; }
-.empty { color: var(--muted); padding: 10px 0; }
-
-.ask { display: grid; gap: 10px; }
-.ask form { display: flex; gap: 8px; flex-wrap: wrap; }
-.ask input { flex: 1 1 260px; background: var(--sunk); border: 1px solid var(--line); color: var(--ink); border-radius: 7px; padding: 9px 12px; font: inherit; }
-.btn { background: var(--accent); color: var(--on-accent); border: 0; border-radius: 7px; padding: 9px 16px; font: inherit; font-weight: 600; cursor: pointer; }
-.btn[disabled] { opacity: .5; cursor: progress; }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.chips button { background: transparent; border: 1px solid var(--line); color: var(--ink); border-radius: 999px; padding: 4px 11px; font: inherit; font-size: 12.5px; cursor: pointer; }
-.chips button:hover { border-color: var(--accent); }
-.answer { white-space: pre-wrap; background: var(--sunk); border-radius: 8px; padding: 12px; min-height: 48px; font-size: 13.5px; }
+.alert { display: grid; grid-template-columns: 4px 1fr; gap: 12px; background: var(--sunk); padding: 10px 14px 10px 0; }
+.alert .m { color: var(--muted); font-size: 12px; } .alert .t { font-weight: 700; } .alert p { margin: 2px 0 0; font-size: 13px; }
 .note { color: var(--muted); font-size: 12px; }
 
-footer { color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 6px; }
-footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
-.sig { position: fixed; right: clamp(12px, 1.6vw, 28px); bottom: 14px; z-index: 40; pointer-events: none; text-align: right; display: grid; justify-items: end; gap: 2px; opacity: .6; }
-.sig-k { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
-.sig-n { font-size: 15px; font-weight: 600; letter-spacing: .04em; color: var(--ink); line-height: 1.1; }
-@media (max-width: 600px) { .sig-n { font-size: 13px; } .sig-k { font-size: 9px; } }
-@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+.mix { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1.5px solid var(--rule); }
+.mix label { padding: 14px 14px 0 0; display: flex; flex-direction: column; gap: 6px; cursor: pointer; transition: opacity .25s; }
+.mix label.off { opacity: .35; }
+.mix .v { font-size: clamp(40px, 5vw, 68px); font-weight: 900; font-stretch: 125%; line-height: .9; letter-spacing: -.04em; }
+.mix .k { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+.mix input { accent-color: var(--ink); margin: 0; width: 15px; height: 15px; flex: 0 0 auto; }
+.mix i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: 0 0 auto; }
+
+.lv { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; font-size: 13px; }
+.lv-t { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--muted); }
+.lv-i { display: inline-flex; align-items: center; gap: 10px; }
+.lv-ic { position: relative; width: 34px; height: 34px; flex: 0 0 auto; }
+.lv-ic i { position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; border-radius: 50%; transform: translate(-50%, -50%); }
+.lv-ic i.c { background: var(--ink); }
+.lv-ic i.w { border: 2px solid var(--ink); opacity: 0; animation: wave var(--d) cubic-bezier(.2, .6, .3, 1) infinite; }
+.lv-i b { display: block; font-weight: 700; line-height: 1.2; }
+.lv-i small { color: var(--muted); font-size: 12px; }
+
+/* Cảnh báo mới: bảng */
+.tbl-wrap { overflow-x: auto; }
+table.al { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.al th { text-align: left; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 0 14px 10px 0; border-bottom: 1.5px solid var(--rule); }
+table.al th.r, table.al td.dt { text-align: right; padding-right: 0; }
+table.al td { padding: 14px 14px 14px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.al tbody tr { cursor: pointer; transition: background-color .2s, color .2s; }
+table.al tbody tr:hover { background: var(--ink); color: var(--bg); }
+table.al tbody tr:hover * { color: var(--bg) !important; }
+.al .ty { font-weight: 700; white-space: nowrap; }
+.al .ty i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 10px; vertical-align: 1px; }
+.al .loc { white-space: nowrap; }
+.al .lvc { font-weight: 700; white-space: nowrap; }
+.al .lv1 { color: var(--muted); } .al .lv2 { color: #ffd23f; } .al .lv3 { color: #ff5a66; }
+.al .x { color: var(--soft); }
+.al .dt { font-weight: 700; white-space: nowrap; }
+
+/* Tin dịch bệnh */
+.tools { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.tools input { background: transparent; border: 1.5px solid var(--rule); border-radius: 0; color: var(--ink); padding: 8px 12px; font: inherit; font-size: 14px; min-width: 240px; }
+.news { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 30px 28px; }
+.card { border-top: 5px solid var(--c, var(--ink)); padding-top: 14px; display: flex; flex-direction: column; gap: 8px; transition: transform .4s cubic-bezier(.16, 1, .3, 1); }
+.card:hover { transform: translateY(-4px); }
+.card .top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.card .no { font-size: 40px; font-weight: 900; font-stretch: 125%; line-height: 1; letter-spacing: -.04em; }
+.card .dt { font-size: 13px; font-weight: 700; }
+.card .cat { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--c); }
+.card h3 { font-size: 20px; font-weight: 800; font-stretch: 105%; line-height: 1.2; letter-spacing: -.01em; }
+.card p { margin: 0; font-size: 14px; color: var(--soft); }
+.empty { color: var(--muted); padding: 10px 0; }
+#news-pager, #policy-pager { margin-top: 28px; }
+
+/* Chính sách & khoa học */
+.pol-grid { display: grid; grid-template-columns: minmax(260px, 4fr) minmax(0, 8fr); gap: 32px; }
+.pol-side { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.cats { display: flex; flex-direction: column; }
+.cats button { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; background: none; border: 0; border-bottom: 1px solid var(--line); padding: 10px 0; color: var(--ink); font: inherit; font-size: clamp(20px, 2.2vw, 30px); font-weight: 800; font-stretch: 112%; letter-spacing: -.02em; line-height: 1.15; text-align: left; cursor: pointer; transition: color .2s, padding-left .35s cubic-bezier(.16, 1, .3, 1); }
+.cats button:hover { color: var(--accent-t); padding-left: 10px; }
+.cats button[aria-pressed="true"] { color: var(--accent); }
+.cats button small { font-size: 14px; font-weight: 700; font-stretch: 100%; letter-spacing: 0; color: var(--c, var(--muted)); }
+.prow { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 20px; padding: 18px 0; border-top: 1px solid #3a3a38; }
+.prow:first-child { border-top: 1.5px solid var(--rule); }
+.prow .pd { display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 700; }
+.prow .pc { font-size: 12px; color: var(--c); }
+.prow .pb { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.prow h3 { font-size: 21px; font-weight: 800; font-stretch: 105%; line-height: 1.2; letter-spacing: -.01em; }
+.prow .org { font-size: 13px; color: var(--muted); }
+.prow p { margin: 0; font-size: 15px; color: var(--soft); }
+
+/* Truyền hình */
+.tv { background: var(--panel); border: 1px solid var(--line); padding: clamp(16px, 2.4vw, 32px); display: grid; grid-template-columns: minmax(0, 7fr) minmax(260px, 5fr); gap: 28px; }
+.tv-side { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.tv-screen { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; overflow: hidden; }
+.tv-screen iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.tv-wait { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; background: #070707; color: var(--muted); font-size: 13px; }
+.tv-status { margin-top: 10px; font-size: 13px; color: var(--muted); min-height: 1.4em; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.tv-status button { background: transparent; color: var(--ink); border: 1.5px solid var(--rule); padding: 5px 10px; font: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer; }
+.tv-status button:hover { background: var(--ink); color: var(--bg); }
+.tvch { display: flex; flex-direction: column; }
+.tvch button { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; background: none; border: 0; border-bottom: 1px solid #2e2e2e; padding: 9px 0; color: var(--ink); font: inherit; font-size: clamp(18px, 2vw, 26px); font-weight: 800; font-stretch: 112%; letter-spacing: -.02em; text-align: left; cursor: pointer; transition: color .2s; }
+.tvch button:hover { color: var(--accent-t); }
+.tvch button[aria-pressed="true"] { color: var(--accent); }
+.tvch button small { font-size: 13px; font-weight: 500; font-stretch: 100%; letter-spacing: 0; color: var(--muted); }
+.tv-info { display: grid; gap: 8px; font-size: 13px; color: var(--muted); }
+.tv-info .row { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
+.tv-info a { color: var(--ink); font-weight: 700; }
+.tv-info a:hover { color: var(--accent-t); }
+.tv-info .tip { border-left: 3px solid var(--accent); padding: 4px 0 4px 10px; }
+
+/* Chữ ký */
+.sig { position: fixed; right: clamp(10px, 1.6vw, 28px); bottom: 12px; z-index: 40; pointer-events: none; text-align: right; display: grid; justify-items: end; gap: 1px; padding: 6px 10px; background: rgba(11, 11, 11, .82); }
+.sig-k { font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.sig-n { font-size: 15px; font-weight: 900; font-stretch: 125%; letter-spacing: -.01em; text-transform: uppercase; color: var(--ink); line-height: 1.1; }
+.sig-n b { color: var(--accent); }
+
+/* Máy tính bảng */
+@media (max-width: 1000px) {
+  .pol-grid, .tv { grid-template-columns: minmax(0, 1fr); }
+  .cats { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+  .cats button { border: 1.5px solid var(--rule); padding: 8px 12px; font-size: 15px; font-weight: 700; font-stretch: 100%; letter-spacing: 0; gap: 8px; }
+  .cats button:hover { padding-left: 12px; }
+  .cats button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .cats button[aria-pressed="true"] small { color: var(--bg); }
+  .tvch { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+  .tvch button { border: 1.5px solid #3a3a38; padding: 8px 12px; font-size: 15px; font-weight: 700; font-stretch: 100%; letter-spacing: 0; }
+  .tvch button small { display: none; }
+  .tvch button[aria-pressed="true"] { border-color: var(--accent); }
+}
+
+/* Điện thoại */
+@media (max-width: 760px) {
+  html, body { font-size: 15px; }
+  .wrap { background-image: none; padding-bottom: 80px; }
+  .ticker { font-size: 11.5px; }
+  .marq { gap: 32px; padding: 8px 0; animation-duration: 55s; }
+  header.top { padding: 20px 0 14px; gap: 14px; border-bottom-width: 2px; }
+  .brand p { font-size: 13px; margin-top: 6px; }
+  .meta-dl { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; width: 100%; }
+  .meta-dl dd { font-size: 13.5px; }
+  .sec { grid-template-columns: minmax(0, 1fr); gap: 14px; padding: 26px 0 32px; }
+  .sec-l { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+  .sec-l h2 { font-size: 21px; }
+  .sec-l .sub { flex-basis: 100%; }
+  .sec-b { gap: 14px; }
+  /* Nút lọc: một hàng, vuốt ngang thay vì xuống nhiều dòng */
+  .seg { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .seg::-webkit-scrollbar { display: none; }
+  .seg button { padding: 10px 14px; flex: 0 0 auto; }
+  .cats, .tvch { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .cats::-webkit-scrollbar, .tvch::-webkit-scrollbar { display: none; }
+  .cats button, .tvch button { flex: 0 0 auto; font-size: 14px; }
+  .brief li { grid-template-columns: 34px minmax(0, 1fr); gap: 10px; padding: 12px 0; }
+  .brief .bn { font-size: 17px; }
+  .brief .il { font-size: 15px; }
+  .pager button { min-width: 44px; height: 44px; }
+  #map { height: clamp(210px, 62vw, 360px); }
+  .map-stats { position: static; margin-top: 10px; width: 100%; }
+  .map-stats div { flex: 1 1 0; padding: 8px 12px; }
+  .map-stats b { font-size: 24px; }
+  .mix { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mix label { padding: 12px 10px 4px 0; }
+  .mix .v { font-size: 40px; }
+  .mix .k { font-size: 13px; align-items: flex-start; }
+  .lv { gap: 10px 18px; }
+  .lv-t { flex-basis: 100%; }
+  .lv-i small { display: none; }
+  .lv-ic { width: 28px; height: 28px; }
+  /* Bảng cảnh báo thành thẻ dọc */
+  table.al thead { display: none; }
+  table.al, table.al tbody { display: block; }
+  table.al tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "ty lv" "loc dt" "x x"; gap: 3px 12px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  table.al td { padding: 0; border: 0; }
+  .al .ty { grid-area: ty; white-space: normal; }
+  .al .lvc { grid-area: lv; text-align: right; font-size: 13px; }
+  .al .loc { grid-area: loc; white-space: normal; color: var(--muted); font-size: 13px; }
+  .al .dt { grid-area: dt; font-size: 13px; color: var(--muted); font-weight: 600; }
+  .al .x { grid-area: x; font-size: 14px; margin-top: 4px; }
+  table.al tbody tr:hover { background: transparent; color: inherit; }
+  table.al tbody tr:hover * { color: inherit !important; }
+  .bar { margin-bottom: 16px; gap: 12px; }
+  .big-h { gap: 12px; }
+  .big-h h2 { font-size: 34px; }
+  .tools { width: 100%; }
+  .tools .seg { width: 100%; }
+  .tools input { min-width: 0; width: 100%; font-size: 16px; }
+  .news { gap: 24px; }
+  .card .no { font-size: 30px; }
+  .card h3 { font-size: 18px; }
+  .card:hover { transform: none; }
+  .pol-grid { gap: 16px; }
+  .prow { grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 16px 0; }
+  .prow .pd { flex-direction: row; gap: 10px; align-items: baseline; }
+  .prow h3 { font-size: 18px; }
+  .prow p { font-size: 14px; }
+  .tv { padding: 14px; gap: 16px; }
+  .tv { display: flex; flex-direction: column; }
+  .tv-side { display: contents; }
+  .tv-side .sec-l { order: 1; } .tvch { order: 2; } .tv-main { order: 3; } .tv-info { order: 4; }
+  .tv-info .tip { font-size: 12.5px; }
+  .sig { right: 8px; bottom: 8px; padding: 4px 8px; }
+  .sig-k { font-size: 8.5px; }
+  .sig-n { font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } .waves { display: none; } }
 </style>
 </head>
 <body>
+<div class="ticker" aria-label="Cảnh báo mới nhất"><div class="marq" id="ticker"></div></div>
 <div class="wrap">
 
   <header class="top">
     <div class="brand">
-      <h1>Livestock <span>Monitor</span></h1>
+      <h1>Livestock Monitor<span>.</span></h1>
       <p>Theo dõi dịch bệnh, chính sách và khoa học chăn nuôi thế giới</p>
     </div>
-    <div class="pills">
-      <span class="pill"><span class="dot"></span>Số liệu chốt ngày 19/11/2026</span>
-      <span class="pill" id="vn-clock" title="Giờ GMT+7 (Việt Nam)">🕒 <span class="num" id="vn-time">--:--</span> GMT+7</span>
-      <span class="pill" id="hn-weather" title="Thời tiết hiện tại ở Hà Nội (Open-Meteo)" hidden>🌡 Hà Nội <span class="num" id="hn-temp"></span></span>
-    </div>
+    <dl class="meta-dl">
+      <div><dt>Ngày</dt><dd class="num" id="vn-date">--/--/----</dd></div>
+      <div id="vn-clock" title="Giờ GMT+7 (Việt Nam)"><dt>Giờ</dt><dd><span class="num" id="vn-time">--:--</span> GMT+7</dd></div>
+      <div id="hn-weather" title="Thời tiết hiện tại ở Hà Nội (Open-Meteo)" hidden><dt>Hà Nội</dt><dd class="num" id="hn-temp"></dd></div>
+      <div><dt>Thời gian cập nhật</dt><dd class="num" id="updated">19/11/2026, 10:36 GMT+7</dd></div>
+    </dl>
   </header>
 
-
-  <section class="panel" id="side">
-    <div class="side-grid">
-      <div>
-        <div class="panel-head">
-          <h2>Bản tin nhanh</h2>
-          <span class="tag">Tổng hợp</span>
-        </div>
-        <div class="brief-label">Chính sách &amp; công nghệ</div>
-        <ul class="brief paged" id="brief-pol"></ul>
-        <div class="pager" id="brief-pol-pager"></div>
-        <div class="brief-label">Dịch bệnh</div>
-        <ul class="brief paged" id="brief"></ul>
-        <div class="pager" id="brief-pager"></div>
+  <section class="sec" id="side">
+    <div class="sec-l"><span class="sec-n">01</span><h2>Bản tin nhanh</h2><span class="sub" id="brief-count"></span></div>
+    <div class="sec-b">
+      <div class="seg" role="group" aria-label="Chọn bản tin" id="brief-tabs">
+        <button type="button" data-b="pol" aria-pressed="true">Chính sách &amp; công nghệ</button>
+        <button type="button" data-b="dis" aria-pressed="false">Dịch bệnh</button>
       </div>
-      <div>
-        <div class="panel-head">
-          <h2>Cảnh báo mới</h2>
-          <span class="sub" id="alerts-sub">Mới nhất trước</span>
-        </div>
-        <div class="alerts-box"><div class="alerts" id="alerts"></div></div>
-      </div>
+      <div id="bp-pol"><ul class="brief paged" id="brief-pol"></ul><div class="pager" id="brief-pol-pager"></div></div>
+      <div id="bp-dis" hidden><ul class="brief paged" id="brief"></ul><div class="pager" id="brief-pager"></div></div>
     </div>
   </section>
 
-  <section class="stats" id="stats" aria-label="Tóm tắt"></section>
-
-  <div class="map-tv">
-  <section class="panel" id="map-panel">
-    <div class="panel-head">
-      <div>
-        <h2>Bản đồ dịch bệnh</h2>
-        <div class="sub">Điểm nóng được cơ quan thú y và báo chí báo cáo, 8–11/2026. Rê chuột vào điểm để xem chi tiết.</div>
-      </div>
+  <section class="sec" id="map-panel">
+    <div class="sec-l"><span class="sec-n">02</span><h2>Bản đồ dịch bệnh</h2><span class="sub" id="map-sub">Điểm nóng do cơ quan thú y và báo chí báo cáo, 8–11/2026. Rê chuột hoặc chạm vào điểm để xem chi tiết.</span></div>
+    <div class="sec-b">
       <div class="seg" role="group" aria-label="Vùng bản đồ" id="regions">
         <button type="button" data-r="global" aria-pressed="true">Toàn cầu</button>
         <button type="button" data-r="asia" aria-pressed="false">Châu Á</button>
@@ -225,64 +345,89 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
         <button type="button" data-r="na" aria-pressed="false">Bắc Mỹ</button>
         <button type="button" data-r="africa" aria-pressed="false">Châu Phi</button>
       </div>
-    </div>
-    <div id="map" role="img" aria-label="Bản đồ các điểm nóng dịch bệnh"></div>
-    <div class="legend" id="legend"></div>
-  </section>
-
-  <section class="panel" id="tv-panel">
-    <div class="panel-head">
-      <div>
-        <h2>Truyền hình nông nghiệp</h2>
-        <div class="sub">Chỉ phát video mới về vật nuôi (bò, lợn, gia cầm, dê cừu, thú y). Phụ đề tiếng Việt dùng tính năng dịch tự động của YouTube.</div>
+      <div class="map-box">
+        <div id="map" role="img" aria-label="Bản đồ các điểm nóng dịch bệnh"></div>
+        <div class="waves" id="waves" aria-hidden="true"></div>
+        <div class="map-stats" id="stats" aria-label="Tóm tắt"></div>
+      </div>
+      <div class="mix" id="legend" role="group" aria-label="Lọc loại bệnh trên bản đồ"></div>
+      <div class="lv" aria-label="Mức nguy hiểm">
+        <span class="lv-t">MỨC NGUY HIỂM</span>
+        <span class="lv-i"><span class="lv-ic" style="--d:4.5s;--s:2.6"><i class="w"></i><i class="c"></i></span><span><b>Theo dõi</b><small>1 vòng sóng, chậm</small></span></span>
+        <span class="lv-i"><span class="lv-ic" style="--d:3s;--s:3.2"><i class="w"></i><i class="w" style="animation-delay:-1.5s"></i><i class="c"></i></span><span><b>Cảnh báo</b><small>2 vòng sóng</small></span></span>
+        <span class="lv-i"><span class="lv-ic" style="--d:1.6s;--s:3.8"><i class="w"></i><i class="w" style="animation-delay:-.53s"></i><i class="w" style="animation-delay:-1.07s"></i><i class="c"></i></span><span><b>Nguy hiểm</b><small>3 vòng sóng, nhanh</small></span></span>
       </div>
     </div>
-    <div class="seg tv-ch" role="group" aria-label="Chọn kênh" id="tv-ch"></div>
-    <div class="tv-screen" id="tv-screen"></div>
-    <div class="tv-status" id="tv-status" aria-live="polite"></div>
-    <div class="tv-info" id="tv-info"></div>
   </section>
-  </div>
 
-  <section class="panel" id="news-panel">
-    <div class="panel-head">
-      <h2>Tin dịch bệnh</h2>
-      <div class="news-tools">
-        <div class="seg" role="group" aria-label="Lọc theo bệnh" id="news-filter">
-          <button type="button" data-f="all" aria-pressed="true">Tất cả</button>
-          <button type="button" data-f="hpai" aria-pressed="false">Cúm gia cầm</button>
-          <button type="button" data-f="asf" aria-pressed="false">Dịch tả lợn châu Phi</button>
-          <button type="button" data-f="fmd" aria-pressed="false">LMLM / VDNC</button>
-          <button type="button" data-f="human" aria-pressed="false">Cúm gia cầm trên người</button>
+  <section class="sec" id="alerts-sec">
+    <div class="sec-l"><span class="sec-n">03</span><h2>Cảnh báo mới</h2><span class="sub" id="alerts-sub">Mới nhất trước</span></div>
+    <div class="sec-b">
+      <div class="tbl-wrap">
+        <table class="al">
+          <thead><tr><th>Bệnh</th><th>Địa điểm</th><th>Mức</th><th>Diễn biến</th><th class="r">Ngày</th></tr></thead>
+          <tbody id="alerts"></tbody>
+        </table>
+      </div>
+      <div class="pager" id="alerts-pager"></div>
+    </div>
+  </section>
+
+  <section class="sec wide" id="news-panel">
+    <div>
+      <div class="bar">
+        <div class="big-h"><span class="sec-n">04</span><h2>Tin dịch bệnh</h2></div>
+        <div class="tools">
+          <div class="seg" role="group" aria-label="Lọc theo bệnh" id="news-filter">
+            <button type="button" data-f="all" aria-pressed="true">Tất cả</button>
+            <button type="button" data-f="hpai" aria-pressed="false">Cúm gia cầm</button>
+            <button type="button" data-f="asf" aria-pressed="false">Dịch tả lợn châu Phi</button>
+            <button type="button" data-f="fmd" aria-pressed="false">LMLM / VDNC</button>
+            <button type="button" data-f="human" aria-pressed="false">Cúm gia cầm trên người</button>
+          </div>
+          <input type="search" id="news-q" placeholder="Tìm: H5N1, Namibia, bò sữa…" aria-label="Tìm trong tin">
         </div>
-        <input type="search" id="news-q" placeholder="Tìm: H5N1, Namibia, bò sữa…" aria-label="Tìm trong tin">
       </div>
+      <div class="news" id="news"></div>
+      <div class="pager" id="news-pager"></div>
     </div>
-    <div class="news" id="news"></div>
-    <div class="pager" id="news-pager"></div>
   </section>
 
-  <section class="panel" id="policy-panel">
-    <div class="panel-head">
+  <section class="sec wide" id="policy-panel">
+    <div class="pol-grid">
+      <div class="pol-side">
+        <div class="sec-l"><span class="sec-n">05</span><h2>Chính sách &amp; khoa học</h2><span class="sub">Luật, quy định, công nghệ, kháng sinh, di truyền động vật và bảo vệ môi trường. Mỗi tin dựa trên một nguồn đã kiểm tra link.</span></div>
+        <div class="cats" role="group" aria-label="Lọc theo lĩnh vực" id="pol-filter">
+          <button type="button" data-f="all" aria-pressed="true">Tất cả <small></small></button>
+          <button type="button" data-f="policy" aria-pressed="false">Chính sách – luật <small></small></button>
+          <button type="button" data-f="tech" aria-pressed="false">Công nghệ <small></small></button>
+          <button type="button" data-f="amr" aria-pressed="false">Kháng sinh – AMR <small></small></button>
+          <button type="button" data-f="gen" aria-pressed="false">Di truyền <small></small></button>
+          <button type="button" data-f="env" aria-pressed="false">Môi trường <small></small></button>
+        </div>
+      </div>
       <div>
-        <h2>Chính sách & khoa học</h2>
-        <div class="sub">Luật, quy định, công nghệ, kháng sinh, di truyền động vật và bảo vệ môi trường. Mỗi tin dựa trên một nguồn đã kiểm tra link.</div>
-      </div>
-      <div class="seg" role="group" aria-label="Lọc theo lĩnh vực" id="pol-filter">
-        <button type="button" data-f="all" aria-pressed="true">Tất cả</button>
-        <button type="button" data-f="policy" aria-pressed="false">Chính sách – luật</button>
-        <button type="button" data-f="tech" aria-pressed="false">Công nghệ</button>
-        <button type="button" data-f="amr" aria-pressed="false">Kháng sinh – AMR</button>
-        <button type="button" data-f="gen" aria-pressed="false">Di truyền</button>
-        <button type="button" data-f="env" aria-pressed="false">Môi trường</button>
+        <div id="policy"></div>
+        <div class="pager" id="policy-pager"></div>
       </div>
     </div>
-    <div class="news" id="policy"></div>
-    <div class="pager" id="policy-pager"></div>
   </section>
 
+  <section class="sec wide" id="tv-panel">
+    <div class="tv">
+      <div class="tv-main">
+        <div class="tv-screen" id="tv-screen"></div>
+        <div class="tv-status" id="tv-status" aria-live="polite"></div>
+      </div>
+      <div class="tv-side">
+        <div class="sec-l"><span class="sec-n">06</span><h2>Truyền hình</h2><span class="sub">Chỉ phát video mới về vật nuôi (bò, lợn, gia cầm, dê cừu, thú y). Phụ đề tiếng Việt dùng dịch tự động của YouTube.</span></div>
+        <div class="tvch" role="group" aria-label="Chọn kênh" id="tv-ch"></div>
+        <div class="tv-info" id="tv-info"></div>
+      </div>
+    </div>
+  </section>
 
-  <div class="sig" aria-hidden="true"><span class="sig-k">curated by</span><span class="sig-n">Trung Lo</span></div>
+  <div class="sig" aria-hidden="true"><span class="sig-k">curated by</span><span class="sig-n">Trung Lo<b>.</b></span></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/dist/echarts.min.js"></script>
@@ -312,6 +457,13 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
   /* ---------- NGUỒN ---------- */
   var SRC = {
+    khanJC: { n: "Kyunghyang Shinmun – Cúm gia cầm ở trại vịt giống Jincheon", u: "https://www.khan.co.kr/en/article/202611132053007" },
+    starKH6: { n: "The Star (Xinhua) – Campuchia ca H5N1 trên người thứ sáu năm 2026", u: "https://www.thestar.com.my/aseanplus/aseanplus-news/2026/09/28/cambodia-confirms-sixth-human-case-of-h5n1-bird-flu-in-2026" },
+    heraldGH: { n: "Herald Business – Cúm gia cầm H5N9 ở trại gà đẻ Ganghwa", u: "https://biz.heraldcorp.com/article/10935963" },
+    dhSpread: { n: "Dairy Herd – HPAI lan sang bang mới, số ca trên bò sữa tăng", u: "https://www.dairyherd.com/news/hpai-spreads-new-states-dairy-cattle-cases-climb" },
+    jfCage: { n: "Just Food – EU xúc tiến kế hoạch cấm nuôi gà đẻ trong lồng", u: "https://www.just-food.com/newsletters/eu-pushes-ahead-with-plan-to-ban-caged-hen-egg-farming" },
+    cp24DK: { n: "CP24 (AFP) – Đan Mạch cân nhắc cấm gà thịt lớn nhanh", u: "https://www.cp24.com/news/world/2026/11/03/denmark-mulls-banning-turbo-chickens/" },
+    psBrazil: { n: "The Poultry Site – EU dự kiến đưa Brazil trở lại danh sách xuất khẩu thịt gia cầm", u: "https://www.thepoultrysite.com/news/2026/10/eu-plans-to-re-list-brazil-for-poultry-meat" },
     psUCOL: { n: "The Poultry Site – EU ban hành quy tắc phát thải chung cho trại lợn, gia cầm", u: "https://www.thepoultrysite.com/news/2026/10/eu-adopts-common-emission-rules-for-poultry-pig-farms" },
     epaAir: { n: "EPA Mỹ – Chấm dứt Thỏa thuận tuân thủ khí thải 2005", u: "https://www.epa.gov/node/301598" },
     drRNG: { n: "Drovers – Nhà máy khí sinh học từ phân bò ở Nebraska", u: "https://www.drovers.com/news/manure-fuel-how-adams-land-cattle-transforming-waste-wealth" },
@@ -348,21 +500,19 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     tribPH: { n: "Daily Tribune – Philippines đẩy nhanh tiêm vắc-xin ASF", u: "https://tribune.net.ph/2026/11/16/da-fast-tracks-asf-jabs-to-revive-hog-industry" },
     starLao: { n: "The Star – Lào tăng tốc chống ASF", u: "https://www.thestar.com.my/aseanplus/aseanplus-news/2026/09/26/laos-accelerates-efforts-to-curb-african-swine-fever-spread" },
     faoASF: { n: "FAO – Cập nhật ASF châu Á – Thái Bình Dương, 15/10/2026", u: "https://www.fao.org/animal-health/situation-updates/asf-in-asia-pacific" },
-    jpRiau: { n: "The Jakarta Post – LMLM ở Riau (Indonesia)", u: "https://www.thejakartapost.com/indonesia/2026/02/20/riau-intensifies-livestock-vaccination-amid-fmd-outbreak" },
     baChina: { n: "Brasilagro – LMLM ở lợn tại Trùng Khánh (Trung Quốc)", u: "https://brasilagro.com.br/conteudo/china-registra-caso-de-febre-aftosa-em-suinos.html" },
     ecdcH9: { n: "ECDC – Ca cúm A(H9N2) trên người ở Trung Quốc", u: "https://www.ecdc.europa.eu/en/epipulse_event/2097" },
     heraldGJ: { n: "Korea Herald – Cúm gia cầm ở Gyeongju", u: "https://mbiz.heraldcorp.com/article/10939037" },
+    asiaeJH: { n: "Asia Business Daily – Kháng nguyên cúm H5 ở trại vịt Jangheung", u: "https://view.asiae.co.kr/en/article/2026110614050000990" },
+    emaCVMP11: { n: "EMA – Kết quả họp CVMP 3–5/11/2026", u: "https://www.ema.europa.eu/sk/node/289115" },
+    gaPBL: { n: "Global Agriculture – Kế hoạch nitơ của Hà Lan chưa đủ (đánh giá PBL)", u: "https://www.global-agriculture.com/crop-nutrition/dutch-nitrogen-plan-falls-short-reviving-livestock-cut-debate/" },
+    bfrAB: { n: "BfR (Đức) – Lượng kháng sinh dùng trong chăn nuôi giảm nhẹ năm 2025", u: "https://www.bfr.bund.de/en/press-release/antibiotics-in-animal-husbandry-use-falls-slightly/" },
     saNews: { n: "SAnews – Nam Phi tiêm phòng LMLM cho hơn 90% đàn bò", u: "https://www.sanews.gov.za/node/85642" },
-    ukrEU: { n: "UkrAgroConsult – ASF ở châu Âu và châu Á, 5/2026", u: "https://ukragroconsult.com/en/news/epizootic-situation-with-asf-continues-to-worsen-in-europe-and-asia/" },
     tlIndia: { n: "TeamLease RegTech – Quy tắc phòng chống dịch bệnh động vật 2026 (Ấn Độ)", u: "https://teamleaseregtech.com/updates/article/60932/prevention-and-control-of-infectious-and-contagious-diseases-in-animal/" },
     ntRwanda: { n: "The New Times (qua AllAfrica) – Luật chăn nuôi mới của Rwanda", u: "https://allafrica.com/stories/202610200123.html" },
     emaCVMP: { n: "EMA – Kết quả họp CVMP 8–10/9/2026", u: "https://www.ema.europa.eu/ro/node/286754" },
-    agrinfoEU: { n: "AGRINFO – Quy định kháng sinh với hàng nhập khẩu vào EU", u: "https://agrinfo.eu/webinars/agrinfo-webinar-use-of-antimicrobials-in-farmed-animals/" },
-    faoAMR: { n: "FAO – Báo cáo kinh tế về kháng kháng sinh trong chăn nuôi", u: "https://www.fao.org/newsroom/detail/fao-report-highlights-long-term-economic-case-for-tackling-antimicrobial-resistance-in-livestock/en" },
     dnInnotech: { n: "DairyNews – Innotech Vision tại EuroTier 2026", u: "https://dairynews.today/global/news/danish-start-up-innotech-vision-presents-ai-based-livestock-barn-monitoring-at-eurotier-2026.html" },
     anNofence: { n: "AgNavigator – Vòng cổ Nofence N3", u: "https://www.agnavigator.com/Article/2026/09/09/nofence-bets-on-precision-livestock-management-with-launch-of-n3-cattle-collar/" },
-    farmsVax: { n: "Farms.com – Vắc-xin DNA cúm lợn", u: "https://www.farms.com/news/new-swine-influenza-vaccine-technology-could-transform-hog-health-management-243868.aspx" },
-    lgCanada: { n: "Livestock Gentec (ĐH Alberta) – Phê duyệt vật nuôi chỉnh sửa gen", u: "https://livestockgentec.ualberta.ca/2026/03/30/gene-edited-and-cloned-livestock-approvals/" },
     vegFoE: { n: "vegconomist – Báo cáo của Friends of the Earth", u: "https://vegconomist.com/politics-law/new-report-says-us-food-system-faces-growing-risks-gene-edited-farm-animals/" }
   };
 
@@ -376,6 +526,8 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
   /* ---------- ĐIỂM NÓNG ---------- */
   var EV = [
+    { n: "Jincheon, Chungcheong Bắc, Hàn Quốc", co: "Hàn Quốc", t: "hpai", sev: 2, lat: 36.86, lon: 127.44, d: "13/11/2026", x: "Cúm gia cầm độc lực cao H5N1 ở trại vịt giống; tiêu hủy khoảng 2.200 con, hạn chế di chuyển 27 trại (1.043.000 gia cầm) trong vùng.", src: "khanJC" },
+    { n: "Ganghwa, Incheon, Hàn Quốc", co: "Hàn Quốc", t: "hpai", sev: 2, lat: 37.75, lon: 126.49, d: "12/11/2026", x: "Cúm gia cầm độc lực cao H5N9 ở trại gà đẻ khoảng 48.000 con, ổ thứ 4 của mùa đông 2026–2027; xét nghiệm 28 trại trong bán kính 10 km.", src: "heraldGH" },
     { n: "Oklahoma, Mỹ", co: "Mỹ", t: "hpai", sev: 2, lat: 35.5, lon: -97.5, d: "16/11/2026", x: "Một đàn bò sữa nhiễm HPAI, ca đầu tiên trên bò sữa của bang kể từ tháng 7/2024 (cơ quan nông nghiệp Oklahoma xác nhận).", src: "dhOK" },
     { n: "Co Tyrone, Bắc Ireland", co: "Vương quốc Anh", t: "hpai", sev: 1, lat: 54.6, lon: -7.0, d: "15/11/2026", x: "Nghi cúm gia cầm ở một đàn gia cầm thương phẩm có tỷ lệ chết cao; đã phong tỏa và lấy mẫu, chưa xác nhận tại thời điểm đưa tin.", src: "irishTy" },
     { n: "Chiba, Nhật Bản", co: "Nhật Bản", t: "hpai", sev: 2, lat: 35.6, lon: 140.12, d: "13/11/2026", x: "Ổ cúm gia cầm tại trang trại gà, là ổ thứ hai ở trang trại gia cầm của Nhật Bản trong mùa dịch này.", src: "nwnJapan" },
@@ -390,6 +542,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     { n: "Oddar Meanchey, Campuchia", co: "Campuchia", t: "human", sev: 2, lat: 14.16, lon: 103.5, d: "24/09/2026", x: "Ca H5N1 trên người gần nhất ở Tây Thái Bình Dương theo WHO (khởi phát 24/9).", src: "whoWP" },
     { n: "Karasburg, Namibia", co: "Namibia", t: "fmd", sev: 2, lat: -28.0, lon: 18.7, d: "23/09/2026", x: "LMLM chủng SAT1 ở trang trại thương phẩm, lần đầu trong vùng sạch bệnh không tiêm phòng kể từ 2022. EU tạm ngừng nhập một số mặt hàng thịt.", src: "ajNam" },
     { n: "Somogy, Hungary", co: "Hungary", t: "asf", sev: 1, lat: 46.4, lon: 17.6, d: "08/2026", x: "Lần đầu ghi nhận ASF trong vùng (sự kiện bắt đầu 6/8/2026).", src: "woahASF" },
+    { n: "Jangheung, Jeonnam, Hàn Quốc", co: "Hàn Quốc", t: "hpai", sev: 1, lat: 34.68, lon: 126.91, d: "06/11/2026", x: "Phát hiện kháng nguyên cúm H5 ở trại khoảng 20.000 vịt thịt (chờ xác định độc lực); hạn chế di chuyển bán kính 10 km, dừng di chuyển 24 giờ toàn vùng Jeonnam–Gwangju.", src: "asiaeJH" },
     { n: "Gyeongju, Hàn Quốc", co: "Hàn Quốc", t: "hpai", sev: 2, lat: 35.85, lon: 129.21, d: "16/11/2026", x: "Cúm gia cầm độc lực cao ở trại ngỗng cảnh; tiêu hủy toàn bộ 48 con, kiểm tra 29 trại trong bán kính 3 km.", src: "heraldGJ" },
     { n: "Nam Phi", co: "Nam Phi", t: "fmd", sev: 2, lat: -26.2, lon: 28.0, d: "15/11/2026", x: "Đã tiêm phòng LMLM cho hơn 90% đàn bò cả nước (hơn 22 triệu liều); số ổ dịch mới giảm mạnh, mọi tỉnh đã chuyển sang mũi nhắc.", src: "saNews" },
     { n: "Philippines", co: "Philippines", t: "asf", sev: 2, lat: 15.0, lon: 120.9, d: "22/10/2026", x: "Ổ ASF còn hoạt động ở 236 barangay thuộc 23 tỉnh. Đã tiêm 499.008 liều vắc-xin ASF (2024 – giữa 2026); AVAC ASF được cấp phép thương mại 27/8.", src: "tribPH" },
@@ -397,33 +550,38 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     { n: "Chiang Mai, Thái Lan", co: "Thái Lan", t: "asf", sev: 1, lat: 18.79, lon: 98.98, d: "01/10/2026", x: "Công bố vùng dịch ASF tạm thời ở Chai Prakan (hiệu lực đến 30/10). Trước đó, 28/8 có ổ dịch ở Ubon Ratchathani.", src: "faoASF" },
     { n: "Yangon, Myanmar", co: "Myanmar", t: "asf", sev: 1, lat: 16.84, lon: 96.17, d: "08/2026", x: "Báo chí đưa tin nghi ASF: hơn 40 con lợn chết trong 4–5 ngày; ổ dịch chính thức gần nhất báo WOAH là 8/2023.", src: "faoASF" },
     { n: "Selangor, Malaysia", co: "Malaysia", t: "asf", sev: 1, lat: 3.07, lon: 101.52, d: "2026", x: "Năm 2026 có ổ ASF trên lợn nhà ở Selangor và Sarawak; Malaysia có 241 ổ dịch kể từ 2021.", src: "faoASF" },
-    { n: "Riau, Indonesia", co: "Indonesia", t: "fmd", sev: 2, lat: 0.51, lon: 101.45, d: "19/02/2026", x: "LMLM tăng mạnh: hơn 400 con nhiễm ở 6 huyện trong đầu năm 2026, vượt cả năm 2025 (304 ca); tỉnh đẩy nhanh tiêm phòng.", src: "jpRiau" },
     { n: "Trùng Khánh, Trung Quốc", co: "Trung Quốc", t: "fmd", sev: 2, lat: 29.7, lon: 105.7, d: "08/09/2026", x: "LMLM type O ở lợn tại cơ sở giết mổ quận Dazu: 37/677 con có triệu chứng; tiêu hủy, khử trùng, điều tra dịch tễ.", src: "baChina" },
     { n: "Hà Nam, Trung Quốc", co: "Trung Quốc", t: "human", sev: 1, lat: 34.0, lon: 113.6, d: "09/10/2026", x: "Hai ca cúm A(H9N2) trên người (người lớn ở Hà Nam, trẻ em ở Quý Châu), không liên quan nhau; ECDC đánh giá nguy cơ rất thấp.", src: "ecdcH9" },
-    { n: "Hàn Quốc (ASF)", co: "Hàn Quốc", t: "asf", sev: 1, lat: 37.9, lon: 127.2, d: "10/2026", x: "Năm 2026 có 24 ổ ASF ở trại lợn, gấp hơn ba lần năm 2025.", src: "faoASF" },
-    { n: "Ba Lan", co: "Ba Lan", t: "asf", sev: 1, lat: 52.1, lon: 19.4, d: "05/2026", x: "Châu Âu có hơn 4.300 ca ASF trên động vật hoang dã ở 17 nước; nhiều nhất ở Ba Lan, Litva, Italy, Hungary và Đức.", src: "ukrEU" }
+    { n: "Hàn Quốc (ASF)", co: "Hàn Quốc", t: "asf", sev: 1, lat: 37.9, lon: 127.2, d: "10/2026", x: "Năm 2026 có 24 ổ ASF ở trại lợn, gấp hơn ba lần năm 2025.", src: "faoASF" }
   ];
   EV = EV.filter(fresh);
 
-  /* ---------- DẢI TÓM TẮT ---------- */
+  /* ---------- SỐ LIỆU TÓM TẮT (lồng trong bản đồ) ---------- */
   var countries = {}; EV.forEach(function (e) { countries[e.co] = 1; });
   function cnt(t) { return EV.filter(function (e) { return e.t === t; }).length; }
-  var STATS = [
-    { k: "Điểm nóng đang theo dõi", v: EV.length, c: C.accent },
-    { k: "Quốc gia", v: Object.keys(countries).length, c: C.muted },
-    { k: "Cúm gia cầm", v: cnt("hpai"), c: C.hpai },
-    { k: "Dịch tả lợn châu Phi", v: cnt("asf"), c: C.asf },
-    { k: "LMLM / viêm da nổi cục", v: cnt("fmd"), c: C.fmd },
-    { k: "Có ca bệnh trên người", v: cnt("human"), c: C.human }
-  ];
-  var st = document.getElementById("stats");
-  STATS.forEach(function (s) {
-    var el = document.createElement("div"); el.className = "stat";
-    el.innerHTML = '<div class="k"></div><div class="v num"></div>';
-    el.style.borderLeftColor = s.c;
-    el.querySelector(".k").textContent = s.k; el.querySelector(".v").textContent = s.v;
-    st.appendChild(el);
-  });
+  (function () {
+    var st = document.getElementById("stats");
+    [["hot", EV.length, "điểm nóng"], ["", Object.keys(countries).length, "quốc gia"],
+     ["", Object.keys(TYPES).filter(function (k) { return cnt(k) > 0; }).length, "nhóm bệnh"]].forEach(function (x) {
+      var d = document.createElement("div"), b = document.createElement("b"), sp = document.createElement("span");
+      if (x[0]) b.className = x[0]; b.textContent = x[1]; sp.textContent = x[2];
+      d.appendChild(b); d.appendChild(sp); st.appendChild(d);
+    });
+  })();
+
+  /* ---------- DẢI TIN CHẠY (cảnh báo mới nhất) ---------- */
+  (function () {
+    var tk = document.getElementById("ticker"); if (!tk) return;
+    var list = EV.slice().sort(function (x, y) { return dkey(y.d) - dkey(x.d); }).slice(0, 8);
+    for (var r = 0; r < 2; r++) list.forEach(function (e) {
+      var a = document.createElement("a"), i = document.createElement("i");
+      i.style.background = TYPES[e.t].c; a.appendChild(i);
+      a.appendChild(document.createTextNode(TYPES[e.t].n + " — " + e.n));
+      if (SRC[e.src]) { a.href = SRC[e.src].u; a.target = "_blank"; a.rel = "noopener"; }
+      if (r) { a.setAttribute("aria-hidden", "true"); a.tabIndex = -1; }
+      tk.appendChild(a);
+    });
+  })();
 
   /* ---------- BẢN TIN ---------- */
   function linkTo(k, text, cls) {
@@ -451,9 +609,13 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   /* Bản tin nhanh – Dịch bệnh: mỗi mục là MỘT tin riêng, một nguồn.
      d = ngày, t = loại bệnh (hpai|asf|fmd|human), x = nội dung ngắn (cả câu là link), src = khóa trong SRC */
   var BRIEF = [
+    { d: "13/11/2026", t: "hpai", x: "Hàn Quốc: cúm gia cầm H5N1 ở trại vịt giống Jincheon, tiêu hủy khoảng 2.200 con", src: "khanJC" },
+    { d: "13/11/2026", t: "hpai", x: "Mỹ: 6 bang có ca HPAI mới trên bò sữa trong 30 ngày, Washington 41 ca", src: "dhSpread" },
+    { d: "12/11/2026", t: "hpai", x: "Hàn Quốc: H5N9 ở trại gà đẻ 48.000 con tại Ganghwa, ổ thứ 4 của mùa đông", src: "heraldGH" },
     { d: "17/11/2026", t: "asf", x: "Dịch tả lợn châu Phi trở lại Bhutan: 12/29 con lợn chết ở huyện Samtse", src: "fsBhutan" },
     { d: "16/11/2026", t: "hpai", x: "Oklahoma (Mỹ) có đàn bò sữa nhiễm cúm gia cầm, lần đầu ở bang kể từ 7/2024", src: "dhOK" },
     { d: "16/11/2026", t: "hpai", x: "Hàn Quốc: cúm gia cầm ở trại ngỗng cảnh tại Gyeongju, tiêu hủy 48 con", src: "heraldGJ" },
+    { d: "06/11/2026", t: "hpai", x: "Hàn Quốc: kháng nguyên cúm H5 ở trại 20.000 vịt thịt tại Jangheung, dừng di chuyển 24 giờ", src: "asiaeJH" },
     { d: "16/11/2026", t: "asf", x: "Philippines còn ổ dịch tả lợn châu Phi ở 236 barangay thuộc 23 tỉnh (tính đến 22/10)", src: "tribPH" },
     { d: "16/11/2026", t: "hpai", x: "Bắc Ireland điều tra ổ nghi cúm gia cầm ở Co Tyrone", src: "irishTy" },
     { d: "15/11/2026", t: "fmd", x: "Nam Phi đã tiêm phòng LMLM cho hơn 90% đàn bò cả nước", src: "saNews" },
@@ -468,9 +630,9 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     { d: "15/10/2026", t: "asf", x: "FAO: Thái Lan khoanh vùng dịch tả lợn châu Phi ở Chiang Mai, Hàn Quốc có 24 ổ ở trại lợn năm 2026", src: "faoASF" },
     { d: "14/10/2026", t: "fmd", x: "Namibia chống LMLM chủng SAT1, EU tạm ngừng nhập một số mặt hàng thịt", src: "ajNam" },
     { d: "09/10/2026", t: "human", x: "Trung Quốc có thêm 2 ca cúm A(H9N2) trên người ở Hà Nam và Quý Châu", src: "ecdcH9" },
+    { d: "28/09/2026", t: "human", x: "Campuchia ghi nhận ca H5N1 trên người thứ sáu năm 2026 ở Oddar Meanchey", src: "starKH6" },
     { d: "26/09/2026", t: "asf", x: "Lào: dịch tả lợn châu Phi lan ra 91 huyện ở 7 tỉnh, 14.002 con lợn bị mất", src: "starLao" },
-    { d: "10/09/2026", t: "fmd", x: "Trung Quốc: LMLM type O ở lợn tại cơ sở giết mổ ở Trùng Khánh", src: "baChina" },
-    { d: "19/02/2026", t: "fmd", x: "Indonesia: hơn 400 con gia súc nhiễm LMLM ở Riau đầu năm 2026", src: "jpRiau" }
+    { d: "10/09/2026", t: "fmd", x: "Trung Quốc: LMLM type O ở lợn tại cơ sở giết mổ ở Trùng Khánh", src: "baChina" }
   ];
   BRIEF = BRIEF.filter(fresh);
   /* Thanh chuyển trang ‹ 1 2 3 › dùng chung */
@@ -491,29 +653,38 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     pg.appendChild(info);
   }
   /* Danh sách từng tin, xếp mới nhất trước, chia trang 1-2-3 */
-  function pagedList(ulId, pagerId, arr, perPage, colorOf) {
+  function pagedList(ulId, pagerId, arr, perPage, colorOf, nameOf) {
     var page = 1;
     function draw() {
       var list = arr.slice().sort(function (x, y) { return dkey(y.d) - dkey(x.d); });
       var pages = Math.max(1, Math.ceil(list.length / perPage));
       if (page > pages) page = pages;
       var ul = document.getElementById(ulId); ul.innerHTML = "";
-      list.slice((page - 1) * perPage, page * perPage).forEach(function (b) {
+      list.slice((page - 1) * perPage, page * perPage).forEach(function (b, i) {
         var li = document.createElement("li");
         var c = colorOf(b); if (c) li.style.setProperty("--dot", c);
-        var dt = document.createElement("span"); dt.className = "bd"; dt.textContent = b.d.replace(/\/\d{4}$/, "");
-        li.appendChild(dt); li.appendChild(linkTo(b.src, b.x, "il"));
-        ul.appendChild(li);
+        var no = document.createElement("span"); no.className = "bn num"; no.textContent = String((page - 1) * perPage + i + 1).padStart(2, "0");
+        var body = document.createElement("span");
+        var bc = document.createElement("span"); bc.className = "bc"; bc.textContent = (nameOf ? nameOf(b) : "") + " ";
+        var dt = document.createElement("span"); dt.textContent = "/ " + b.d.replace(/\/\d{4}$/, ""); bc.appendChild(dt);
+        body.appendChild(bc); body.appendChild(linkTo(b.src, b.x, "il"));
+        li.appendChild(no); li.appendChild(body); ul.appendChild(li);
       });
       pagerUI(document.getElementById(pagerId), page, pages, list.length, function (to) { page = to; draw(); });
     }
     draw();
   }
-  pagedList("brief", "brief-pager", BRIEF, 5, function (b) { return TYPES[b.t] && TYPES[b.t].c; });
+  pagedList("brief", "brief-pager", BRIEF, 8, function (b) { return TYPES[b.t] && TYPES[b.t].c; }, function (b) { return TYPES[b.t] ? TYPES[b.t].n : ""; });
 
   /* Bản tin nhanh – Chính sách & công nghệ: mỗi mục là MỘT tin riêng, một nguồn.
      d = ngày, c = lĩnh vực (policy|tech|amr|gen), x = nội dung ngắn (cả câu là link), src = khóa trong SRC */
   var BRIEF_POL = [
+    { d: "06/11/2026", c: "tech", x: "EMA khuyến nghị cấp phép vắc-xin Streptococcus suis cho lợn nái; báo cáo JIACRA 5 công bố 10/12", src: "emaCVMP11" },
+    { d: "06/09/2026", c: "env", x: "Hà Lan: PBL đề xuất giảm 5–10% giấy phép chăn nuôi vì kế hoạch nitơ 20 tỷ euro chưa đủ", src: "gaPBL" },
+    { d: "25/08/2026", c: "amr", x: "Đức: lượng kháng sinh dùng trong chăn nuôi năm 2025 khoảng 494 tấn, giảm khoảng 3%", src: "bfrAB" },
+    { d: "11/11/2026", c: "policy", x: "EU dự thảo cấm nuôi gà đẻ trong lồng, chuyển đổi 12 năm; thảo luận ngày 9/12", src: "jfCage" },
+    { d: "03/11/2026", c: "policy", x: "Đan Mạch cân nhắc cấm nuôi gà thịt giống lớn nhanh, hướng tới lệnh cấm cấp EU", src: "cp24DK" },
+    { d: "23/10/2026", c: "amr", x: "EU dự kiến đưa Brazil trở lại danh sách xuất khẩu thịt gia cầm, thịt bò vẫn bị chặn", src: "psBrazil" },
     { d: "30/10/2026", c: "env", x: "EPA Mỹ chấm dứt thỏa thuận 2005 về ước tính khí thải trại chăn nuôi", src: "epaAir" },
     { d: "09/10/2026", c: "env", x: "EU ban hành quy tắc chung giảm amoniac, nitơ, phốt pho ở trại lợn, gia cầm (áp dụng 2030–2032)", src: "psUCOL" },
     { d: "18/09/2026", c: "env", x: "Hà Lan: kiện đòi rút giấy phép 130 trại vượt giới hạn nitơ; mục tiêu giảm 42–46% amoniac vào 2035", src: "dnNitro" },
@@ -531,11 +702,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     { d: "19/10/2026", c: "policy", x: "Rwanda siết quản lý thuốc thú y bằng luật chăn nuôi mới", src: "ntRwanda" },
     { d: "11/09/2026", c: "amr", x: "EMA đề xuất ghi rõ giới hạn dùng kháng sinh dự phòng trên nhãn thuốc thú y", src: "emaCVMP" },
     { d: "09/09/2026", c: "tech", x: "Nofence (Na Uy) ra vòng cổ bò N3 kết nối vệ tinh", src: "anNofence" },
-    { d: "21/07/2026", c: "gen", x: "Friends of the Earth (Mỹ) cảnh báo rủi ro từ vật nuôi biến đổi gen được FDA phê duyệt", src: "vegFoE" },
-    { d: "30/06/2026", c: "tech", x: "Vắc-xin DNA cúm lợn của ĐH Nebraska–Lincoln tránh được biến chứng nặng ở phổi", src: "farmsVax" },
-    { d: "03/06/2026", c: "amr", x: "FAO: dùng kháng sinh trong chăn nuôi có thể tăng gần 30% vào năm 2040", src: "faoAMR" },
-    { d: "28/05/2026", c: "amr", x: "EU cấm kháng sinh kích thích tăng trưởng với hàng nhập khẩu từ 3/9/2026", src: "agrinfoEU" },
-    { d: "30/03/2026", c: "gen", x: "Canada phê duyệt lợn chỉnh sửa gen kháng PRRS làm thực phẩm", src: "lgCanada" }
+    { d: "21/07/2026", c: "gen", x: "Friends of the Earth (Mỹ) cảnh báo rủi ro từ vật nuôi biến đổi gen được FDA phê duyệt", src: "vegFoE" }
   ];
   BRIEF_POL = BRIEF_POL.filter(fresh);
 
@@ -553,9 +720,30 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     el.querySelector("p").textContent = e.x;
     return el;
   }
-  var al = document.getElementById("alerts");
-  EV.slice().sort(function (x, y) { return dkey(y.d) - dkey(x.d); }).forEach(function (e) { al.appendChild(alertEl(e)); });
-  document.getElementById("alerts-sub").textContent = EV.length + " ổ dịch · mới nhất trước · cuộn để xem thêm";
+  var LVN = { 1: "Theo dõi", 2: "Cảnh báo", 3: "Nguy hiểm" };
+  var ALERTS_PER_PAGE = 8, alPage = 1;
+  function drawAlerts() {
+    var tb = document.getElementById("alerts"); tb.innerHTML = "";
+    var list = EV.slice().sort(function (x, y) { return dkey(y.d) - dkey(x.d); });
+    var pages = Math.max(1, Math.ceil(list.length / ALERTS_PER_PAGE)); if (alPage > pages) alPage = pages;
+    list.slice((alPage - 1) * ALERTS_PER_PAGE, alPage * ALERTS_PER_PAGE).forEach(function (e) {
+      var tr = document.createElement("tr");
+      tr.innerHTML = '<td class="ty"><i></i></td><td class="loc"></td><td class="lvc"></td><td class="x"></td><td class="dt num"></td>';
+      var ty = tr.querySelector(".ty"); ty.querySelector("i").style.background = TYPES[e.t].c; ty.appendChild(linkTo(e.src, TYPES[e.t].n, "tl"));
+      tr.querySelector(".loc").textContent = e.n;
+      var lv = tr.querySelector(".lvc"), sv = Math.min(3, Math.max(1, e.sev || 1)); lv.textContent = LVN[sv]; lv.classList.add("lv" + sv);
+      tr.querySelector(".x").textContent = e.x;
+      tr.querySelector(".dt").textContent = e.d;
+      if (SRC[e.src]) {
+        tr.title = "Mở nguồn: " + SRC[e.src].n;
+        tr.addEventListener("click", function (ev) { if (ev.target.closest("a")) return; window.open(SRC[e.src].u, "_blank", "noopener"); });
+      }
+      tb.appendChild(tr);
+    });
+    pagerUI(document.getElementById("alerts-pager"), alPage, pages, list.length, function (to) { alPage = to; drawAlerts(); scrollIntoPanel("alerts-sec"); });
+  }
+  drawAlerts();
+  document.getElementById("alerts-sub").textContent = EV.length + " ổ dịch · mới nhất trước · bấm để mở nguồn";
 
   /* ---------- BẢN ĐỒ ---------- */
   var REG = {
@@ -572,11 +760,12 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   Object.keys(TYPES).forEach(function (k) {
     var id = "lg-" + k;
     var lab = document.createElement("label"); lab.setAttribute("for", id);
-    lab.innerHTML = '<input type="checkbox" checked><i></i><span></span>';
+    lab.innerHTML = '<span class="v num"></span><span class="k"><input type="checkbox" checked><i></i><span></span></span>';
     var cb = lab.querySelector("input"); cb.id = id;
+    var vv = lab.querySelector(".v"); vv.textContent = cnt(k); vv.style.color = TYPES[k].c;
     lab.querySelector("i").style.background = TYPES[k].c;
-    lab.querySelector("span").textContent = TYPES[k].n;
-    cb.addEventListener("change", function () { hidden[k] = !cb.checked; drawMap(); });
+    lab.querySelector(".k span").textContent = TYPES[k].n;
+    cb.addEventListener("change", function () { hidden[k] = !cb.checked; lab.classList.toggle("off", !cb.checked); drawMap(); });
     lg.appendChild(lab);
   });
 
@@ -587,15 +776,19 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     var shown = EV.filter(function (e) { return !hidden[e.t]; });
     if (!hasMap) { drawFallback(shown); return; }
     var R = REG[region], global = region === "global";
+    var narrow = (mapEl.clientWidth || 800) < 700;
     var pts = shown.map(function (e) {
-      return { name: e.n, value: [e.lon, e.lat, e.sev], ev: e, itemStyle: { color: TYPES[e.t].c }, symbolSize: 8 + e.sev * 5 };
+      return { name: e.n, value: [e.lon, e.lat, e.sev], ev: e, symbolSize: 7 + e.sev * 3,
+               itemStyle: { color: TYPES[e.t].c, shadowColor: TYPES[e.t].c, shadowBlur: 10 } };
     });
+    /* Chấm tròn màu theo bệnh; sóng lan (1–3 vòng theo mức nguy hiểm) vẽ bằng lớp #waves phía trên */
     var series = [
-      { type: "effectScatter", coordinateSystem: "geo", data: pts.filter(function (d) { return d.ev.sev >= 3; }), rippleEffect: { scale: 3, brushType: "stroke" }, zlevel: 2 },
-      { type: "scatter", coordinateSystem: "geo", data: pts.filter(function (d) { return d.ev.sev < 3; }), itemStyle: { opacity: 0.9, borderColor: "#0e1513", borderWidth: 1 }, zlevel: 2 },
+      { type: "scatter", coordinateSystem: "geo", data: pts, itemStyle: { borderColor: "#0b0b0b", borderWidth: 1.5 },
+        emphasis: { itemStyle: { borderColor: "#f2f2ef", borderWidth: 2 } }, zlevel: 2 },
       { type: "scatter", coordinateSystem: "geo", silent: true, symbolSize: 0, zlevel: 3,
-        data: shown.filter(function (e) { return !global || e.sev >= 2; }).map(function (e) { return { name: e.n, value: [e.lon, e.lat] }; }),
-        label: { show: true, formatter: "{b}", position: "right", color: C.ink, fontSize: 11 } }
+        data: shown.filter(function (e) { return global ? (!narrow && e.sev >= 2) : true; }).map(function (e) { return { name: e.n, value: [e.lon, e.lat] }; }),
+        label: { show: true, formatter: "{b}", position: "right", distance: 8, color: C.ink, fontSize: narrow ? 10 : 11, fontFamily: "Archivo, Arial, sans-serif",
+                 textBorderColor: "#0b0b0b", textBorderWidth: 3 } }
     ];
     if (region === "asia" || region === "sea") {
       series.push({ type: "scatter", coordinateSystem: "geo", silent: true, symbolSize: 0, zlevel: 3,
@@ -619,6 +812,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     }, true);
     /* Lần đầu chưa biết tỉ lệ thật của bản đồ: đo lại rồi vẽ lại cho khít */
     if (global && !worldAspectKnown) { var a = measureAspect(); if (a) { worldAspect = a; worldAspectKnown = true; mapChart.setOption({ geo: geoOpt(R, true) }); } }
+    buildWaves(shown);
   }
   /* Tỉ lệ ngang/dọc của bản đồ thế giới (ECharts dùng aspectScale 0.75) */
   var worldAspect = 1.94, worldAspectKnown = false;
@@ -630,7 +824,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     return 0;
   }
   function geoOpt(R, global) {
-    var g = { map: "world", roam: true, silent: true, scaleLimit: { min: 1, max: 20 },
+    var g = { map: "world", roam: (mapEl.clientWidth || 800) >= 700, silent: true, scaleLimit: { min: 1, max: 20 },
               itemStyle: { areaColor: C.land, borderColor: v("--border-land"), borderWidth: 0.6 }, label: { show: false } };
     if (global) {
       /* Toàn cầu: phủ kín chiều cao khung (sát tới chú thích bên dưới), phóng nhẹ 8% để bớt khoảng trống hai bên;
@@ -651,6 +845,33 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     shown.forEach(function (e) { box.appendChild(alertEl(e)); });
     mapEl.appendChild(box);
   }
+  /* Sóng lan quanh điểm nóng: Theo dõi 1 vòng chậm, Cảnh báo 2 vòng, Nguy hiểm 3 vòng nhanh */
+  var wavesEl = document.getElementById("waves"), waveNodes = [];
+  var WV = { 1: { k: 1, d: 4.5, s: 2.6 }, 2: { k: 2, d: 3, s: 3.2 }, 3: { k: 3, d: 1.6, s: 3.8 } };
+  function buildWaves(shown) {
+    if (!wavesEl) return; wavesEl.innerHTML = ""; waveNodes = [];
+    shown.forEach(function (e) {
+      var sv = Math.min(3, Math.max(1, e.sev || 1)), L = WV[sv], sz = 7 + sv * 3;
+      for (var i = 0; i < L.k; i++) {
+        var w = document.createElement("i");
+        w.style.width = sz + "px"; w.style.height = sz + "px"; w.style.borderColor = TYPES[e.t].c;
+        w.style.setProperty("--d", L.d + "s"); w.style.setProperty("--s", String(L.s));
+        w.style.animationDelay = (-L.d / L.k * i).toFixed(2) + "s";
+        wavesEl.appendChild(w); waveNodes.push({ el: w, e: e });
+      }
+    });
+    syncWaves();
+  }
+  function syncWaves() {
+    if (!mapChart) return;
+    var W = mapEl.clientWidth, H = mapEl.clientHeight;
+    waveNodes.forEach(function (n) {
+      var p = null; try { p = mapChart.convertToPixel({ geoIndex: 0 }, [n.e.lon, n.e.lat]); } catch (x) {}
+      if (!p || isNaN(p[0]) || p[0] < -20 || p[1] < -20 || p[0] > W + 20 || p[1] > H + 20) { n.el.style.display = "none"; return; }
+      n.el.style.display = ""; n.el.style.left = p[0] + "px"; n.el.style.top = p[1] + "px";
+    });
+  }
+  if (mapChart) mapChart.on("georoam", function () { syncWaves(); setTimeout(syncWaves, 30); });
   document.querySelectorAll("#regions button").forEach(function (b) {
     b.addEventListener("click", function () {
       document.querySelectorAll("#regions button").forEach(function (x) { x.setAttribute("aria-pressed", x === b); });
@@ -661,15 +882,18 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
   /* ---------- TIN TỨC ---------- */
   var NEWS = [
+    { d: "13/11/2026", t: "hpai", h: "Hàn Quốc: cúm gia cầm H5N1 ở trại vịt giống tại Jincheon", p: "Chính quyền tỉnh Chungcheong Bắc xác nhận ngày 13/11; khoảng 2.200 vịt giống bị tiêu hủy, 27 trại với 1.043.000 gia cầm trong vùng bị hạn chế di chuyển và đều âm tính.", src: "khanJC" },
+    { d: "13/11/2026", t: "hpai", h: "Mỹ: HPAI lan sang bang mới, số ca trên bò sữa tăng", p: "Sáu bang có ca mới trên bò sữa trong 30 ngày qua, nâng tổng số lên 22 bang kể từ 3/2024. Riêng Washington ghi nhận 41 ca trong cùng kỳ; USDA xác nhận ca đầu tiên ở Indiana (2/11) và Oregon (10/11).", src: "dhSpread" },
+    { d: "12/11/2026", t: "hpai", h: "Hàn Quốc: H5N9 ở trại gà đẻ tại Ganghwa, ổ thứ 4 mùa đông này", p: "Phát hiện qua giám sát định kỳ ở trại khoảng 48.000 con gà. Lệnh dừng di chuyển 24 giờ áp dụng cho Incheon, Seoul và Gyeonggi; 28 trại trong bán kính 10 km được xét nghiệm.", src: "heraldGH" },
+    { d: "06/11/2026", t: "hpai", h: "Hàn Quốc: phát hiện kháng nguyên cúm H5 ở trại vịt thịt Jangheung", p: "Trại có khoảng 20.000 vịt thịt 28 ngày tuổi báo vịt chết ngày 5/11; Cơ quan Kiểm dịch Động thực vật đang xét nghiệm độc lực. Hạn chế di chuyển trong bán kính 10 km, dừng di chuyển 24 giờ với trại vịt, lò mổ, nhà máy thức ăn ở vùng Jeonnam–Gwangju; đàn vịt bị tiêu hủy.", src: "asiaeJH" },
     { d: "16/11/2026", t: "hpai", h: "Hàn Quốc: cúm gia cầm ở trại ngỗng cảnh tại Gyeongju", p: "Phát hiện qua giám sát định kỳ; 48 con ngỗng bị tiêu hủy, 29 trại trong bán kính 3 km được kiểm tra.", src: "heraldGJ" },
     { d: "16/11/2026", t: "asf", h: "Philippines đẩy nhanh tiêm vắc-xin dịch tả lợn châu Phi", p: "Đã tiêm 499.008 liều ở 54 trại thuộc 7 tỉnh. Tính đến 22/10, ổ dịch còn hoạt động ở 236 barangay thuộc 23 tỉnh.", src: "tribPH" },
     { d: "15/11/2026", t: "fmd", h: "Nam Phi tiêm phòng LMLM cho hơn 90% đàn bò", p: "Vượt mục tiêu 80% trước hạn cuối năm; hơn 22 triệu liều đã được mua và phân phối, số ổ dịch mới giảm mạnh.", src: "saNews" },
     { d: "15/10/2026", t: "asf", h: "FAO: ASF vẫn hoạt động ở nhiều nước châu Á", p: "Thái Lan khoanh vùng dịch ở Chiang Mai (1/10), Malaysia có ổ dịch ở Selangor và Sarawak, Hàn Quốc ghi nhận 24 ổ ở trại lợn năm 2026.", src: "faoASF" },
     { d: "09/10/2026", t: "human", h: "Trung Quốc có thêm 2 ca cúm A(H9N2) trên người", p: "Một người lớn ở Hà Nam và một trẻ em ở Quý Châu, không liên quan nhau; ECDC đánh giá nguy cơ với cộng đồng châu Âu rất thấp.", src: "ecdcH9" },
+    { d: "28/09/2026", t: "human", h: "Campuchia có ca H5N1 trên người thứ sáu năm 2026", p: "Bệnh nhân nam 49 tuổi ở tỉnh Oddar Meanchey nuôi gà và tiếp xúc trực tiếp với gia cầm ốm, chết; đang được chăm sóc tích cực. Gia cầm ở trại được xác nhận nhiễm ngày 23/9.", src: "starKH6" },
     { d: "26/09/2026", t: "asf", h: "Lào: dịch tả lợn châu Phi lan ra 91 huyện ở 7 tỉnh", p: "14.002 con lợn bị mất, trong đó 10.041 con chết vì bệnh và 3.961 con bị tiêu hủy; dịch đang giảm nhưng chưa được kiểm soát hoàn toàn.", src: "starLao" },
     { d: "10/09/2026", t: "fmd", h: "Trung Quốc: LMLM type O ở lợn tại Trùng Khánh", p: "Ổ dịch ở cơ sở giết mổ quận Dazu, 37 trên 677 con có triệu chứng; địa phương tiêu hủy, khử trùng và điều tra dịch tễ.", src: "baChina" },
-    { d: "19/05/2026", t: "asf", h: "Châu Âu: hơn 4.300 ca ASF trên động vật hoang dã ở 17 nước", p: "Ba Lan, Litva, Italy, Hungary và Đức có nhiều ca nhất; Romania, Serbia, Moldova dẫn đầu ổ dịch trên lợn nhà.", src: "ukrEU" },
-    { d: "19/02/2026", t: "fmd", h: "Indonesia: LMLM bùng phát ở Riau", p: "Hơn 400 con nhiễm ở 6 huyện trong đầu năm 2026, vượt tổng cả năm 2025; tỉnh đẩy nhanh tiêm phòng.", src: "jpRiau" },
     { d: "17/11/2026", t: "asf", h: "Dịch tả lợn châu Phi trở lại Bhutan sau ba tháng", p: "Ổ dịch ở đàn lợn hộ gia đình tại huyện Samtse, giáp Sikkim (Ấn Độ); 12 trong 29 con chết, chưa rõ nguồn lây.", src: "fsBhutan" },
     { d: "16/11/2026", t: "hpai", h: "Oklahoma có đàn bò sữa nhiễm HPAI sau hơn hai năm", p: "Đây là ca đầu tiên trên bò sữa của bang kể từ tháng 7/2024. Bò sữa ở 22 bang khác đã từng nhiễm kể từ 3/2024.", src: "dhOK" },
     { d: "16/11/2026", t: "hpai", h: "Bắc Ireland điều tra ổ nghi cúm gia cầm ở Co Tyrone", p: "Đàn gia cầm thương phẩm có tỷ lệ chết cao bị phong tỏa ngày 15/11; mẫu được gửi phòng thí nghiệm tham chiếu ở Anh.", src: "irishTy" },
@@ -709,12 +933,13 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     var pages = Math.max(1, Math.ceil(list.length / NEWS_PER_PAGE)); if (newsPage > pages) newsPage = pages;
     pagerUI(document.getElementById("news-pager"), newsPage, pages, list.length, function (to) { newsPage = to; drawNews(); scrollIntoPanel("news-panel"); });
     if (!list.length) { var e = document.createElement("div"); e.className = "empty"; e.textContent = "Không có tin phù hợp. Thử từ khóa khác."; newsEl.appendChild(e); return; }
-    list.slice((newsPage - 1) * NEWS_PER_PAGE, newsPage * NEWS_PER_PAGE).forEach(function (n) {
+    list.slice((newsPage - 1) * NEWS_PER_PAGE, newsPage * NEWS_PER_PAGE).forEach(function (n, i) {
       var el = document.createElement("article"); el.className = "card";
-      el.innerHTML = '<div class="meta"><span class="chip"><i class="dot"></i><span></span></span><span class="dt num"></span></div><h3></h3><p></p>';
-      el.querySelector(".chip .dot").style.background = TYPES[n.t].c;
-      el.querySelector(".chip span").textContent = TYPES[n.t].n;
+      el.style.setProperty("--c", TYPES[n.t].c);
+      el.innerHTML = '<div class="top"><span class="no num"></span><span class="dt num"></span></div><span class="cat"></span><h3></h3><p></p>';
+      el.querySelector(".no").textContent = String((newsPage - 1) * NEWS_PER_PAGE + i + 1).padStart(2, "0");
       el.querySelector(".dt").textContent = n.d;
+      el.querySelector(".cat").textContent = TYPES[n.t].n;
       el.querySelector("h3").appendChild(linkTo(n.src, n.h, "tl"));
       el.querySelector("p").textContent = n.p;
       newsEl.appendChild(el);
@@ -731,13 +956,19 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
 
   /* ---------- CHÍNH SÁCH & KHOA HỌC ---------- */
   var PCAT = {
-    policy: { n: "Chính sách – luật", c: "#6cb6ff" },
-    tech: { n: "Công nghệ", c: "#5cc48a" },
-    amr: { n: "Kháng sinh – AMR", c: "#e3b65c" },
-    gen: { n: "Di truyền", c: "#d18fe8" },
-    env: { n: "Môi trường", c: "#4fc3c8" }
+    policy: { n: "Chính sách – luật", c: "#7d97ff" },
+    tech: { n: "Công nghệ", c: "#3ecf8e" },
+    amr: { n: "Kháng sinh – AMR", c: "#e0a93b" },
+    gen: { n: "Di truyền", c: "#b98cff" },
+    env: { n: "Môi trường", c: "#2fc6c6" }
   };
   var POL = [
+    { c: "tech", d: "06/11/2026", org: "EU · EMA (CVMP)", h: "EMA khuyến nghị cấp phép vắc-xin liên cầu lợn, gia hạn vắc-xin cúm gia cầm H5", p: "Phiên họp CVMP 3–5/11 cho ý kiến tích cực với Streptoporc (vắc-xin Streptococcus suis cho lợn nái và lợn hậu bị mang thai) và gia hạn thêm một năm hiệu lực của hai vắc-xin cúm gia cầm Vaxxinact H5 và Vaxxitek HVT+IBD+H5. Trạng thái: khuyến nghị, chờ quyết định cấp phép. Ủy ban cũng thông qua báo cáo JIACRA lần thứ 5 về sử dụng và kháng kháng sinh, dự kiến công bố ngày 10/12.", src: "emaCVMP11" },
+    { c: "env", d: "06/09/2026", org: "Hà Lan · PBL", h: "Hà Lan: kế hoạch giảm nitơ 20 tỷ euro chưa đủ, PBL đề xuất cắt giấy phép chăn nuôi", p: "Kế hoạch đặt mục tiêu giảm 42–46% phát thải amoniac vào 2035 so với 2019, nhưng Cơ quan Đánh giá Môi trường (PBL) cho rằng hơn một nửa khu bảo tồn vẫn vượt ngưỡng lắng đọng nitơ vào 2035. PBL khuyến nghị giảm đồng loạt 5–10% giấy phép chăn nuôi bò sữa, lợn, gia cầm. Trạng thái: đề xuất; Bộ trưởng Nông nghiệp bác bỏ, chỉ coi đây là \"phanh khẩn cấp\" cuối cùng.", src: "gaPBL" },
+    { c: "amr", d: "25/08/2026", org: "Đức · BfR", h: "Đức: lượng kháng sinh dùng trong chăn nuôi năm 2025 giảm nhẹ", p: "Theo Viện Đánh giá Rủi ro Liên bang (BfR), tổng lượng dùng khoảng 494 tấn, giảm khoảng 3% so với năm trước; nhóm kháng sinh quan trọng với người giảm còn 29 tấn (chủ yếu nhờ giảm colistin). Tần suất điều trị giảm mạnh ở gà đẻ (-55%) nhưng tăng ở gà thịt (+6%) và gà tây (+5%); kháng sulphamethoxazole và trimethoprim ở E. coli từ lợn thịt tăng rõ.", src: "bfrAB" },
+    { c: "policy", d: "11/11/2026", org: "EU · Ủy ban châu Âu", h: "EU xúc tiến kế hoạch cấm nuôi gà đẻ trong lồng", p: "Theo các đề xuất bị rò rỉ, EU dự kiến cấm lồng nuôi gà đẻ với thời gian chuyển đổi 12 năm, kèm cấm lồng cho gà thịt và cấm giết gà trống con; Ủy ban châu Âu sẽ thảo luận quy định phúc lợi cho một số vật nuôi tại cuộc họp ngày 9/12. Trạng thái: dự thảo, chưa thông qua; người phát ngôn chỉ xác nhận dự thảo sẽ chuyển khỏi nuôi lồng. Tổ chức vận động End the Cage Age cho rằng 12 năm là quá dài.", src: "jfCage" },
+    { c: "policy", d: "03/11/2026", org: "Đan Mạch", h: "Đan Mạch cân nhắc cấm nuôi gà thịt giống lớn nhanh", p: "Bộ trưởng Phúc lợi động vật Christian Rabjerg Madsen muốn cấm nuôi gà \"turbo\" trên toàn quốc, nhưng trước hết phải xem xét về pháp lý và kinh tế; Đan Mạch cũng hướng tới lệnh cấm ở cấp EU. Trạng thái: đề xuất, chưa có mốc thời gian. Na Uy đã cam kết loại bỏ các giống này trước cuối năm 2027.", src: "cp24DK" },
+    { c: "amr", d: "23/10/2026", org: "EU · Ủy ban châu Âu", h: "EU dự kiến cho Brazil xuất khẩu thịt gia cầm trở lại theo quy định kháng sinh", p: "Sau lệnh cấm có hiệu lực từ tháng 9 vì yêu cầu bảo đảm không dùng kháng sinh bị cấm, Ủy ban châu Âu đánh giá tích cực kết quả kiểm tra với thịt gia cầm và mật ong, dự kiến đề xuất đưa Brazil trở lại danh sách; các nước thành viên sẽ bỏ phiếu ở phiên họp ủy ban kế tiếp. Thịt bò vẫn bị chặn vì Brazil chưa chứng nhận được tuân thủ suốt đời con vật.", src: "psBrazil" },
     { c: "env", d: "30/10/2026", org: "Mỹ · EPA", h: "EPA Mỹ bỏ việc xây dựng phương pháp ước tính khí thải cho trại chăn nuôi theo thỏa thuận 2005", p: "EPA kết luận số liệu đo khí thải trại chăn nuôi thu thập năm 2005–2007 đã quá cũ và quá ít để làm phương pháp tin cậy, nên sẽ không hoàn tất các phương pháp ước tính theo Thỏa thuận tuân thủ khí thải năm 2005. Cơ quan này sẽ thông báo cho khoảng 2.600 cơ sở liên quan rồi chấm dứt thỏa thuận, đồng thời tiếp tục làm việc với USDA và các trường đại học về cách giảm khí thải trang trại.", src: "epaAir" },
     { c: "env", d: "09/10/2026", org: "EU · Ủy ban châu Âu", h: "EU ban hành quy tắc vận hành chung để giảm phát thải từ trại lợn và gia cầm (UCOL)", p: "Quy tắc UCOL thuộc Chỉ thị Phát thải công nghiệp và chăn nuôi đặt chuẩn tối thiểu chung để giảm amoniac, nitơ và phốt pho, thay cho các cách làm riêng của từng nước. Trại được tự chọn biện pháp về xử lý phân, dinh dưỡng và chuồng nuôi, ưu tiên giải pháp thức ăn. Đã thông qua; áp dụng cho các trại từ 2030 đến 2032 tùy quy mô.", src: "psUCOL" },
     { c: "env", d: "18/09/2026", org: "Hà Lan", h: "Hà Lan: nhóm môi trường kiện đòi rút giấy phép 130 trại vượt giới hạn nitơ", p: "Nhóm môi trường MOB yêu cầu tòa án ở 10 tỉnh rút giấy phép của các trại vượt giới hạn lắng đọng nitơ gần khu Natura 2000; khoảng 130 hộ có thể mất trang trại. Gói biện pháp của Bộ trưởng Nông nghiệp công bố tháng 6 yêu cầu giảm 42–46% amoniac vào 2035 so với 2019, kèm mua lại trại tự nguyện; gói này còn phải trình Quốc hội.", src: "dnNitro" },
@@ -755,11 +986,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     { c: "policy", d: "19/10/2026", org: "Rwanda", h: "Rwanda siết quản lý thuốc thú y bằng luật chăn nuôi mới", p: "Luật mới kiểm soát chặt việc điều trị vật nuôi và dùng thuốc thú y, hạn chế người nuôi tự chữa bệnh khi không có chuyên môn, nhằm giảm kháng kháng sinh và tồn dư trong thịt, sữa. Các văn bản hướng dẫn đang được soạn.", src: "ntRwanda" },
     { c: "amr", d: "11/09/2026", org: "EU · EMA", h: "EMA đề xuất ghi rõ giới hạn dùng kháng sinh dự phòng trên nhãn thuốc thú y", p: "Ủy ban CVMP đưa ra tài liệu khái niệm để sửa hướng dẫn về tóm tắt đặc tính sản phẩm, thêm câu chuẩn phản ánh giới hạn pháp lý với dùng kháng sinh dự phòng và điều trị dự phòng theo Quy định (EU) 2019/6; lấy ý kiến 3 tháng. Kỳ họp cũng thông qua 10 ý kiến tích cực.", src: "emaCVMP" },
     { c: "tech", d: "09/09/2026", org: "Na Uy · Nofence", h: "Nofence ra vòng cổ bò N3 kết nối vệ tinh", p: "Vòng cổ hàng rào ảo N3 có ba lớp kết nối (di động, vệ tinh, mạng nội bộ giữa các vòng cổ), theo dõi vị trí, hành vi, chu kỳ động dục và cảnh báo sinh, hướng tới vùng chăn thả không có sóng di động.", src: "anNofence" },
-    { c: "gen", d: "21/07/2026", org: "Mỹ · Friends of the Earth", h: "Báo cáo cảnh báo rủi ro từ vật nuôi biến đổi gen được FDA phê duyệt", p: "Báo cáo cập nhật của Friends of the Earth Mỹ cho rằng việc FDA phê duyệt đi trước mức thẩm định khoa học cần thiết. Báo cáo xem xét 3 loại vật nuôi được cấp phép giai đoạn 2020–2025 (bò chịu nóng, lợn kháng bệnh, lợn giảm gây dị ứng). Đây là quan điểm của một tổ chức vận động.", src: "vegFoE" },
-    { c: "tech", d: "30/06/2026", org: "Mỹ · ĐH Nebraska–Lincoln", h: "Vắc-xin DNA cúm lợn tránh được biến chứng nặng phổi", p: "Vắc-xin dùng hạt nano lipid đưa gen vào cơ để tạo protein cúm vô hại. Khi nhiễm chủng khác, lợn tiêm vắc-xin thường bị tổn thương phổi nặng, còn lợn tiêm vắc-xin mới gần như không. Nhóm nghiên cứu ước tính làm phiên bản mới chỉ mất khoảng một tháng và đang thử trên gia cầm.", src: "farmsVax" },
-    { c: "amr", d: "03/06/2026", org: "FAO", h: "FAO: dùng kháng sinh trong chăn nuôi có thể tăng gần 30% vào 2040", p: "So với năm 2019. Châu Á – Thái Bình Dương chiếm gần 65% lượng dùng. FAO khuyến nghị kết hợp quy định với khuyến khích kinh tế, đầu tư thú y, giám sát và thay thế bằng vắc-xin, an toàn sinh học.", src: "faoAMR" },
-    { c: "amr", d: "28/05/2026", org: "EU · Quy định 2023/905", h: "EU cấm kháng sinh kích thích tăng trưởng với hàng nhập khẩu từ 3/9/2026", p: "Vật nuôi và sản phẩm động vật xuất vào EU không được dùng kháng sinh để kích thích tăng trưởng hoặc kháng sinh dành riêng cho người; cơ quan thú y nước xuất khẩu phải ký xác nhận trên chứng thư.", src: "agrinfoEU" },
-    { c: "gen", d: "30/03/2026", org: "Canada · Health Canada, CFIA", h: "Canada phê duyệt lợn chỉnh sửa gen kháng PRRS làm thực phẩm", p: "Tháng 1/2026, Health Canada và CFIA chấp thuận lợn chỉnh sửa gen kháng hội chứng rối loạn sinh sản và hô hấp (PRRS), sau Mỹ và Brazil. Bò chỉnh sửa gen chịu nóng được bán ở Mỹ nhưng chưa được duyệt ở Canada.", src: "lgCanada" }
+    { c: "gen", d: "21/07/2026", org: "Mỹ · Friends of the Earth", h: "Báo cáo cảnh báo rủi ro từ vật nuôi biến đổi gen được FDA phê duyệt", p: "Báo cáo cập nhật của Friends of the Earth Mỹ cho rằng việc FDA phê duyệt đi trước mức thẩm định khoa học cần thiết. Báo cáo xem xét 3 loại vật nuôi được cấp phép giai đoạn 2020–2025 (bò chịu nóng, lợn kháng bệnh, lợn giảm gây dị ứng). Đây là quan điểm của một tổ chức vận động.", src: "vegFoE" }
   ];
   POL = POL.filter(fresh);
   var polEl = document.getElementById("policy"), pf = "all";
@@ -771,11 +998,11 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     pagerUI(document.getElementById("policy-pager"), polPage, pages, list.length, function (to) { polPage = to; drawPol(); scrollIntoPanel("policy-panel"); });
     list.slice((polPage - 1) * POL_PER_PAGE, polPage * POL_PER_PAGE).forEach(function (x) {
       var cat = PCAT[x.c];
-      var el = document.createElement("article"); el.className = "card";
-      el.innerHTML = '<div class="meta"><span class="chip"><i class="dot"></i><span></span></span><span class="dt num"></span></div><h3></h3><div class="meta org"></div><p></p>';
-      el.querySelector(".chip .dot").style.background = cat.c;
-      el.querySelector(".chip span").textContent = cat.n;
+      var el = document.createElement("article"); el.className = "prow";
+      el.style.setProperty("--c", cat.c);
+      el.innerHTML = '<div class="pd"><span class="dt num"></span><span class="pc"></span></div><div class="pb"><h3></h3><span class="org"></span><p></p></div>';
       el.querySelector(".dt").textContent = x.d;
+      el.querySelector(".pc").textContent = cat.n;
       el.querySelector("h3").appendChild(linkTo(x.src, x.h, "tl"));
       el.querySelector(".org").textContent = x.org;
       el.querySelector("p").textContent = x.p;
@@ -788,20 +1015,35 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
       pf = b.getAttribute("data-f"); polPage = 1; drawPol();
     });
   });
+  document.querySelectorAll("#pol-filter button").forEach(function (b) {
+    var f = b.getAttribute("data-f"), n = f === "all" ? POL.length : POL.filter(function (x) { return x.c === f; }).length;
+    var sm = b.querySelector("small"); if (sm) sm.textContent = String(n).padStart(2, "0");
+    if (PCAT[f]) b.style.setProperty("--c", PCAT[f].c);
+  });
   drawPol();
-  pagedList("brief-pol", "brief-pol-pager", BRIEF_POL, 10, function (b) { return PCAT[b.c] && PCAT[b.c].c; });
+  pagedList("brief-pol", "brief-pol-pager", BRIEF_POL, 10, function (b) { return PCAT[b.c] && PCAT[b.c].c; }, function (b) { return PCAT[b.c] ? PCAT[b.c].n : ""; });
+  document.getElementById("brief-count").textContent = (BRIEF.length + BRIEF_POL.length) + " tin";
+  document.querySelectorAll("#brief-tabs button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll("#brief-tabs button").forEach(function (x) { x.setAttribute("aria-pressed", x === b); });
+      var k = b.getAttribute("data-b");
+      document.getElementById("bp-pol").hidden = k !== "pol"; document.getElementById("bp-dis").hidden = k !== "dis";
+    });
+  });
 
 
   /* ---------- GIỜ VIỆT NAM & THỜI TIẾT HÀ NỘI ---------- */
   (function () {
-    var tEl = document.getElementById("vn-time");
+    var tEl = document.getElementById("vn-time"), dEl = document.getElementById("vn-date");
     function tick() {
+      var now = new Date();
       try {
-        tEl.textContent = new Intl.DateTimeFormat("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }).format(new Date()) +
-          " · " + new Intl.DateTimeFormat("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date());
+        tEl.textContent = new Intl.DateTimeFormat("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }).format(now);
+        dEl.textContent = new Intl.DateTimeFormat("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", day: "2-digit", month: "2-digit", year: "numeric" }).format(now);
       } catch (e) {
-        var d = new Date(Date.now() + 7 * 3600e3), z = function (n) { return (n < 10 ? "0" : "") + n; };
+        var d = new Date(now.getTime() + 7 * 3600e3), z = function (n) { return (n < 10 ? "0" : "") + n; };
         tEl.textContent = z(d.getUTCHours()) + ":" + z(d.getUTCMinutes()) + ":" + z(d.getUTCSeconds());
+        dEl.textContent = z(d.getUTCDate()) + "/" + z(d.getUTCMonth() + 1) + "/" + d.getUTCFullYear();
       }
     }
     tick(); setInterval(tick, 1000);
@@ -842,7 +1084,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
     });
   }
   function soundBtn() {
-    return { t: "🔊 Bật tiếng", f: function () { tvSound = true; if (tvPlayer && tvPlayer.unMute) { tvPlayer.unMute(); tvPlayer.setVolume && tvPlayer.setVolume(80); } this.remove(); } };
+    return { t: "Bật tiếng", f: function () { tvSound = true; if (tvPlayer && tvPlayer.unMute) { tvPlayer.unMute(); tvPlayer.setVolume && tvPlayer.setVolume(80); } this.remove(); } };
   }
   function loadYT(cb) {
     if (window.YT && window.YT.Player) { cb(); return; }
@@ -945,7 +1187,8 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   }
   var tvCh = document.getElementById("tv-ch");
   TV.forEach(function (c, i) {
-    var b = document.createElement("button"); b.type = "button"; b.textContent = c.n;
+    var b = document.createElement("button"); b.type = "button"; b.textContent = c.n + " ";
+    var sm = document.createElement("small"); sm.textContent = c.co; b.appendChild(sm);
     b.addEventListener("click", function () { tvAuto = false; playYT(i, "vod"); });
     tvCh.appendChild(b);
   });
@@ -953,7 +1196,7 @@ footer ol { margin: 0; padding-left: 18px; columns: 2 320px; }
   playYT(0, "vod");
 
   var mapRT = null;
-  function onMapResize() { clearTimeout(mapRT); mapRT = setTimeout(function () { if (mapChart) { mapChart.resize(); if (region === "global") drawMap(); } }, 120); }
+  function onMapResize() { clearTimeout(mapRT); mapRT = setTimeout(function () { if (mapChart) { mapChart.resize(); if (region === "global") drawMap(); else syncWaves(); } }, 120); }
   window.addEventListener("resize", onMapResize);
   if (window.ResizeObserver && mapChart) { try { new ResizeObserver(onMapResize).observe(mapEl); } catch (e) {} }
 })();
