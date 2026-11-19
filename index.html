@@ -320,7 +320,7 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
       <div><dt>Ngày</dt><dd class="num" id="vn-date">--/--/----</dd></div>
       <div id="vn-clock" title="Giờ GMT+7 (Việt Nam)"><dt>Giờ</dt><dd><span class="num" id="vn-time">--:--</span> GMT+7</dd></div>
       <div id="hn-weather" title="Thời tiết hiện tại ở Hà Nội (Open-Meteo)" hidden><dt>Hà Nội</dt><dd class="num" id="hn-temp"></dd></div>
-      <div><dt>Thời gian cập nhật</dt><dd class="num" id="updated">19/11/2026, 13:36 GMT+7</dd></div>
+      <div><dt>Thời gian cập nhật</dt><dd class="num" id="updated">19/11/2026, 17:46 GMT+7</dd></div>
     </dl>
   </header>
 
@@ -459,6 +459,17 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
 
   /* ---------- NGUỒN ---------- */
   var SRC = {
+    segyeYA: { n: "Segye Ilbo (Yonhap) – Cúm gia cầm H5N9 ở trại vịt thịt Yeongam", u: "https://www.segye.com/newsView/20261119518733" },
+    defraCT: { n: "Defra (GOV.UK) – Tình hình cúm gia cầm ở Anh: Coningsby và Thirsk", u: "https://www.gov.uk/guidance/bird-flu-avian-influenza-latest-situation-in-england" },
+    aaFR: { n: "Anadolu (AA) – Pháp nâng mức nguy cơ cúm gia cầm lên cao", u: "https://www.aa.com.tr/fr/sante/la-france-rel%C3%A8ve-%C3%A0-%C3%A9lev%C3%A9-le-niveau-de-risque-li%C3%A9-%C3%A0-la-grippe-aviaire-/4130199" },
+    daeraTy: { n: "DAERA – Xác nhận cúm gia cầm ở Co Tyrone, lệnh nuôi nhốt toàn Bắc Ireland", u: "https://www.daera-ni.gov.uk/news/muir-announces-prevention-zone-and-housing-order-co-tyrone-bird-flu-case-confirmed" },
+    fedINvax: { n: "The Federal – Ấn Độ phát triển vắc-xin H5N1 nội địa cho gà", u: "https://thefederal.com/category/news/india-develops-indigenous-h5n1-vaccine-fresh-bird-flu-outbreak-263286" },
+    vmdVARSS: { n: "VMD/Defra (GOV.UK) – Báo cáo UK-VARSS 2025 về kháng sinh thú y", u: "https://www.gov.uk/government/news/stable-sales-support-long-term-decline-in-animal-antibiotic-use" },
+    abcCSIRO: { n: "ABC News – CSIRO theo dõi H5 bằng GPS và mẫu phân chim", u: "https://www.abc.net.au/news/2026-11-19/researchers-monitor-bird-flu-spread-with-gps-trackers/107390852" },
+    heraldJS: { n: "Herald Business – Kháng nguyên cúm H5 ở trại vịt giống Jangseong", u: "https://mbiz.heraldcorp.com/article/10939834" },
+    ctvBC: { n: "CTV News (Canadian Press) – Cúm gia cầm ở đàn thương phẩm British Columbia", u: "https://www.ctvnews.ca/vancouver/article/avian-flu-detected-in-bc-poultry-flock-for-first-time-this-season/" },
+    fsFarmBill: { n: "Feedstuffs – USDA-APHIS tăng ngân sách chương trình thú y theo luật nông nghiệp", u: "https://www.feedstuffs.com/nutrition-and-health/farm-bill-animal-health-programs-get-major-updates" },
+    sbsKQ: { n: "SBS News – Hàn Quốc công bố biện pháp cải thiện kiểm dịch động vật (K-Animal Quarantine)", u: "https://news.sbs.co.kr/english/endPagePrintPopup.do?news_id=N1008829015" },
     gvCalMaine: { n: "GV Wire (Reuters) – Cal-Maine tiêu hủy 1,8 triệu gà sau ổ cúm gia cầm ở Florida", u: "https://gvwire.com/2026/11/18/cal-maine-to-cull-1-8-million-birds-halt-production-at-florida-facility-after-bird-flu-detected/" },
     rfdDairyVax: { n: "RFD-TV – Lãnh đạo nông nghiệp các bang đề nghị cho tiêm vắc-xin cúm gia cầm cho bò sữa", u: "https://www.rfdtv.com/state-ag-leaders-push-for-bird-flu-vaccines-in-dairy-cattle" },
     fsLSU: { n: "Feedstuffs – LSU nhận gần 2 triệu USD phát triển vắc-xin H5N1 cho gia cầm", u: "https://www.feedstuffs.com/poultry/lsu-awarded-2m-to-develop-bird-flu-vaccine-for-poultry" },
@@ -532,6 +543,13 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
 
   /* ---------- ĐIỂM NÓNG ---------- */
   var EV = [
+    { n: "Yeongam, Jeonnam, Hàn Quốc", co: "Hàn Quốc", t: "hpai", sev: 2, lat: 34.80, lon: 126.70, d: "19/11/2026", x: "Cúm gia cầm độc lực cao H5N9 ở trại vịt thịt khoảng 16.000 con, ổ thứ 10 mùa đông này; xét nghiệm 72 trại trong bán kính 10 km.", src: "segyeYA" },
+    { n: "Coningsby, Lincolnshire, Anh", co: "Vương quốc Anh", t: "hpai", sev: 2, lat: 53.10, lon: -0.17, d: "18/11/2026", x: "Defra xác nhận H5N1 ở đàn gia cầm thương phẩm gần Coningsby (East Lindsey); lập vùng bảo vệ 3 km, giám sát 10 km, tiêu hủy toàn bộ.", src: "defraCT" },
+    { n: "Thirsk, North Yorkshire, Anh", co: "Vương quốc Anh", t: "hpai", sev: 2, lat: 54.23, lon: -1.34, d: "18/11/2026", x: "Defra xác nhận H5N1 ở đàn gia cầm thương phẩm gần Thirsk cùng ngày; áp dụng vùng 3 km/10 km và tiêu hủy toàn bộ.", src: "defraCT" },
+    { n: "Pháp (toàn lãnh thổ chính quốc)", co: "Pháp", t: "hpai", sev: 2, lat: 46.60, lon: 2.40, d: "19/11/2026", x: "Nâng mức nguy cơ cúm gia cầm lên “cao” (mức cao nhất) từ 20/11, sau các ổ dịch ở đàn gia cầm hộ gia đình tại Gironde, Seine-Maritime.", src: "aaFR" },
+    { n: "Coagh, Co Tyrone, Bắc Ireland", co: "Vương quốc Anh", t: "hpai", sev: 2, lat: 54.65, lon: -6.62, d: "16/11/2026", x: "DAERA xác nhận cúm gia cầm độc lực cao ở cơ sở gia cầm thương phẩm gần Coagh; nuôi nhốt bắt buộc toàn Bắc Ireland từ 19/11.", src: "daeraTy" },
+    { n: "Jangseong, Jeonnam, Hàn Quốc", co: "Hàn Quốc", t: "hpai", sev: 1, lat: 35.30, lon: 126.78, d: "17/11/2026", x: "Phát hiện kháng nguyên cúm H5 ở trại vịt giống 10.000 con (chờ xác định độc lực); tiêu hủy, dừng di chuyển 24 giờ với trại vịt nhiều huyện lân cận.", src: "heraldJS" },
+    { n: "Chilliwack, British Columbia, Canada", co: "Canada", t: "hpai", sev: 2, lat: 49.16, lon: -121.95, d: "06/11/2026", x: "Cơ quan Thanh tra Thực phẩm Canada (CFIA) thông báo phát hiện cúm gia cầm đầu tiên của mùa này ở đàn gia cầm thương phẩm tại British Columbia.", src: "ctvBC" },
     { n: "Florida, Mỹ", co: "Mỹ", t: "hpai", sev: 2, lat: 28.1, lon: -81.6, d: "18/11/2026", x: "Cúm gia cầm tại một cơ sở gà đẻ của Cal-Maine Foods; theo công ty, khoảng 1,4 triệu gà đẻ và 360.000 gà hậu bị bị tiêu hủy, sản xuất tạm dừng.", src: "gvCalMaine" },
     { n: "Jincheon, Chungcheong Bắc, Hàn Quốc", co: "Hàn Quốc", t: "hpai", sev: 2, lat: 36.86, lon: 127.44, d: "13/11/2026", x: "Cúm gia cầm độc lực cao H5N1 ở trại vịt giống; tiêu hủy khoảng 2.200 con, hạn chế di chuyển 27 trại (1.043.000 gia cầm) trong vùng.", src: "khanJC" },
     { n: "Ganghwa, Incheon, Hàn Quốc", co: "Hàn Quốc", t: "hpai", sev: 2, lat: 37.75, lon: 126.49, d: "12/11/2026", x: "Cúm gia cầm độc lực cao H5N9 ở trại gà đẻ khoảng 48.000 con, ổ thứ 4 của mùa đông 2026–2027; xét nghiệm 28 trại trong bán kính 10 km.", src: "heraldGH" },
@@ -616,6 +634,12 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
   /* Bản tin nhanh – Dịch bệnh: mỗi mục là MỘT tin riêng, một nguồn.
      d = ngày, t = loại bệnh (hpai|asf|fmd|human), x = nội dung ngắn (cả câu là link), src = khóa trong SRC */
   var BRIEF = [
+    { d: "19/11/2026", t: "hpai", x: "Hàn Quốc: H5N9 ở trại vịt thịt 16.000 con tại Yeongam, ổ cúm gia cầm thứ 10 mùa đông này", src: "segyeYA" },
+    { d: "19/11/2026", t: "hpai", x: "Pháp nâng nguy cơ cúm gia cầm lên mức cao nhất từ 20/11, gia cầm phải nuôi nhốt", src: "aaFR" },
+    { d: "18/11/2026", t: "hpai", x: "Anh: thêm 2 ổ H5N1 ở gia cầm thương phẩm gần Coningsby (Lincolnshire) và Thirsk (North Yorkshire)", src: "defraCT" },
+    { d: "16/11/2026", t: "hpai", x: "Bắc Ireland xác nhận cúm gia cầm ở Co Tyrone, nuôi nhốt bắt buộc toàn vùng từ 19/11", src: "daeraTy" },
+    { d: "17/11/2026", t: "hpai", x: "Hàn Quốc: kháng nguyên cúm H5 ở trại vịt giống 10.000 con tại Jangseong, dừng di chuyển 24 giờ", src: "heraldJS" },
+    { d: "06/11/2026", t: "hpai", x: "Canada: cúm gia cầm đầu mùa ở đàn gia cầm thương phẩm tại British Columbia", src: "ctvBC" },
     { d: "18/11/2026", t: "hpai", x: "Mỹ: cúm gia cầm ở cơ sở gà đẻ Cal-Maine tại Florida, khoảng 1,8 triệu con bị tiêu hủy", src: "gvCalMaine" },
     { d: "13/11/2026", t: "hpai", x: "Hàn Quốc: cúm gia cầm H5N1 ở trại vịt giống Jincheon, tiêu hủy khoảng 2.200 con", src: "khanJC" },
     { d: "13/11/2026", t: "hpai", x: "Mỹ: 6 bang có ca HPAI mới trên bò sữa trong 30 ngày, Washington 41 ca", src: "dhSpread" },
@@ -687,6 +711,11 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
   /* Bản tin nhanh – Chính sách & công nghệ: mỗi mục là MỘT tin riêng, một nguồn.
      d = ngày, c = lĩnh vực (policy|tech|amr|gen), x = nội dung ngắn (cả câu là link), src = khóa trong SRC */
   var BRIEF_POL = [
+    { d: "19/11/2026", c: "tech", x: "Úc: CSIRO gắn GPS và lấy mẫu phân chim nước để theo dõi cúm H5 ở lưu vực Murray–Darling", src: "abcCSIRO" },
+    { d: "18/11/2026", c: "tech", x: "Ấn Độ: vắc-xin bất hoạt H5N1 nội địa đầu tiên cho gà, ra mắt 20/11 tại Bhopal", src: "fedINvax" },
+    { d: "17/11/2026", c: "amr", x: "Anh: doanh số kháng sinh thú y thấp hơn 56% so với 2014, tăng 2% so với năm 2024", src: "vmdVARSS" },
+    { d: "05/11/2026", c: "policy", x: "Mỹ: APHIS mở 2 đợt tài trợ tổng 80 triệu USD cho phòng chống dịch bệnh động vật, hạn 7/1/2027", src: "fsFarmBill" },
+    { d: "03/11/2026", c: "policy", x: "Hàn Quốc: kiểm dịch động vật dùng AI từ 2027, nâng mức bồi thường tiêu hủy lên 90% từ tháng 4", src: "sbsKQ" },
     { d: "18/11/2026", c: "policy", x: "Mỹ: lãnh đạo nông nghiệp các bang đề nghị USDA cho tiêm vắc-xin cúm gia cầm tự nguyện cho bò sữa", src: "rfdDairyVax" },
     { d: "17/11/2026", c: "tech", x: "Đại học LSU nhận gần 2 triệu USD từ USDA phát triển vắc-xin niêm mạc H5N1 cho gia cầm", src: "fsLSU" },
     { d: "14/11/2026", c: "env", x: "Úc: Provectus Algae thương mại hóa phụ gia tảo giảm khoảng 65% mê-tan ở bò", src: "abcProvectus" },
@@ -893,6 +922,12 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
 
   /* ---------- TIN TỨC ---------- */
   var NEWS = [
+    { d: "19/11/2026", t: "hpai", h: "Hàn Quốc: cúm gia cầm H5N9 ở trại vịt thịt tại Yeongam", p: "Trung tâm ứng phó trung ương xác nhận cúm gia cầm độc lực cao H5N9 ở trại khoảng 16.000 vịt thịt tại huyện Yeongam (Jeolla Nam), ổ thứ 10 từ 3/11 và thứ 4 ở trại vịt. Trại vịt cả nước được xét nghiệm từ 19 đến 28/11; 72 trại trong bán kính 10 km đang được kiểm tra.", src: "segyeYA" },
+    { d: "19/11/2026", t: "hpai", h: "Pháp nâng nguy cơ cúm gia cầm lên mức “cao” trên toàn lãnh thổ chính quốc", p: "Theo nghị định của Bộ Nông nghiệp đăng Công báo ngày 19/11, mức cao nhất trong ba mức có hiệu lực từ 20/11, do ca bệnh ở chim hoang dã tăng tại các nước láng giềng và đã có ổ dịch ở đàn gia cầm hộ gia đình (Gironde, Seine-Maritime). Pháp bắt buộc tiêm vắc-xin cho trại nuôi trên 250 con vịt từ mùa thu 2023.", src: "aaFR" },
+    { d: "18/11/2026", t: "hpai", h: "Anh: thêm hai ổ H5N1 ở gia cầm thương phẩm tại Lincolnshire và North Yorkshire", p: "Defra xác nhận ngày 18/11 cúm gia cầm H5N1 ở đàn thương phẩm gần Coningsby (East Lindsey) và gần Thirsk; mỗi nơi lập vùng bảo vệ 3 km và vùng giám sát 10 km, toàn bộ gia cầm bị tiêu hủy. Ở Anh, người nuôi từ 50 con trở lên phải nuôi nhốt từ 13/11.", src: "defraCT" },
+    { d: "16/11/2026", t: "hpai", h: "Bắc Ireland xác nhận cúm gia cầm ở Co Tyrone, ban hành lệnh nuôi nhốt", p: "Kết quả của phòng thí nghiệm tham chiếu ở Weybridge ngày 16/11 xác nhận cúm gia cầm độc lực cao tại cơ sở thương phẩm gần Coagh; toàn bộ gia cầm bị tiêu hủy. Từ 00:01 ngày 19/11, toàn Bắc Ireland là vùng phòng ngừa, gia cầm và chim nuôi phải nuôi nhốt, cấm tụ tập gia cầm.", src: "daeraTy" },
+    { d: "17/11/2026", t: "hpai", h: "Hàn Quốc: phát hiện kháng nguyên cúm H5 ở trại vịt giống tại Jangseong", p: "Trại có 10.000 vịt giống ở tỉnh Jeolla Nam; Cơ quan Kiểm dịch Động thực vật đang xác định độc lực (1–3 ngày). Nếu là độc lực cao, đây sẽ là ổ thứ 8 trên gia cầm cả nước kể từ 3/11; lệnh dừng di chuyển 24 giờ áp dụng cho trại vịt ở nhiều huyện lân cận.", src: "heraldJS" },
+    { d: "06/11/2026", t: "hpai", h: "Canada: cúm gia cầm đầu mùa ở đàn gia cầm thương phẩm British Columbia", p: "Cơ quan Thanh tra Thực phẩm Canada (CFIA) thông báo lần phát hiện cúm gia cầm đầu tiên của mùa này trong một đàn gia cầm thương phẩm ở British Columbia (khu vực Chilliwack).", src: "ctvBC" },
     { d: "18/11/2026", t: "hpai", h: "Mỹ: cúm gia cầm ở cơ sở gà đẻ của Cal-Maine tại Florida, khoảng 1,8 triệu con bị tiêu hủy", p: "Cal-Maine Foods cho biết sẽ tiêu hủy khoảng 1,4 triệu gà đẻ và 360.000 gà hậu bị (theo công ty là 2,7% đàn) sau khi phát hiện cúm gia cầm tại một cơ sở ở Florida, đồng thời tạm dừng sản xuất tại đây theo quy trình của USDA.", src: "gvCalMaine" },
     { d: "13/11/2026", t: "hpai", h: "Hàn Quốc: cúm gia cầm H5N1 ở trại vịt giống tại Jincheon", p: "Chính quyền tỉnh Chungcheong Bắc xác nhận ngày 13/11; khoảng 2.200 vịt giống bị tiêu hủy, 27 trại với 1.043.000 gia cầm trong vùng bị hạn chế di chuyển và đều âm tính.", src: "khanJC" },
     { d: "13/11/2026", t: "hpai", h: "Mỹ: HPAI lan sang bang mới, số ca trên bò sữa tăng", p: "Sáu bang có ca mới trên bò sữa trong 30 ngày qua, nâng tổng số lên 22 bang kể từ 3/2024. Riêng Washington ghi nhận 41 ca trong cùng kỳ; USDA xác nhận ca đầu tiên ở Indiana (2/11) và Oregon (10/11).", src: "dhSpread" },
@@ -974,6 +1009,11 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
     env: { n: "Môi trường", c: "#2fc6c6" }
   };
   var POL = [
+    { c: "tech", d: "19/11/2026", org: "Úc · CSIRO", h: "Úc dùng GPS và mẫu phân chim để theo dõi đường lây của cúm H5", p: "Chương trình của CSIRO gắn thiết bị GPS dạng ba lô cho chim nước và thu mẫu phân tươi để xét nghiệm cúm gia cầm ở lưu vực Murray–Darling (khoảng 14% diện tích lục địa). Theo trưởng dự án, tới nay có ít bằng chứng H5 xuất hiện trong lưu vực dù virus đã làm chết chim dọc bờ biển kể từ khi được phát hiện lần đầu ở Tây Úc tháng 6/2026; nhóm cho rằng virus sớm muộn sẽ tới đây.", src: "abcCSIRO" },
+    { c: "tech", d: "18/11/2026", org: "Ấn Độ · ICAR-NIHSAD", h: "Ấn Độ ra mắt vắc-xin cúm gia cầm H5N1 nội địa đầu tiên cho gà", p: "Viện ICAR-NIHSAD (Bhopal) phát triển vắc-xin bất hoạt nhắm vào H5N1 nhánh 2.3.2.1a; một liều bảo vệ tới sáu tháng, dùng cho gà đẻ và gà giống. Bộ trưởng Nông nghiệp Shivraj Singh Chouhan dự kiến công bố vắc-xin ngày 20/11; bài báo không nêu vắc-xin đã được phép dùng đại trà hay chưa.", src: "fedINvax" },
+    { c: "amr", d: "17/11/2026", org: "Vương quốc Anh · VMD", h: "Anh: doanh số kháng sinh thú y ổn định, vẫn thấp hơn 56% so với 2014", p: "Báo cáo UK-VARSS 2025 của Cơ quan Thuốc thú y (VMD) cho thấy doanh số kháng sinh cho động vật thấp hơn 56% so với 2014 nhưng tăng 2% so với 2024; lượng dùng ở gà thịt thấp nhất từ trước tới nay, ở lợn giảm 11%. Kháng sinh quan trọng thiết yếu chiếm dưới 0,5% doanh số cho động vật lấy thịt; báo cáo lần đầu có dữ liệu kháng thuốc ở vi khuẩn gây bệnh cho chó mèo.", src: "vmdVARSS" },
+    { c: "policy", d: "05/11/2026", org: "Mỹ · USDA-APHIS", h: "Mỹ tăng mạnh ngân sách chương trình thú y, mở 2 đợt tài trợ 80 triệu USD", p: "Ngân sách hằng năm cho ba chương trình NADPRP, NAHLN và Ngân hàng vắc-xin thú y quốc gia (NAVVCB) tăng từ 30 triệu lên 233 triệu USD từ năm tài khóa 2026. APHIS mở hai đợt tài trợ cạnh tranh năm tài khóa 2027, mỗi đợt 40 triệu USD cho bang và cho ngành chăn nuôi, nhận hồ sơ từ 5/11/2026 đến 7/1/2027, dự án bắt đầu mùa xuân 2027; ngoài ra hơn 153 triệu USD đầu tư mới cho kháng nguyên vắc-xin và chẩn đoán LMLM.", src: "fsFarmBill" },
+    { c: "policy", d: "03/11/2026", org: "Hàn Quốc · MAFRA", h: "Hàn Quốc công bố gói cải thiện kiểm dịch động vật, đưa AI vào phòng dịch", p: "Bộ trưởng Nông nghiệp Song Mi-ryung trình Nội các ngày 3/11 gói biện pháp gồm 3 chiến lược, 15 nhiệm vụ: áp dụng công nghệ thông minh và AI từ năm sau, nâng cấp hệ thống KAHIS, chứng nhận trang trại quản lý dịch tốt, thương mại hóa vắc-xin LMLM nền tảng vào năm sau và phát triển vắc-xin ASF đến 2030. Mức bồi thường tối đa khi tiêu hủy tăng từ 80% lên 90% (tới 100% cho trại báo dịch đầu tiên trong vùng), dự kiến hiệu lực từ tháng 4 tới cùng luật sửa đổi về phòng chống dịch bệnh động vật.", src: "sbsKQ" },
     { c: "policy", d: "18/11/2026", org: "Mỹ · Các bang / USDA", h: "Lãnh đạo nông nghiệp các bang Mỹ đề nghị USDA cho tiêm vắc-xin cúm gia cầm cho bò sữa", p: "Lãnh đạo ngành nông nghiệp các bang kêu gọi USDA phê duyệt vắc-xin cúm gia cầm độc lực cao cho bò sữa theo chiến lược tiêm phòng tự nguyện, trong bối cảnh dịch đã xuất hiện ở đàn bò sữa của 21 bang. Trạng thái: đề xuất, chưa được phê duyệt; bài viết lưu ý cơ quan liên bang phải cân nhắc tác động thương mại vì một số nước hạn chế nhập khẩu từ động vật đã tiêm phòng.", src: "rfdDairyVax" },
     { c: "tech", d: "17/11/2026", org: "Mỹ · Đại học LSU / USDA-APHIS", h: "Mỹ tài trợ gần 2 triệu USD phát triển vắc-xin niêm mạc phòng H5N1 cho gia cầm", p: "Nhóm nghiên cứu của Trường Thú y Đại học bang Louisiana (LSU) nhận gần 2 triệu USD từ chương trình Thách thức đổi mới HPAI gia cầm của USDA-APHIS để phát triển vắc-xin niêm mạc dùng kháng thể nano nhắm tế bào M, chống H5N1 nhánh 2.3.4.4b. Vắc-xin dự kiến đưa vào trứng hoặc qua nước uống. Trạng thái: giai đoạn nghiên cứu; hiện Mỹ chưa cho phép dùng vắc-xin HPAI cho gia cầm, trừ một số trường hợp riêng ở loài nguy cấp hoặc vườn thú.", src: "fsLSU" },
     { c: "env", d: "14/11/2026", org: "Úc · Queensland", h: "Úc: phụ gia thức ăn từ tảo giảm mê-tan ở bò được đưa ra thương mại", p: "Công ty Provectus Algae (Noosaville, Queensland) đang thương mại hóa phụ gia Surf'n'Turf mô phỏng tảo biển Asparagopsis, được thiết kế giảm khoảng 65% khí mê-tan bò thải ra; chính quyền Queensland đã đầu tư 3,8 triệu AUD. Các thử nghiệm thí điểm trên hơn 3.000 con bò, kể cả tại trại vỗ béo ở Darling Downs; chi phí trung bình 8 cent/con/ngày. Các con số hiệu quả và chi phí do công ty nêu; một chuyên gia Đại học Melbourne cho rằng chi phí phải xuống dưới 10 cent/con/ngày mới có giá trị tín chỉ carbon.", src: "abcProvectus" },
