@@ -167,6 +167,8 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
 .card .cat { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--c); }
 .card h3 { font-size: 16.5px; font-weight: 700; line-height: 1.32; }
 .card p { margin: 0; font-size: 13.5px; color: var(--soft); }
+.card .org { font-size: 12.5px; color: var(--muted); }
+.seg button small { margin-left: 6px; font-size: 11px; font-weight: 600; opacity: .7; }
 .empty { color: var(--muted); padding: 10px 0; }
 #news-pager, #policy-pager { margin-top: 28px; }
 
@@ -394,22 +396,22 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
   </section>
 
   <section class="sec wide" id="policy-panel">
-    <div class="pol-grid">
-      <div class="pol-side">
-        <div class="sec-l"><span class="sec-n">05</span><h2>Chính sách &amp; khoa học</h2><span class="sub">Luật, quy định, công nghệ, kháng sinh, di truyền động vật và bảo vệ môi trường. Mỗi tin dựa trên một nguồn đã kiểm tra link.</span></div>
-        <div class="cats" role="group" aria-label="Lọc theo lĩnh vực" id="pol-filter">
-          <button type="button" data-f="all" aria-pressed="true">Tất cả <small></small></button>
-          <button type="button" data-f="policy" aria-pressed="false">Chính sách – luật <small></small></button>
-          <button type="button" data-f="tech" aria-pressed="false">Công nghệ <small></small></button>
-          <button type="button" data-f="amr" aria-pressed="false">Kháng sinh – AMR <small></small></button>
-          <button type="button" data-f="gen" aria-pressed="false">Di truyền <small></small></button>
-          <button type="button" data-f="env" aria-pressed="false">Môi trường <small></small></button>
+    <div>
+      <div class="bar">
+        <div class="big-h"><span class="sec-n">05</span><h2>Chính sách &amp; khoa học</h2></div>
+        <div class="tools">
+          <div class="seg" role="group" aria-label="Lọc theo lĩnh vực" id="pol-filter">
+            <button type="button" data-f="all" aria-pressed="true">Tất cả<small></small></button>
+            <button type="button" data-f="policy" aria-pressed="false">Chính sách – luật<small></small></button>
+            <button type="button" data-f="tech" aria-pressed="false">Công nghệ<small></small></button>
+            <button type="button" data-f="amr" aria-pressed="false">Kháng sinh – AMR<small></small></button>
+            <button type="button" data-f="gen" aria-pressed="false">Di truyền<small></small></button>
+            <button type="button" data-f="env" aria-pressed="false">Môi trường<small></small></button>
+          </div>
         </div>
       </div>
-      <div>
-        <div id="policy"></div>
-        <div class="pager" id="policy-pager"></div>
-      </div>
+      <div class="news" id="policy"></div>
+      <div class="pager" id="policy-pager"></div>
     </div>
   </section>
 
@@ -1010,11 +1012,11 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
     pagerUI(document.getElementById("policy-pager"), polPage, pages, list.length, function (to) { polPage = to; drawPol(); scrollIntoPanel("policy-panel"); });
     list.slice((polPage - 1) * POL_PER_PAGE, polPage * POL_PER_PAGE).forEach(function (x) {
       var cat = PCAT[x.c];
-      var el = document.createElement("article"); el.className = "prow";
+      var el = document.createElement("article"); el.className = "card";
       el.style.setProperty("--c", cat.c);
-      el.innerHTML = '<div class="pd"><span class="dt num"></span><span class="pc"></span></div><div class="pb"><h3></h3><span class="org"></span><p></p></div>';
+      el.innerHTML = '<div class="top"><span class="cat"></span><span class="dt num"></span></div><h3></h3><span class="org"></span><p></p>';
+      el.querySelector(".cat").textContent = cat.n;
       el.querySelector(".dt").textContent = x.d;
-      el.querySelector(".pc").textContent = cat.n;
       el.querySelector("h3").appendChild(linkTo(x.src, x.h, "tl"));
       el.querySelector(".org").textContent = x.org;
       el.querySelector("p").textContent = x.p;
