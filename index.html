@@ -201,11 +201,13 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
 .tvch button:hover { color: var(--accent-t); }
 .tvch button[aria-pressed="true"] { color: var(--accent); }
 .tvch button small { font-size: 13px; font-weight: 500; font-stretch: 100%; letter-spacing: 0; color: var(--muted); }
-.tv-info { display: grid; gap: 8px; font-size: 13px; color: var(--muted); }
-.tv-info .row { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
+.tv-info { display: grid; gap: 6px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+.tv-info .row { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.tv-info .row strong { color: var(--ink); font-weight: 700; }
+.tv-info .row a { margin-left: auto; }
 .tv-info a { color: var(--ink); font-weight: 700; }
 .tv-info a:hover { color: var(--accent-t); }
-.tv-info .tip { border-left: 3px solid var(--accent); padding: 4px 0 4px 10px; }
+.tv-info .tip { font-size: 12.5px; }
 
 /* Chữ ký */
 .sig { position: fixed; right: clamp(10px, 1.6vw, 28px); bottom: 12px; z-index: 40; pointer-events: none; text-align: right; display: grid; justify-items: end; gap: 1px; padding: 6px 10px; background: rgba(11, 11, 11, .82); }
@@ -294,8 +296,8 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
   .tv { padding: 14px; gap: 16px; }
   .tv { display: flex; flex-direction: column; }
   .tv-side { display: contents; }
-  .tv-side .sec-l { order: 1; } .tvch { order: 2; } .tv-main { order: 3; } .tv-info { order: 4; }
-  .tv-info .tip { font-size: 12.5px; }
+  .tv-side .sec-l { order: 1; } .tvch { order: 2; } .tv-main { order: 3; }
+  .tv-info .row a { margin-left: 0; }
   .sig { right: 8px; bottom: 8px; padding: 4px 8px; }
   .sig-k { font-size: 8.5px; }
   .sig-n { font-size: 12px; }
@@ -316,7 +318,7 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
       <div><dt>Ngày</dt><dd class="num" id="vn-date">--/--/----</dd></div>
       <div id="vn-clock" title="Giờ GMT+7 (Việt Nam)"><dt>Giờ</dt><dd><span class="num" id="vn-time">--:--</span> GMT+7</dd></div>
       <div id="hn-weather" title="Thời tiết hiện tại ở Hà Nội (Open-Meteo)" hidden><dt>Hà Nội</dt><dd class="num" id="hn-temp"></dd></div>
-      <div><dt>Thời gian cập nhật</dt><dd class="num" id="updated">19/11/2026, 10:36 GMT+7</dd></div>
+      <div><dt>Thời gian cập nhật</dt><dd class="num" id="updated">19/11/2026, 13:36 GMT+7</dd></div>
     </dl>
   </header>
 
@@ -416,11 +418,11 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
       <div class="tv-main">
         <div class="tv-screen" id="tv-screen"></div>
         <div class="tv-status" id="tv-status" aria-live="polite"></div>
+        <div class="tv-info" id="tv-info"></div>
       </div>
       <div class="tv-side">
-        <div class="sec-l"><span class="sec-n">06</span><h2>Truyền hình</h2><span class="sub">Chỉ phát video mới về vật nuôi (bò, lợn, gia cầm, dê cừu, thú y). Phụ đề tiếng Việt dùng dịch tự động của YouTube.</span></div>
+        <div class="sec-l"><span class="sec-n">06</span><h2>Truyền hình</h2><span class="sub">Video mới về vật nuôi, có phụ đề tiếng Việt.</span></div>
         <div class="tvch" role="group" aria-label="Chọn kênh" id="tv-ch"></div>
-        <div class="tv-info" id="tv-info"></div>
       </div>
     </div>
   </section>
@@ -455,6 +457,10 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
 
   /* ---------- NGUỒN ---------- */
   var SRC = {
+    gvCalMaine: { n: "GV Wire (Reuters) – Cal-Maine tiêu hủy 1,8 triệu gà sau ổ cúm gia cầm ở Florida", u: "https://gvwire.com/2026/11/18/cal-maine-to-cull-1-8-million-birds-halt-production-at-florida-facility-after-bird-flu-detected/" },
+    rfdDairyVax: { n: "RFD-TV – Lãnh đạo nông nghiệp các bang đề nghị cho tiêm vắc-xin cúm gia cầm cho bò sữa", u: "https://www.rfdtv.com/state-ag-leaders-push-for-bird-flu-vaccines-in-dairy-cattle" },
+    fsLSU: { n: "Feedstuffs – LSU nhận gần 2 triệu USD phát triển vắc-xin H5N1 cho gia cầm", u: "https://www.feedstuffs.com/poultry/lsu-awarded-2m-to-develop-bird-flu-vaccine-for-poultry" },
+    abcProvectus: { n: "ABC News (Úc) – Phụ gia giảm mê-tan từ tảo của Provectus Algae được thương mại hóa", u: "https://www.abc.net.au/news/rural/2026-11-14/provectus-algae-cattle-methane-supplement/107372936" },
     khanJC: { n: "Kyunghyang Shinmun – Cúm gia cầm ở trại vịt giống Jincheon", u: "https://www.khan.co.kr/en/article/202611132053007" },
     starKH6: { n: "The Star (Xinhua) – Campuchia ca H5N1 trên người thứ sáu năm 2026", u: "https://www.thestar.com.my/aseanplus/aseanplus-news/2026/09/28/cambodia-confirms-sixth-human-case-of-h5n1-bird-flu-in-2026" },
     heraldGH: { n: "Herald Business – Cúm gia cầm H5N9 ở trại gà đẻ Ganghwa", u: "https://biz.heraldcorp.com/article/10935963" },
@@ -524,6 +530,7 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
 
   /* ---------- ĐIỂM NÓNG ---------- */
   var EV = [
+    { n: "Florida, Mỹ", co: "Mỹ", t: "hpai", sev: 2, lat: 28.1, lon: -81.6, d: "18/11/2026", x: "Cúm gia cầm tại một cơ sở gà đẻ của Cal-Maine Foods; theo công ty, khoảng 1,4 triệu gà đẻ và 360.000 gà hậu bị bị tiêu hủy, sản xuất tạm dừng.", src: "gvCalMaine" },
     { n: "Jincheon, Chungcheong Bắc, Hàn Quốc", co: "Hàn Quốc", t: "hpai", sev: 2, lat: 36.86, lon: 127.44, d: "13/11/2026", x: "Cúm gia cầm độc lực cao H5N1 ở trại vịt giống; tiêu hủy khoảng 2.200 con, hạn chế di chuyển 27 trại (1.043.000 gia cầm) trong vùng.", src: "khanJC" },
     { n: "Ganghwa, Incheon, Hàn Quốc", co: "Hàn Quốc", t: "hpai", sev: 2, lat: 37.75, lon: 126.49, d: "12/11/2026", x: "Cúm gia cầm độc lực cao H5N9 ở trại gà đẻ khoảng 48.000 con, ổ thứ 4 của mùa đông 2026–2027; xét nghiệm 28 trại trong bán kính 10 km.", src: "heraldGH" },
     { n: "Oklahoma, Mỹ", co: "Mỹ", t: "hpai", sev: 2, lat: 35.5, lon: -97.5, d: "16/11/2026", x: "Một đàn bò sữa nhiễm HPAI, ca đầu tiên trên bò sữa của bang kể từ tháng 7/2024 (cơ quan nông nghiệp Oklahoma xác nhận).", src: "dhOK" },
@@ -607,6 +614,7 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
   /* Bản tin nhanh – Dịch bệnh: mỗi mục là MỘT tin riêng, một nguồn.
      d = ngày, t = loại bệnh (hpai|asf|fmd|human), x = nội dung ngắn (cả câu là link), src = khóa trong SRC */
   var BRIEF = [
+    { d: "18/11/2026", t: "hpai", x: "Mỹ: cúm gia cầm ở cơ sở gà đẻ Cal-Maine tại Florida, khoảng 1,8 triệu con bị tiêu hủy", src: "gvCalMaine" },
     { d: "13/11/2026", t: "hpai", x: "Hàn Quốc: cúm gia cầm H5N1 ở trại vịt giống Jincheon, tiêu hủy khoảng 2.200 con", src: "khanJC" },
     { d: "13/11/2026", t: "hpai", x: "Mỹ: 6 bang có ca HPAI mới trên bò sữa trong 30 ngày, Washington 41 ca", src: "dhSpread" },
     { d: "12/11/2026", t: "hpai", x: "Hàn Quốc: H5N9 ở trại gà đẻ 48.000 con tại Ganghwa, ổ thứ 4 của mùa đông", src: "heraldGH" },
@@ -677,6 +685,9 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
   /* Bản tin nhanh – Chính sách & công nghệ: mỗi mục là MỘT tin riêng, một nguồn.
      d = ngày, c = lĩnh vực (policy|tech|amr|gen), x = nội dung ngắn (cả câu là link), src = khóa trong SRC */
   var BRIEF_POL = [
+    { d: "18/11/2026", c: "policy", x: "Mỹ: lãnh đạo nông nghiệp các bang đề nghị USDA cho tiêm vắc-xin cúm gia cầm tự nguyện cho bò sữa", src: "rfdDairyVax" },
+    { d: "17/11/2026", c: "tech", x: "Đại học LSU nhận gần 2 triệu USD từ USDA phát triển vắc-xin niêm mạc H5N1 cho gia cầm", src: "fsLSU" },
+    { d: "14/11/2026", c: "env", x: "Úc: Provectus Algae thương mại hóa phụ gia tảo giảm khoảng 65% mê-tan ở bò", src: "abcProvectus" },
     { d: "06/11/2026", c: "tech", x: "EMA khuyến nghị cấp phép vắc-xin Streptococcus suis cho lợn nái; báo cáo JIACRA 5 công bố 10/12", src: "emaCVMP11" },
     { d: "06/09/2026", c: "env", x: "Hà Lan: PBL đề xuất giảm 5–10% giấy phép chăn nuôi vì kế hoạch nitơ 20 tỷ euro chưa đủ", src: "gaPBL" },
     { d: "25/08/2026", c: "amr", x: "Đức: lượng kháng sinh dùng trong chăn nuôi năm 2025 khoảng 494 tấn, giảm khoảng 3%", src: "bfrAB" },
@@ -880,6 +891,7 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
 
   /* ---------- TIN TỨC ---------- */
   var NEWS = [
+    { d: "18/11/2026", t: "hpai", h: "Mỹ: cúm gia cầm ở cơ sở gà đẻ của Cal-Maine tại Florida, khoảng 1,8 triệu con bị tiêu hủy", p: "Cal-Maine Foods cho biết sẽ tiêu hủy khoảng 1,4 triệu gà đẻ và 360.000 gà hậu bị (theo công ty là 2,7% đàn) sau khi phát hiện cúm gia cầm tại một cơ sở ở Florida, đồng thời tạm dừng sản xuất tại đây theo quy trình của USDA.", src: "gvCalMaine" },
     { d: "13/11/2026", t: "hpai", h: "Hàn Quốc: cúm gia cầm H5N1 ở trại vịt giống tại Jincheon", p: "Chính quyền tỉnh Chungcheong Bắc xác nhận ngày 13/11; khoảng 2.200 vịt giống bị tiêu hủy, 27 trại với 1.043.000 gia cầm trong vùng bị hạn chế di chuyển và đều âm tính.", src: "khanJC" },
     { d: "13/11/2026", t: "hpai", h: "Mỹ: HPAI lan sang bang mới, số ca trên bò sữa tăng", p: "Sáu bang có ca mới trên bò sữa trong 30 ngày qua, nâng tổng số lên 22 bang kể từ 3/2024. Riêng Washington ghi nhận 41 ca trong cùng kỳ; USDA xác nhận ca đầu tiên ở Indiana (2/11) và Oregon (10/11).", src: "dhSpread" },
     { d: "12/11/2026", t: "hpai", h: "Hàn Quốc: H5N9 ở trại gà đẻ tại Ganghwa, ổ thứ 4 mùa đông này", p: "Phát hiện qua giám sát định kỳ ở trại khoảng 48.000 con gà. Lệnh dừng di chuyển 24 giờ áp dụng cho Incheon, Seoul và Gyeonggi; 28 trại trong bán kính 10 km được xét nghiệm.", src: "heraldGH" },
@@ -960,6 +972,9 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
     env: { n: "Môi trường", c: "#2fc6c6" }
   };
   var POL = [
+    { c: "policy", d: "18/11/2026", org: "Mỹ · Các bang / USDA", h: "Lãnh đạo nông nghiệp các bang Mỹ đề nghị USDA cho tiêm vắc-xin cúm gia cầm cho bò sữa", p: "Lãnh đạo ngành nông nghiệp các bang kêu gọi USDA phê duyệt vắc-xin cúm gia cầm độc lực cao cho bò sữa theo chiến lược tiêm phòng tự nguyện, trong bối cảnh dịch đã xuất hiện ở đàn bò sữa của 21 bang. Trạng thái: đề xuất, chưa được phê duyệt; bài viết lưu ý cơ quan liên bang phải cân nhắc tác động thương mại vì một số nước hạn chế nhập khẩu từ động vật đã tiêm phòng.", src: "rfdDairyVax" },
+    { c: "tech", d: "17/11/2026", org: "Mỹ · Đại học LSU / USDA-APHIS", h: "Mỹ tài trợ gần 2 triệu USD phát triển vắc-xin niêm mạc phòng H5N1 cho gia cầm", p: "Nhóm nghiên cứu của Trường Thú y Đại học bang Louisiana (LSU) nhận gần 2 triệu USD từ chương trình Thách thức đổi mới HPAI gia cầm của USDA-APHIS để phát triển vắc-xin niêm mạc dùng kháng thể nano nhắm tế bào M, chống H5N1 nhánh 2.3.4.4b. Vắc-xin dự kiến đưa vào trứng hoặc qua nước uống. Trạng thái: giai đoạn nghiên cứu; hiện Mỹ chưa cho phép dùng vắc-xin HPAI cho gia cầm, trừ một số trường hợp riêng ở loài nguy cấp hoặc vườn thú.", src: "fsLSU" },
+    { c: "env", d: "14/11/2026", org: "Úc · Queensland", h: "Úc: phụ gia thức ăn từ tảo giảm mê-tan ở bò được đưa ra thương mại", p: "Công ty Provectus Algae (Noosaville, Queensland) đang thương mại hóa phụ gia Surf'n'Turf mô phỏng tảo biển Asparagopsis, được thiết kế giảm khoảng 65% khí mê-tan bò thải ra; chính quyền Queensland đã đầu tư 3,8 triệu AUD. Các thử nghiệm thí điểm trên hơn 3.000 con bò, kể cả tại trại vỗ béo ở Darling Downs; chi phí trung bình 8 cent/con/ngày. Các con số hiệu quả và chi phí do công ty nêu; một chuyên gia Đại học Melbourne cho rằng chi phí phải xuống dưới 10 cent/con/ngày mới có giá trị tín chỉ carbon.", src: "abcProvectus" },
     { c: "tech", d: "06/11/2026", org: "EU · EMA (CVMP)", h: "EMA khuyến nghị cấp phép vắc-xin liên cầu lợn, gia hạn vắc-xin cúm gia cầm H5", p: "Phiên họp CVMP 3–5/11 cho ý kiến tích cực với Streptoporc (vắc-xin Streptococcus suis cho lợn nái và lợn hậu bị mang thai) và gia hạn thêm một năm hiệu lực của hai vắc-xin cúm gia cầm Vaxxinact H5 và Vaxxitek HVT+IBD+H5. Trạng thái: khuyến nghị, chờ quyết định cấp phép. Ủy ban cũng thông qua báo cáo JIACRA lần thứ 5 về sử dụng và kháng kháng sinh, dự kiến công bố ngày 10/12.", src: "emaCVMP11" },
     { c: "env", d: "06/09/2026", org: "Hà Lan · PBL", h: "Hà Lan: kế hoạch giảm nitơ 20 tỷ euro chưa đủ, PBL đề xuất cắt giấy phép chăn nuôi", p: "Kế hoạch đặt mục tiêu giảm 42–46% phát thải amoniac vào 2035 so với 2019, nhưng Cơ quan Đánh giá Môi trường (PBL) cho rằng hơn một nửa khu bảo tồn vẫn vượt ngưỡng lắng đọng nitơ vào 2035. PBL khuyến nghị giảm đồng loạt 5–10% giấy phép chăn nuôi bò sữa, lợn, gia cầm. Trạng thái: đề xuất; Bộ trưởng Nông nghiệp bác bỏ, chỉ coi đây là \"phanh khẩn cấp\" cuối cùng.", src: "gaPBL" },
     { c: "amr", d: "25/08/2026", org: "Đức · BfR", h: "Đức: lượng kháng sinh dùng trong chăn nuôi năm 2025 giảm nhẹ", p: "Theo Viện Đánh giá Rủi ro Liên bang (BfR), tổng lượng dùng khoảng 494 tấn, giảm khoảng 3% so với năm trước; nhóm kháng sinh quan trọng với người giảm còn 29 tấn (chủ yếu nhờ giảm colistin). Tần suất điều trị giảm mạnh ở gà đẻ (-55%) nhưng tăng ở gà thịt (+6%) và gà tây (+5%); kháng sulphamethoxazole và trimethoprim ở E. coli từ lợn thịt tăng rõ.", src: "bfrAB" },
@@ -1065,11 +1080,11 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
   /* Kênh YouTube chính thức (yt = ID kênh). Khi mở trang: tự tìm kênh đang phát trực tiếp (tắt tiếng, theo quy định trình duyệt);
      nếu không kênh nào đang trực tiếp thì phát các video tin tức mới nhất. */
   var TV = [
-    { n: "Brownfield", co: "Mỹ", lang: "Tiếng Anh", d: "Mạng tin nông nghiệp lâu đời của Mỹ: tin trang trại, thị trường gia súc, thời tiết, phỏng vấn chuyên gia.", yt: "UCBR7KnDynZ0hw7xF23dE94A" },
-    { n: "Farm Journal", co: "Mỹ", lang: "Tiếng Anh", d: "Tin nông nghiệp, góc nhìn của nhà sản xuất, chăn nuôi và công nghệ trang trại (AgDay, U.S. Farm Report).", yt: "UCqTizkFSbhBojVtIkjMEoZQ" },
-    { n: "Farmers Weekly", co: "Anh", lang: "Tiếng Anh", d: "Kênh video của tạp chí Farmers Weekly: chăn nuôi bò sữa, bò thịt, cừu, lợn, gia cầm, máy móc.", yt: "UC_Tg-jtxlqdKbuKPKG-kxYg" },
-    { n: "Pig Progress", co: "Hà Lan", lang: "Tiếng Anh", d: "Tạp chí quốc tế chuyên ngành chăn nuôi lợn: công nghệ, sức khỏe đàn, dịch tả lợn châu Phi.", yt: "UCF9dWYsZuLgN1hgxwjuestw" },
-    { n: "Canal Rural", co: "Brazil", lang: "Tiếng Bồ Đào Nha", d: "Kênh nông nghiệp lớn của Brazil, mạnh về chăn nuôi bò thịt; có chương trình trực tiếp Giro do Boi.", yt: "UCPumJ2ayrr-JDsA9JDCUDDQ" }
+    { n: "Brownfield", co: "Mỹ", lang: "Tiếng Anh", d: "Tin trang trại, thị trường gia súc", yt: "UCBR7KnDynZ0hw7xF23dE94A" },
+    { n: "Farm Journal", co: "Mỹ", lang: "Tiếng Anh", d: "Tin nông nghiệp, chăn nuôi, công nghệ trang trại", yt: "UCqTizkFSbhBojVtIkjMEoZQ" },
+    { n: "Farmers Weekly", co: "Anh", lang: "Tiếng Anh", d: "Bò sữa, bò thịt, cừu, lợn, gia cầm", yt: "UC_Tg-jtxlqdKbuKPKG-kxYg" },
+    { n: "Pig Progress", co: "Hà Lan", lang: "Tiếng Anh", d: "Chuyên ngành chăn nuôi lợn", yt: "UCF9dWYsZuLgN1hgxwjuestw" },
+    { n: "Canal Rural", co: "Brazil", lang: "Tiếng Bồ Đào Nha", d: "Chăn nuôi bò thịt Brazil", yt: "UCPumJ2ayrr-JDsA9JDCUDDQ" }
   ];
   var tvCur = 0, tvPlayer = null, tvMode = "live", tvTimer = null, tvSeq = 0, tvAuto = true, tvSound = false;
   function tvStatus(msg, btns) {
@@ -1089,21 +1104,20 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
     if (document.getElementById("yt-api")) return;
     window.onYouTubeIframeAPIReady = function () { var q = window.__ytq || []; window.__ytq = []; q.forEach(function (f) { f(); }); };
     var sc = document.createElement("script"); sc.id = "yt-api"; sc.src = "https://www.youtube.com/iframe_api";
-    sc.onerror = function () { tvStatus("Không tải được trình phát YouTube (mạng hoặc trình duyệt đang chặn YouTube). Bấm “Mở trên YouTube” để xem."); };
+    sc.onerror = function () { tvStatus("Không tải được YouTube. Bấm “Mở trên YouTube” để xem."); };
     document.head.appendChild(sc);
   }
   function markCh() {
     document.querySelectorAll("#tv-ch button").forEach(function (b, i) { b.setAttribute("aria-pressed", i === tvCur); });
     var c = TV[tvCur], inf = document.getElementById("tv-info"); inf.innerHTML = "";
     var row = document.createElement("div"); row.className = "row";
-    row.appendChild(document.createTextNode(c.co + " · " + c.lang + " · " + c.d));
-    inf.appendChild(row);
-    var row2 = document.createElement("div"); row2.className = "row";
+    var nm = document.createElement("strong"); nm.textContent = c.n; row.appendChild(nm);
+    var meta = document.createElement("span"); meta.textContent = c.co + " · " + c.lang + " · " + c.d; row.appendChild(meta);
     var a = document.createElement("a"); a.target = "_blank"; a.rel = "noopener";
-    a.href = "https://www.youtube.com/channel/" + c.yt + "/live"; a.textContent = "Mở trên YouTube ↗";
-    row2.appendChild(a); inf.appendChild(row2);
+    a.href = "https://www.youtube.com/channel/" + c.yt + "/live"; a.textContent = "Mở trên YouTube ↗"; row.appendChild(a);
+    inf.appendChild(row);
     var tip = document.createElement("div"); tip.className = "tip";
-    tip.textContent = "Phụ đề tiếng Việt: trong khung video bấm ⚙ → Phụ đề → Dịch tự động → Tiếng Việt (chỉ có khi đài bật phụ đề). Video tự phát ở chế độ tắt tiếng theo quy định của trình duyệt — bấm “Bật tiếng” để nghe.";
+    tip.textContent = "Phụ đề tiếng Việt: ⚙ → Phụ đề → Dịch tự động → Tiếng Việt.";
     inf.appendChild(tip);
   }
   /* Chỉ phát video về vật nuôi: kiểm tra tiêu đề từng video (tiếng Anh, tiếng Bồ Đào Nha), không khớp thì tự chuyển video kế tiếp */
@@ -1139,15 +1153,15 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
         if (checked[id] === undefined) checked[id] = isAnimal(d.title);
         if (checked[id]) { okId = id; return true; }
         skips++;
-        if (skips > 60) { tvStatus("Chưa tìm thấy video về vật nuôi trong các video mới của " + c.n + ". Thử kênh khác."); showVideo(); return true; }
+        if (skips > 60) { tvStatus("Chưa có video vật nuôi mới trên " + c.n + ". Thử kênh khác."); showVideo(); return true; }
         try { tvPlayer.nextVideo(); } catch (e) {}
         return false;
       }
       function fail(code) {
         if (failed || seq !== tvSeq) return; failed = true; clearTimeout(tvTimer);
         if (onFail) { onFail(code); return; }
-        if (code === 101 || code === 150 || code === 153) tvStatus("Đài không cho phát video của họ trên trang khác. Bấm “Mở trên YouTube” để xem.");
-        else tvStatus("Không phát được video" + (code ? " (mã lỗi " + code + ")" : "") + ". Bấm “Mở trên YouTube” để xem.");
+        if (code === 101 || code === 150 || code === 153) tvStatus("Kênh không cho phát trên trang khác. Bấm “Mở trên YouTube”.");
+        else tvStatus("Không phát được video" + (code ? " (mã " + code + ")" : "") + ". Bấm “Mở trên YouTube”.");
       }
       var pv = { autoplay: 1, mute: 1, cc_load_policy: 1, cc_lang_pref: "vi", hl: "vi", rel: 0, playsinline: 1 };
       var opts = { width: "100%", height: "100%", playerVars: pv, events: {
@@ -1161,7 +1175,7 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
           if (tvMode === "live") { btns.push({ t: "Xem tin mới nhất", f: function () { tvAuto = false; playYT(tvCur, "vod"); } });
             tvStatus("● Đang phát trực tiếp: " + c.n, btns); }
           else { btns.push({ t: "Thử xem trực tiếp", f: function () { tvAuto = false; playLive(tvCur); } });
-            tvStatus("Đang phát video về vật nuôi của " + c.n, btns); }
+            tvStatus("Đang phát: " + c.n, btns); }
         },
         onError: function (ev) { fail(ev.data); }
       } };
