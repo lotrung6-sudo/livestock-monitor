@@ -320,7 +320,7 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
       <div><dt>Ngày</dt><dd class="num" id="vn-date">--/--/----</dd></div>
       <div id="vn-clock" title="Giờ GMT+7 (Việt Nam)"><dt>Giờ</dt><dd><span class="num" id="vn-time">--:--</span> GMT+7</dd></div>
       <div id="hn-weather" title="Thời tiết hiện tại ở Hà Nội (Open-Meteo)" hidden><dt>Hà Nội</dt><dd class="num" id="hn-temp"></dd></div>
-      <div><dt>Thời gian cập nhật</dt><dd class="num" id="updated">21/11/2026, 08:24 GMT+7</dd></div>
+      <div><dt>Thời gian cập nhật</dt><dd class="num" id="updated">22/11/2026, 08:21 GMT+7</dd></div>
     </dl>
   </header>
 
@@ -459,6 +459,12 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
 
   /* ---------- NGUỒN ---------- */
   var SRC = {
+    defraDH: { n: "Defra/APHA (GOV.UK) – Cúm gia cầm H5N1 gần Dereham, Norfolk (AIV 2026/28)", u: "https://www.gov.uk/animal-disease-cases-england/bird-flu-near-dereham-breckland-norfolk-aiv2026-slash-28" },
+    defraDS: { n: "Defra/APHA (GOV.UK) – Cúm gia cầm H5N1 gần Dersingham, Norfolk (AIV 2026/26)", u: "https://www.gov.uk/animal-disease-cases-england/bird-flu-near-dersingham-kings-lynn-and-west-norfolk-norfolk-aiv-2026-slash-26" },
+    aphaAMR: { n: "APHA (GOV.UK) – Tuần lễ nâng cao nhận thức về kháng kháng sinh 2026", u: "https://www.gov.uk/government/news/apha-marks-world-amr-awareness-week-2026" },
+    heraldTrace: { n: "Herald Business – Hàn Quốc tăng mức phạt gian lận truy xuất nguồn gốc vật nuôi", u: "https://biz.heraldcorp.com/article/10931462" },
+    ttMG: { n: "3tres3 (pig333) – Hỗn hợp monoglyceride thay kháng sinh cho lợn cai sữa", u: "https://www.3tres3.com/en/swine_abstracts/substituting-antibiotics-with-fatty-acids-in-weaned-piglets_22910/" },
+    wljCA: { n: "Western Livestock Journal – Phòng thí nghiệm thú y mới ở Turlock, California", u: "https://www.wlj.net/california-laboratory-expands-disease-testing" },
     capOR: { n: "Capital Press – Oregon (Mỹ) có ca cúm gia cầm trên người đầu tiên, hạt Morrow", u: "https://capitalpress.com/2026/11/20/oregons-first-human-case-of-bird-flu-confirmed-in-morrow-county/" },
     dnRS: { n: "DairyNews – Rio Grande do Sul (Brazil) xác nhận cúm gia cầm ở gia cầm nuôi tự cấp", u: "https://dairynews.today/global/news/rio_grande_do_sul_confirms_avian_flu_in_subsistence_birds_1861391.html" },
     anJPdairy: { n: "AgNavigator – Nhật Bản ưu tiên nâng năng suất ngành bò sữa khi số trại giảm", u: "https://www.agnavigator.com/Article/2026/11/11/japan-eyes-productivity-improvements-to-sustain-dairy-sector-amid-farm-decline/" },
@@ -542,8 +548,7 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
     ntRwanda: { n: "The New Times (qua AllAfrica) – Luật chăn nuôi mới của Rwanda", u: "https://allafrica.com/stories/202610200123.html" },
     emaCVMP: { n: "EMA – Kết quả họp CVMP 8–10/9/2026", u: "https://www.ema.europa.eu/ro/node/286754" },
     dnInnotech: { n: "DairyNews – Innotech Vision tại EuroTier 2026", u: "https://dairynews.today/global/news/danish-start-up-innotech-vision-presents-ai-based-livestock-barn-monitoring-at-eurotier-2026.html" },
-    anNofence: { n: "AgNavigator – Vòng cổ Nofence N3", u: "https://www.agnavigator.com/Article/2026/09/09/nofence-bets-on-precision-livestock-management-with-launch-of-n3-cattle-collar/" },
-    vegFoE: { n: "vegconomist – Báo cáo của Friends of the Earth", u: "https://vegconomist.com/politics-law/new-report-says-us-food-system-faces-growing-risks-gene-edited-farm-animals/" }
+    anNofence: { n: "AgNavigator – Vòng cổ Nofence N3", u: "https://www.agnavigator.com/Article/2026/09/09/nofence-bets-on-precision-livestock-management-with-launch-of-n3-cattle-collar/" }
   };
 
   /* ---------- LOẠI BỆNH ---------- */
@@ -556,6 +561,8 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
 
   /* ---------- ĐIỂM NÓNG ---------- */
   var EV = [
+    { n: "Dereham, Breckland, Norfolk, Anh", co: "Vương quốc Anh", t: "hpai", sev: 2, lat: 52.68, lon: 0.94, d: "12/11/2026", x: "Defra xác nhận cúm gia cầm độc lực cao H5N1 ở đàn gia cầm thương phẩm gần Dereham; lập vùng bảo vệ 3 km, giám sát 10 km, toàn bộ gia cầm bị tiêu hủy.", src: "defraDH" },
+    { n: "Dersingham, King's Lynn, Norfolk, Anh", co: "Vương quốc Anh", t: "hpai", sev: 2, lat: 52.84, lon: 0.51, d: "09/11/2026", x: "Defra xác nhận cúm gia cầm độc lực cao H5N1 ở đàn gia cầm thương phẩm gần Dersingham; vùng bảo vệ và vùng giám sát đang có hiệu lực.", src: "defraDS" },
     { n: "Hạt Morrow, Oregon, Mỹ", co: "Mỹ", t: "human", sev: 2, lat: 45.42, lon: -119.58, d: "19/11/2026", x: "Ca cúm gia cầm độc lực cao trên người đầu tiên của Oregon, liên quan ổ dịch trên bò ở một trại bò sữa trong hạt; triệu chứng nhẹ, điều trị bằng oseltamivir, không phải nhập viện.", src: "capOR" },
     { n: "Selbach, Rio Grande do Sul, Brazil", co: "Brazil", t: "hpai", sev: 1, lat: -28.63, lon: -52.95, d: "05/10/2026", x: "Cúm gia cầm độc lực cao ở đàn gia cầm nuôi tự cấp (vùng Alto Jacuí); cơ quan thú y bang kiểm tra 68 cơ sở trong bán kính 3 km.", src: "dnRS" },
     { n: "Cuddalore, Tamil Nadu, Ấn Độ", co: "Ấn Độ", t: "hpai", sev: 2, lat: 11.75, lon: 79.75, d: "16/11/2026", x: "Xác nhận H5N1 trong mẫu từ các trại gia cầm ở huyện Cuddalore; tiêu hủy toàn bộ gia cầm ở trại nhiễm và trong bán kính 1 km, cấm nuôi gà thịt 3 tháng trong vùng.", src: "starTN" },
@@ -650,6 +657,8 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
   /* Bản tin nhanh – Dịch bệnh: mỗi mục là MỘT tin riêng, một nguồn.
      d = ngày, t = loại bệnh (hpai|asf|fmd|human), x = nội dung ngắn (cả câu là link), src = khóa trong SRC */
   var BRIEF = [
+    { d: "12/11/2026", t: "hpai", x: "Anh: H5N1 ở đàn gia cầm thương phẩm gần Dereham (Norfolk), tiêu hủy toàn bộ, lập vùng 3 km/10 km", src: "defraDH" },
+    { d: "09/11/2026", t: "hpai", x: "Anh: H5N1 ở đàn gia cầm thương phẩm gần Dersingham (Norfolk), áp dụng vùng bảo vệ và giám sát", src: "defraDS" },
     { d: "20/11/2026", t: "human", x: "Mỹ: Oregon có ca cúm gia cầm trên người đầu tiên, liên quan trại bò sữa nhiễm bệnh ở hạt Morrow", src: "capOR" },
     { d: "07/10/2026", t: "hpai", x: "Brazil: cúm gia cầm độc lực cao ở đàn gia cầm nuôi tự cấp tại Selbach, Rio Grande do Sul", src: "dnRS" },
     { d: "16/11/2026", t: "hpai", x: "Ấn Độ: H5N1 ở trại gia cầm huyện Cuddalore (Tamil Nadu), tiêu hủy gia cầm trong bán kính 1 km", src: "starTN" },
@@ -731,6 +740,10 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
   /* Bản tin nhanh – Chính sách & công nghệ: mỗi mục là MỘT tin riêng, một nguồn.
      d = ngày, c = lĩnh vực (policy|tech|amr|gen), x = nội dung ngắn (cả câu là link), src = khóa trong SRC */
   var BRIEF_POL = [
+    { d: "19/11/2026", c: "amr", x: "Anh: 26 phòng thí nghiệm thú y tư nhân tham gia mạng lưới giám sát kháng kháng sinh do APHA dẫn dắt", src: "aphaAMR" },
+    { d: "10/11/2026", c: "policy", x: "Hàn Quốc: làm giả số truy xuất nguồn gốc vật nuôi có thể bị phạt tù tới 1 năm từ 8/1/2027", src: "heraldTrace" },
+    { d: "10/11/2026", c: "amr", x: "Nghiên cứu: hỗn hợp monoglyceride 1.000 mg/kg cho hiệu quả tương đương kháng sinh ở lợn cai sữa", src: "ttMG" },
+    { d: "13/11/2026", c: "tech", x: "California (Mỹ): phòng thí nghiệm thú y 108 triệu USD ở Turlock mở rộng xét nghiệm cho nhiều loài vật nuôi", src: "wljCA" },
     { d: "18/11/2026", c: "env", x: "COP31: đàm phán tài chính khí hậu cho nông nghiệp bế tắc; Nigeria trình kế hoạch giảm phát thải chăn nuôi", src: "gaCOP" },
     { d: "17/11/2026", c: "env", x: "Đan Mạch: khoảng 150 nhà máy khí sinh học dùng tới 70% nguyên liệu là phân lợn, phân bò", src: "ajDK" },
     { d: "11/11/2026", c: "policy", x: "Nhật Bản: số trại bò sữa giảm còn 9.019, chính sách ưu tiên nâng năng suất và chăn nuôi thông minh", src: "anJPdairy" },
@@ -770,8 +783,7 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
     { d: "29/10/2026", c: "policy", x: "Ấn Độ ban hành Quy tắc phòng chống bệnh truyền nhiễm ở động vật 2026", src: "tlIndia" },
     { d: "19/10/2026", c: "policy", x: "Rwanda siết quản lý thuốc thú y bằng luật chăn nuôi mới", src: "ntRwanda" },
     { d: "11/09/2026", c: "amr", x: "EMA đề xuất ghi rõ giới hạn dùng kháng sinh dự phòng trên nhãn thuốc thú y", src: "emaCVMP" },
-    { d: "09/09/2026", c: "tech", x: "Nofence (Na Uy) ra vòng cổ bò N3 kết nối vệ tinh", src: "anNofence" },
-    { d: "21/07/2026", c: "gen", x: "Friends of the Earth (Mỹ) cảnh báo rủi ro từ vật nuôi biến đổi gen được FDA phê duyệt", src: "vegFoE" }
+    { d: "09/09/2026", c: "tech", x: "Nofence (Na Uy) ra vòng cổ bò N3 kết nối vệ tinh", src: "anNofence" }
   ];
   BRIEF_POL = BRIEF_POL.filter(fresh);
 
@@ -951,6 +963,8 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
 
   /* ---------- TIN TỨC ---------- */
   var NEWS = [
+    { d: "12/11/2026", t: "hpai", h: "Anh: cúm gia cầm H5N1 ở đàn gia cầm thương phẩm gần Dereham, Norfolk", p: "Defra và Cơ quan Thú y và Thực vật (APHA) xác nhận ngày 12/11 cúm gia cầm độc lực cao H5N1 ở cơ sở gia cầm thương phẩm gần Dereham (Breckland, Norfolk), mã ca AIV 2026/28. Vùng bảo vệ 3 km và vùng giám sát 10 km được thiết lập; toàn bộ gia cầm tại cơ sở bị tiêu hủy nhân đạo.", src: "defraDH" },
+    { d: "09/11/2026", t: "hpai", h: "Anh: cúm gia cầm H5N1 ở đàn gia cầm thương phẩm gần Dersingham, Norfolk", p: "Defra và APHA xác nhận ngày 9/11 cúm gia cầm độc lực cao H5N1 ở đàn gia cầm thương phẩm gần Dersingham (King's Lynn và West Norfolk), mã ca AIV 2026/26. Vùng bảo vệ và vùng giám sát quanh ổ dịch đang có hiệu lực.", src: "defraDS" },
     { d: "20/11/2026", t: "human", h: "Oregon (Mỹ) xác nhận ca cúm gia cầm trên người đầu tiên, liên quan trại bò sữa nhiễm bệnh", p: "Cơ quan Y tế Oregon (OHA) công bố ngày 19/11 ca nhiễm cúm gia cầm độc lực cao ở hạt Morrow, liên quan ổ dịch trên bò tại một trại bò sữa trong hạt; người bệnh có triệu chứng nhẹ, được điều trị bằng oseltamivir và không phải nhập viện. OHA đánh giá nguy cơ với cộng đồng rất thấp; người trong gia đình bệnh nhân được cấp oseltamivir.", src: "capOR" },
     { d: "07/10/2026", t: "hpai", h: "Brazil: cúm gia cầm độc lực cao ở đàn gia cầm nuôi tự cấp tại Rio Grande do Sul", p: "Phòng thí nghiệm Phòng vệ Nông nghiệp Liên bang (LFDA-SP) ở Campinas xác nhận ngày 5/10 ổ dịch ở gia cầm nuôi để tự cung cấp tại Selbach (vùng Alto Jacuí), sau báo cáo gia cầm chết ngày 1/10. Cơ quan thú y bang kiểm tra 68 cơ sở trong bán kính 3 km quanh ổ dịch.", src: "dnRS" },
     { d: "16/11/2026", t: "hpai", h: "Ấn Độ: Tamil Nadu xác nhận cúm gia cầm H5N1 ở trại gia cầm, tăng cường giám sát", p: "Mẫu lấy từ các trại gia cầm ở huyện Cuddalore (cách thủ phủ Chennai khoảng 210 km về phía nam) dương tính H5N1. Cơ quan thú y bang tiêu hủy toàn bộ gia cầm ở trại nhiễm và trong bán kính 1 km, cấm nuôi gà thịt 3 tháng trong vùng dịch; giám sát được tăng cường ở Namakkal, một trung tâm sản xuất trứng lớn.", src: "starTN" },
@@ -1042,6 +1056,10 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
     env: { n: "Môi trường", c: "#2fc6c6" }
   };
   var POL = [
+    { c: "amr", d: "19/11/2026", org: "Vương quốc Anh · APHA", h: "Anh: mạng lưới phòng thí nghiệm tư nhân giám sát kháng kháng sinh ở vật nuôi được mở rộng", p: "Nhân Tuần lễ nâng cao nhận thức về kháng kháng sinh thế giới (18–24/11/2026, chủ đề của WHO \"One Health, one action: Prevent AMR now\"), Cơ quan Thú y và Thực vật (APHA) cho biết Sáng kiến Phòng thí nghiệm tư nhân (PLI), do APHA dẫn dắt ở nhánh vật nuôi trang trại, tới tháng 7/2026 đã kết nối 26 phòng thí nghiệm thú y tư nhân trong số hơn 40 phòng được xác định trên toàn Vương quốc Anh. Sáng kiến được tài trợ qua Quỹ An ninh tích hợp của Văn phòng Nội các, do Cơ quan Thuốc thú y (VMD) điều phối; APHA nhắc tới Kế hoạch hành động quốc gia về kháng kháng sinh 2024–2029.", src: "aphaAMR" },
+    { c: "policy", d: "10/11/2026", org: "Hàn Quốc · MAFRA", h: "Hàn Quốc tăng mức phạt gian lận số truy xuất nguồn gốc vật nuôi từ 8/1/2027", p: "Theo Luật Quản lý truy xuất nguồn gốc vật nuôi và sản phẩm chăn nuôi sửa đổi, từ ngày 8/1/2027 hành vi làm giả số truy xuất nguồn gốc có thể bị phạt tù tới 1 năm hoặc phạt tiền tới 10 triệu won, thay cho mức phạt tiền hoặc phạt hành chính tối đa 5 triệu won hiện nay. Trạng thái: luật đã ban hành, chờ hiệu lực. Bộ Nông nghiệp (MAFRA) đồng thời kiểm tra khoảng 860 cơ sở bán sản phẩm chăn nuôi, kể cả trên nền tảng trực tuyến, đến ngày 25/11 (số truy xuất, xếp hạng chất lượng, ghi xuất xứ), dùng xét nghiệm DNA khi nghi gian lận.", src: "heraldTrace" },
+    { c: "amr", d: "10/11/2026", org: "Nghiên cứu · Frontiers in Veterinary Science", h: "Hỗn hợp monoglyceride cho kết quả tương đương kháng sinh ở lợn cai sữa", p: "Nghiên cứu của Li và cộng sự (Frontiers in Veterinary Science, 2026) trên 180 lợn cai sữa trong 42 ngày so sánh hỗn hợp 1:1:1 glycerol monopropionate, monobutyrate và monolaurate (600, 1.000 và 1.400 mg/kg) với nhóm dùng kháng sinh enramycin 500 mg/kg. Mức 1.000 mg/kg, giống nhóm kháng sinh, cải thiện khối lượng cuối kỳ, tăng trọng hằng ngày và hệ số chuyển hóa thức ăn, đồng thời giảm tiêu chảy; nhóm tác giả đề xuất mức này làm giải pháp thay kháng sinh. Trạng thái: kết quả nghiên cứu đã công bố.", src: "ttMG" },
+    { c: "tech", d: "13/11/2026", org: "Mỹ · California (CDFA / UC Davis)", h: "California mở rộng xét nghiệm bệnh vật nuôi với phòng thí nghiệm 108 triệu USD ở Turlock", p: "Phòng thí nghiệm CAHFS Turlock rộng 44.000 feet vuông, trị giá 108 triệu USD, thay cho cơ sở trước đây chỉ phục vụ gia cầm; nay có thể mổ khám và xét nghiệm chẩn đoán bò, ngựa, lợn, dê và các vật nuôi khác để hỗ trợ ứng phó dịch bệnh. Phòng do Đại học California Davis vận hành cùng Bộ Nông nghiệp California (CDFA), thuộc hệ thống bốn phòng thí nghiệm An toàn thực phẩm và Sức khỏe động vật của bang; bài viết không nêu ngày khai trương.", src: "wljCA" },
     { c: "env", d: "18/11/2026", org: "Quốc tế · COP31 / CGIAR", h: "COP31: đàm phán tài chính khí hậu cho nông nghiệp và lương thực bế tắc giữa kỳ", p: "Tại COP31 ở Antalya (9–20/11), chương trình làm việc chung Sharm el-Sheikh về nông nghiệp và an ninh lương thực (lập tại COP27 năm 2022) đã hết nhiệm kỳ bốn năm mà chưa có cơ chế kế tiếp; theo CGIAR, tới giữa hội nghị chưa có đề xuất chính thức nào được đưa ra. Bên lề hội nghị, Nigeria trình bày kế hoạch giảm phát thải chăn nuôi (cùng ILRI) và được đề nghị bắt đầu đo phát thải của đàn gia súc. Trạng thái: đàm phán đang diễn ra.", src: "gaCOP" },
     { c: "env", d: "17/11/2026", org: "Đan Mạch", h: "Đan Mạch biến phân lợn thành khí sinh học cung cấp năng lượng cho các thị trấn", p: "Khoảng 150 nhà máy khí sinh học quy mô công nghiệp ở Đan Mạch dùng tới 70% nguyên liệu là phân lợn và phân bò; theo bài viết, khí sinh học chiếm khoảng 40% lượng khí trong lưới khí đốt, cao nhất châu Âu. Ở Sønderborg, hai nhà máy Glansager và Kværs xử lý khoảng 850.000 tấn chất hữu cơ mỗi năm, chủ yếu là phân lỏng, đáp ứng nhu cầu khí đốt hằng năm của cả vùng. Nhóm NOAH (Friends of the Earth Đan Mạch) và Foodrise phê phán mô hình này là \"cái bẫy chăn nuôi công nghiệp\", hiệp hội Biogas Denmark phản bác.", src: "ajDK" },
     { c: "policy", d: "11/11/2026", org: "Nhật Bản · MAFF", h: "Nhật Bản ưu tiên nâng năng suất để duy trì ngành bò sữa khi số trại giảm", p: "Bộ trưởng Nông nghiệp Arata Takebe phản hồi số liệu của Hội đồng Sữa Nhật Bản: số trại bò sữa giao sữa cho các tổ chức sản xuất được chỉ định giảm còn 9.019 vào cuối tháng 9, trong khi sản lượng sữa tươi gần như ổn định nhờ mở rộng quy mô đàn và tăng năng suất mỗi con; các tổ chức sản xuất ở Hokkaido lần đầu sau bốn năm đặt mục tiêu giảm sản lượng năm tới. Trạng thái: định hướng đang thực hiện theo Chính sách cơ bản hiện đại hóa chăn nuôi bò sữa và bò thịt (thông qua 4/2025), ưu tiên chăn nuôi thông minh, tăng thức ăn thô trong nước và giảm phụ thuộc nhập khẩu; bài viết không nêu mục tiêu hay ngân sách mới.", src: "anJPdairy" },
@@ -1081,8 +1099,7 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
     { c: "policy", d: "29/10/2026", org: "Ấn Độ · Bộ Thủy sản, Chăn nuôi và Sữa", h: "Ấn Độ ban hành Quy tắc phòng chống bệnh truyền nhiễm ở động vật 2026", p: "Quy tắc mới thay thế bản 2010: ổ dịch phải báo cáo qua cổng Bharat Pashudhan, xác động vật bệnh phải chôn, đốt hoặc xử lý theo khoảng cách an toàn, báo cáo mổ khám nộp trong 12 giờ.", src: "tlIndia" },
     { c: "policy", d: "19/10/2026", org: "Rwanda", h: "Rwanda siết quản lý thuốc thú y bằng luật chăn nuôi mới", p: "Luật mới kiểm soát chặt việc điều trị vật nuôi và dùng thuốc thú y, hạn chế người nuôi tự chữa bệnh khi không có chuyên môn, nhằm giảm kháng kháng sinh và tồn dư trong thịt, sữa. Các văn bản hướng dẫn đang được soạn.", src: "ntRwanda" },
     { c: "amr", d: "11/09/2026", org: "EU · EMA", h: "EMA đề xuất ghi rõ giới hạn dùng kháng sinh dự phòng trên nhãn thuốc thú y", p: "Ủy ban CVMP đưa ra tài liệu khái niệm để sửa hướng dẫn về tóm tắt đặc tính sản phẩm, thêm câu chuẩn phản ánh giới hạn pháp lý với dùng kháng sinh dự phòng và điều trị dự phòng theo Quy định (EU) 2019/6; lấy ý kiến 3 tháng. Kỳ họp cũng thông qua 10 ý kiến tích cực.", src: "emaCVMP" },
-    { c: "tech", d: "09/09/2026", org: "Na Uy · Nofence", h: "Nofence ra vòng cổ bò N3 kết nối vệ tinh", p: "Vòng cổ hàng rào ảo N3 có ba lớp kết nối (di động, vệ tinh, mạng nội bộ giữa các vòng cổ), theo dõi vị trí, hành vi, chu kỳ động dục và cảnh báo sinh, hướng tới vùng chăn thả không có sóng di động.", src: "anNofence" },
-    { c: "gen", d: "21/07/2026", org: "Mỹ · Friends of the Earth", h: "Báo cáo cảnh báo rủi ro từ vật nuôi biến đổi gen được FDA phê duyệt", p: "Báo cáo cập nhật của Friends of the Earth Mỹ cho rằng việc FDA phê duyệt đi trước mức thẩm định khoa học cần thiết. Báo cáo xem xét 3 loại vật nuôi được cấp phép giai đoạn 2020–2025 (bò chịu nóng, lợn kháng bệnh, lợn giảm gây dị ứng). Đây là quan điểm của một tổ chức vận động.", src: "vegFoE" }
+    { c: "tech", d: "09/09/2026", org: "Na Uy · Nofence", h: "Nofence ra vòng cổ bò N3 kết nối vệ tinh", p: "Vòng cổ hàng rào ảo N3 có ba lớp kết nối (di động, vệ tinh, mạng nội bộ giữa các vòng cổ), theo dõi vị trí, hành vi, chu kỳ động dục và cảnh báo sinh, hướng tới vùng chăn thả không có sóng di động.", src: "anNofence" }
   ];
   POL = POL.filter(fresh);
   var polEl = document.getElementById("policy"), pf = "all";
