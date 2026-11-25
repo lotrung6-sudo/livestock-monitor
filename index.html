@@ -320,7 +320,7 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
       <div><dt>Ngày</dt><dd class="num" id="vn-date">--/--/----</dd></div>
       <div id="vn-clock" title="Giờ GMT+7 (Việt Nam)"><dt>Giờ</dt><dd><span class="num" id="vn-time">--:--</span> GMT+7</dd></div>
       <div id="hn-weather" title="Thời tiết hiện tại ở Hà Nội (Open-Meteo)" hidden><dt>Hà Nội</dt><dd class="num" id="hn-temp"></dd></div>
-      <div><dt>Thời gian cập nhật</dt><dd class="num" id="updated">24/11/2026, 08:25 GMT+7</dd></div>
+      <div><dt>Thời gian cập nhật</dt><dd class="num" id="updated">25/11/2026, 08:27 GMT+7</dd></div>
     </dl>
   </header>
 
@@ -459,6 +459,12 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
 
   /* ---------- NGUỒN ---------- */
   var SRC = {
+    psPasCalais: { n: "The Poultry Site – Pháp có ổ cúm gia cầm H5N1 ở trang trại vùng Pas-de-Calais", u: "https://www.thepoultrysite.com/news/2026/11/france-reports-bird-flu-outbreak-on-northern-poultry-farm" },
+    capWest: { n: "Capital Press – Cúm gia cầm tiếp diễn ở Oregon, Washington; ổ lớn ở Fresno (California)", u: "https://capitalpress.com/2026/11/24/bird-flu-cases-continue-in-oregon-washington-backyard-flocks/" },
+    cdcH5: { n: "CDC Mỹ – Cập nhật cúm H5, 23/11/2026", u: "https://www.cdc.gov/bird-flu/spotlights/bird-flu-update-11232026.html" },
+    fwiRUMA: { n: "Farmers Weekly – Báo cáo RUMA TTF3: ngành lợn, gia cầm Anh tiếp tục giảm kháng sinh", u: "https://www.fwi.co.uk/news/pig-and-poultry-sectors-drive-further-cuts-in-antibiotic-use" },
+    faSweden: { n: "Feed & Additive – Thụy Điển kỷ niệm 40 năm cấm kháng sinh kích thích tăng trưởng", u: "https://www.feedandadditive.com/sweden-marks-40-years-since-banning-antibiotic-growth-promoters/" },
+    dnLSDcyl: { n: "DairyNews – Castilla y León (Tây Ban Nha) gia hạn biện pháp phòng viêm da nổi cục đến 30/11/2026", u: "https://dairynews.today/global/news/spain_extends_regional_lumpy_skin_disease_controls_until_november_30_2026_4007747.html" },
     nlCollendoorn: { n: "NL Times (ANP) – Cúm gia cầm ở trại gà đẻ Collendoorn, Overijssel (Hà Lan)", u: "https://nltimes.nl/2026/11/22/8600-hens-culled-bird-flu-hits-overijssel-farm-national-total-reaches-250000" },
     kzAichi: { n: "Kazinform (JIJI) – Nhật Bản tiêu hủy khoảng 80.000 gà đẻ ở Toyohashi, Aichi", u: "https://qazinform.com/news/why-japans-aichi-prefecture-to-cull-80000-hens-905751" },
     pnDereham: { n: "Poultry News – H5N1 ở đàn gà tây gần Dereham, Norfolk; Vương quốc Anh có 15 ổ", u: "https://www.poultrynews.co.uk/health-welfare/new-avian-flu-case-confirmed-in-norfolk-turkey-flock-brings-total-cases-to-15.html" },
@@ -575,6 +581,9 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
 
   /* ---------- ĐIỂM NÓNG ---------- */
   var EV = [
+    { n: "Pas-de-Calais, Pháp", co: "Pháp", t: "hpai", sev: 2, lat: 50.45, lon: 2.30, d: "24/11/2026", x: "Ổ H5N1 độc lực cao ở trang trại gia cầm (theo báo cáo gửi WOAH): 80/4.300 con chết, số còn lại bị tiêu hủy; phát hiện một ngày trước khi Pháp áp dụng mức cảnh báo cao.", src: "psPasCalais" },
+    { n: "Hạt Fresno, California, Mỹ", co: "Mỹ", t: "hpai", sev: 2, lat: 36.75, lon: -119.77, d: "18/11/2026", x: "Cúm gia cầm độc lực cao ở cơ sở gà bố mẹ hướng thịt thương phẩm; 88.900 con bị tiêu hủy (theo dữ liệu USDA).", src: "capWest" },
+    { n: "Hạt Grant, Washington, Mỹ", co: "Mỹ", t: "hpai", sev: 2, lat: 47.20, lon: -119.45, d: "23/11/2026", x: "USDA xác nhận cúm gia cầm trên bò sữa ở hạt Grant; Washington có 44 đàn bò sữa nhiễm kể từ 8/10.", src: "capWest" },
     { n: "Collendoorn, Overijssel, Hà Lan", co: "Hà Lan", t: "hpai", sev: 2, lat: 52.53, lon: 6.55, d: "22/11/2026", x: "Cúm gia cầm ở trại gà đẻ; khoảng 8.600 con bị tiêu hủy, cấm vận chuyển gia cầm, trứng, phân và chất độn chuồng trong bán kính 10 km.", src: "nlCollendoorn" },
     { n: "Toyohashi, Aichi, Nhật Bản", co: "Nhật Bản", t: "hpai", sev: 2, lat: 34.77, lon: 137.39, d: "23/11/2026", x: "Cúm gia cầm độc lực cao ở trại gà đẻ, xác nhận bằng xét nghiệm gen; tiêu hủy khoảng 80.000 con. Ổ thứ ba ở trang trại Nhật Bản mùa này.", src: "kzAichi" },
     { n: "Gần Dereham, Norfolk, Anh (ổ thứ hai)", co: "Vương quốc Anh", t: "hpai", sev: 2, lat: 52.71, lon: 0.98, d: "21/11/2026", x: "H5N1 ở đàn gà tây thương phẩm đang nuôi úm gần Dereham; lập vùng bảo vệ 3 km và giám sát 10 km lúc 17:40 ngày 21/11.", src: "pnDereham" },
@@ -679,6 +688,9 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
   /* Bản tin nhanh – Dịch bệnh: mỗi mục là MỘT tin riêng, một nguồn.
      d = ngày, t = loại bệnh (hpai|asf|fmd|human), x = nội dung ngắn (cả câu là link), src = khóa trong SRC */
   var BRIEF = [
+    { d: "24/11/2026", t: "hpai", x: "Pháp: H5N1 ở trang trại gia cầm Pas-de-Calais, 80/4.300 con chết, số còn lại bị tiêu hủy", src: "psPasCalais" },
+    { d: "24/11/2026", t: "hpai", x: "Mỹ: 88.900 gà bố mẹ bị tiêu hủy ở Fresno (California); bò sữa hạt Grant (Washington) nhiễm cúm", src: "capWest" },
+    { d: "23/11/2026", t: "human", x: "CDC: Mỹ có 75 ca cúm A(H5) trên người từ 2024, gồm 3 ca tử vong; nguy cơ cộng đồng vẫn thấp", src: "cdcH5" },
     { d: "22/11/2026", t: "hpai", x: "Hà Lan: cúm gia cầm ở trại gà đẻ Collendoorn (Overijssel), tiêu hủy khoảng 8.600 con", src: "nlCollendoorn" },
     { d: "23/11/2026", t: "hpai", x: "Nhật Bản: cúm gia cầm độc lực cao ở trại gà đẻ Toyohashi (Aichi), tiêu hủy khoảng 80.000 con", src: "kzAichi" },
     { d: "23/11/2026", t: "hpai", x: "Anh: H5N1 ở đàn gà tây gần Dereham (Norfolk); Vương quốc Anh có 15 ổ từ 1/10", src: "pnDereham" },
@@ -767,6 +779,9 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
   /* Bản tin nhanh – Chính sách & công nghệ: mỗi mục là MỘT tin riêng, một nguồn.
      d = ngày, c = lĩnh vực (policy|tech|amr|gen), x = nội dung ngắn (cả câu là link), src = khóa trong SRC */
   var BRIEF_POL = [
+    { d: "18/11/2026", c: "amr", x: "Anh: kháng sinh dùng cho lợn giảm 10% còn 77,2 mg/PCU; ngành thịt gia cầm thấp kỷ lục 11,15 tấn", src: "fwiRUMA" },
+    { d: "20/11/2026", c: "amr", x: "Thụy Điển tròn 40 năm cấm kháng sinh kích thích tăng trưởng (từ 1/1/1986), sớm hơn EU 20 năm", src: "faSweden" },
+    { d: "05/11/2026", c: "policy", x: "Castilla y León (Tây Ban Nha) gia hạn biện pháp phòng viêm da nổi cục ở bò đến 30/11/2026", src: "dnLSDcyl" },
     { d: "18/11/2026", c: "amr", x: "Hà Lan: kháng kháng sinh ở vật nuôi gần như ổn định 5 năm qua theo NethMap One Health 2026", src: "wurAMR" },
     { d: "06/11/2026", c: "env", x: "Ireland: có miễn trừ nitrat 2026–2028 kèm điều kiện, một số hồ sơ có thể bị từ chối", src: "fjDerog" },
     { d: "05/11/2026", c: "gen", x: "Nghiên cứu: biến thể eSpCas9 chỉnh gen phôi lợn đúng đích, không phát hiện chỉnh sai đích", src: "ttCas9" },
@@ -999,6 +1014,9 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
 
   /* ---------- TIN TỨC ---------- */
   var NEWS = [
+    { d: "24/11/2026", t: "hpai", h: "Pháp: ổ cúm gia cầm H5N1 ở trang trại vùng Pas-de-Calais", p: "Theo báo cáo gửi WOAH dẫn nguồn nhà chức trách Pháp, virus H5N1 độc lực cao được phát hiện ở một trang trại gia cầm tại Pas-de-Calais (miền bắc), làm chết 80 trong số 4.300 con; số còn lại đã bị tiêu hủy. Ổ dịch được phát hiện hôm thứ Năm, một ngày trước khi Pháp áp dụng mức cảnh báo “cao” với các biện pháp như nuôi nhốt gia cầm.", src: "psPasCalais" },
+    { d: "24/11/2026", t: "hpai", h: "Miền Tây nước Mỹ: cúm gia cầm tiếp diễn, 88.900 gà bị tiêu hủy ở Fresno", p: "Theo dữ liệu USDA, giữa tháng 11 cúm gia cầm độc lực cao tiếp tục xuất hiện ở đàn gia cầm nuôi sân vườn tại Oregon (hạt Marion ngày 19/11, hạt Clatsop ngày 20/11, mỗi nơi 40 con bị tiêu hủy) và Washington (hạt Pierce ngày 17/11 và 20/11). Ổ lớn nhất miền Tây là cơ sở gà bố mẹ hướng thịt thương phẩm ở hạt Fresno, California (18/11) với 88.900 con bị tiêu hủy; ngày 23/11 USDA xác nhận bò sữa nhiễm bệnh ở hạt Grant, Washington, bang này có 44 đàn bò sữa nhiễm kể từ 8/10.", src: "capWest" },
+    { d: "23/11/2026", t: "human", h: "CDC: Mỹ có 75 ca nhiễm cúm A(H5) trên người từ năm 2024, 3 ca tử vong", p: "Bản cập nhật ngày 23/11 của CDC cho biết bốn ca gần nhất (một ở Oregon, ba ở Washington, trong đó một ca tử vong ngày 1/11) đều là người lớn làm việc tại các trại bò sữa nhiễm bệnh. Virus ở Washington thuộc kiểu gen B3.13, nhánh 2.3.4.4b, chưa thấy đột biến đáng lo ngại ở các gen đã giải trình tự; CDC vẫn đánh giá nguy cơ với cộng đồng ở mức thấp và chưa ghi nhận lây từ người sang người tại Mỹ.", src: "cdcH5" },
     { d: "22/11/2026", t: "hpai", h: "Hà Lan: cúm gia cầm ở trại gà đẻ Collendoorn, số gia cầm bị tiêu hủy trong tháng vượt 250.000", p: "Theo Bộ Nông nghiệp, Thủy sản, An ninh Lương thực và Thiên nhiên Hà Lan (LNV), khoảng 8.600 gà đẻ ở một trại tại Collendoorn (Overijssel) bị tiêu hủy; từ nay cấm vận chuyển gia cầm, trứng, phân và chất độn chuồng đã dùng trong bán kính 10 km. Hơn 250.000 con đã bị tiêu hủy trong tháng này, các ổ khác ở Gelderland và Friesland; lệnh nuôi nhốt toàn quốc có hiệu lực từ cuối tháng 10.", src: "nlCollendoorn" },
     { d: "23/11/2026", t: "hpai", h: "Nhật Bản: cúm gia cầm độc lực cao ở trại gà đẻ Toyohashi, tiêu hủy khoảng 80.000 con", p: "Trung tâm vệ sinh chăn nuôi địa phương nhận báo cáo gà chết tăng khoảng trưa Chủ nhật (22/11); xét nghiệm nhanh dương tính và xét nghiệm gen sau đó xác nhận nhiễm bệnh. Đây là ổ thứ ba ở trang trại Nhật Bản mùa này và là ổ đầu tiên của tỉnh Aichi.", src: "kzAichi" },
     { d: "23/11/2026", t: "hpai", h: "Anh: H5N1 ở đàn gà tây gần Dereham, Vương quốc Anh lên 15 ổ từ tháng 10", p: "Cúm gia cầm độc lực cao H5N1 được xác nhận ở đàn gà tây thương phẩm đang nuôi úm gần Dereham (Breckland, Norfolk); vùng bảo vệ 3 km và giám sát 10 km được lập lúc 17:40 ngày 21/11. Từ 1/10, Vương quốc Anh có 15 ổ (14 H5N1, 1 H5N5): Anh 11, Scotland 3, Bắc Ireland 1; nguy cơ ở chim hoang dã tại Anh quốc nâng lên “rất cao”, xứ Wales áp dụng lệnh nuôi nhốt từ trưa 23/11.", src: "pnDereham" },
@@ -1097,6 +1115,9 @@ table.al tbody tr:hover * { color: var(--bg) !important; }
     env: { n: "Môi trường", c: "#2fc6c6" }
   };
   var POL = [
+    { c: "amr", d: "18/11/2026", org: "Anh · RUMA Agriculture", h: "Anh: ngành lợn và gia cầm tiếp tục giảm dùng kháng sinh theo báo cáo RUMA TTF3", p: "Báo cáo Targets Task Force 3 của RUMA Agriculture (công bố 17/11) cho thấy lượng kháng sinh dùng cho lợn giảm 10% so với năm trước, còn 77,2 mg/PCU (giảm 72% so với 2015); nhóm kháng sinh cực kỳ quan trọng ưu tiên cao (HP-CIA) chỉ chiếm 0,01%, không ghi nhận dùng colistin. Ngành thịt gia cầm dùng 11,15 tấn, thấp nhất từ trước tới nay (giảm 86,4% so với mốc 2012), trong khi ngành chim săn tăng khoảng 3% lên 11,4 tấn. Trạng thái: báo cáo giám sát, không kèm quy định mới.", src: "fwiRUMA" },
+    { c: "amr", d: "20/11/2026", org: "Thụy Điển · Svenskt Kött", h: "Thụy Điển tròn 40 năm cấm kháng sinh kích thích tăng trưởng trong chăn nuôi", p: "Lệnh cấm dùng kháng sinh làm chất kích thích tăng trưởng trong thức ăn chăn nuôi của Thụy Điển có hiệu lực từ 1/1/1986, kèm quy định bắt buộc kê đơn thú y khi trộn kháng sinh vào thức ăn; EU áp dụng lệnh cấm tương tự 20 năm sau (2006). Lộ trình bắt đầu năm 1981 khi Liên đoàn Nông dân Thụy Điển (LRF) thông qua chính sách kháng sinh, đến 1984 các bên thống nhất loại bỏ dần. Tổ chức ngành thịt Svenskt Kött cho rằng Thụy Điển hiện có mức dùng kháng sinh cho vật nuôi thấp nhất EU (nhận định của tổ chức này).", src: "faSweden" },
+    { c: "policy", d: "05/11/2026", org: "Tây Ban Nha · Castilla y León", h: "Castilla y León (Tây Ban Nha) gia hạn biện pháp phòng viêm da nổi cục đến 30/11/2026", p: "Sở Nông nghiệp, Chăn nuôi, Phát triển Nông thôn và Chính sách Môi trường vùng Castilla y León gia hạn các biện pháp phòng ngừa bệnh viêm da nổi cục ở bò đến hết 30/11/2026, tùy diễn biến dịch tễ (đăng Công báo BOCyL ngày 3/11, hiệu lực từ 31/10). Các yêu cầu gồm kiểm tra một số hoạt động vận chuyển bò, giám sát thú y và an toàn sinh học trang trại; hội chợ, chợ gia súc vẫn được tổ chức nếu đáp ứng điều kiện, bò từ vùng tiêm phòng khẩn cấp có thể bị kiểm tra và có thể phải xử lý diệt côn trùng cho vật nuôi, phương tiện. Trạng thái: đang có hiệu lực đến cuối tháng 11.", src: "dnLSDcyl" },
     { c: "amr", d: "18/11/2026", org: "Hà Lan · Wageningen University & Research", h: "Kháng kháng sinh ở vật nuôi Hà Lan gần như ổn định trong 5 năm", p: "Theo kết quả giám sát năm 2025 công bố trong báo cáo NethMap One Health 2026 (do Wageningen Bioveterinary Research và Wageningen Food Safety Research thực hiện), mức kháng kháng sinh ở vật nuôi Hà Lan gần như không đổi trong 5 năm qua; cao nhất ở gà thịt, gà tây, lợn thịt và bê, thấp hơn ở bò sữa. Tỷ lệ E. coli kháng cephalosporin phổ rộng năm 2025: 40% ở bê trắng, 25% ở bê hồng, 18% ở bò sữa, 10% ở lợn thịt và 10% ở gà thịt; E. coli sinh carbapenemase và kháng colistin chỉ phát hiện lẻ tẻ. Trạng thái: báo cáo giám sát, không kèm quy định mới.", src: "wurAMR" },
     { c: "env", d: "06/11/2026", org: "Ireland · Bộ Nông nghiệp", h: "Ireland: miễn trừ nitrat 2026–2028 kèm điều kiện, một số hồ sơ có thể bị từ chối", p: "Bộ trưởng Nông nghiệp Martin Heydon cho biết Ireland được gia hạn miễn trừ nitrat (Nitrates Derogation) giai đoạn 2026–2028 với điều kiện bổ sung: việc chấp thuận phụ thuộc đánh giá môi trường theo Chỉ thị Môi trường sống và Chỉ thị Khung về Nước. Đã công bố báo cáo tổng quan cho 46 lưu vực sông, 583 báo cáo tiểu lưu vực sẽ ra đầu năm tới và công việc phải xong trước 2028; ông cảnh báo một số hồ sơ có thể không được duyệt. Hỗ trợ gồm chương trình TAMS ưu tiên mức 60% cho kho chứa phân và tư vấn miễn phí ASSAP. Trạng thái: đã được cấp có điều kiện, đánh giá đang tiến hành.", src: "fjDerog" },
     { c: "gen", d: "05/11/2026", org: "Nghiên cứu · Journal of Animal Science", h: "Biến thể Cas9 độ chính xác cao giúp chỉnh sửa gen phôi lợn không sai đích", p: "Nhóm tác giả (Kim J., Prather R.S., Lee K. và cộng sự) đăng trên Journal of Animal Science (2026) thử ba biến thể SpCas9 (eSpCas9, HiFi Cas9, LZ3 Cas9) tiêm dạng mRNA vào hợp tử lợn. SpCas9 thông thường chỉnh đúng đích 100% ở gen IGH nhưng gây chỉnh sai đích ở AR và RBFOX1 trên hơn 60% phôi; ở nồng độ 20 ng/µl các biến thể đều đạt 100% đúng đích (trừ LZ3 Cas9 đạt 59,1%) và không phát hiện chỉnh sai đích, eSpCas9 đặc hiệu nhất. Bào thai từ nái mang phôi eSpCas9 được chỉnh đúng đích 100%. Trạng thái: kết quả nghiên cứu.", src: "ttCas9" },
